@@ -20,6 +20,8 @@
             --text-color: #34495e;
             --header-text-color: #ffffff;
             --border-color: #bdc3c7;
+            --danger-color: #e74c3c;
+            --warning-color: #f1c40f;
         }
 
         html {
@@ -110,29 +112,83 @@
             font-weight: 500;
             border: 1px solid var(--border-color);
         }
-        nav a:hover {
+        nav a:hover, nav a.active {
             background-color: var(--accent-color);
             color: var(--header-text-color);
             border-color: var(--accent-color);
             transform: translateY(-2px);
         }
 
+        /* Redesigned Table of Contents */
         .toc-section {
+            background-color: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-top: 30px;
+            box-shadow: none;
+        }
+        .toc-section > ul {
+            list-style-type: none;
+            padding-left: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .toc-section > ul > li {
+            margin: 0;
             background-color: var(--card-bg-color);
             border-radius: 12px;
-            padding: 25px;
-            margin-top: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
-        .toc-section ul { list-style-type: none; padding-left: 0; }
-        .toc-section > ul > li { margin-top: 15px; }
+        .toc-section > ul > li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
         .toc-section > ul > li > a {
-            font-weight: bold; color: var(--primary-color); text-decoration: none; font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            font-weight: 700;
+            color: var(--header-text-color);
+            text-decoration: none;
+            font-size: 1.3em;
         }
-        .toc-section > ul > li > a i { margin-right: 8px; color: var(--secondary-color); }
-        .toc-section ul ul { padding-left: 30px; margin-top: 8px; }
-        .toc-section ul ul li a { color: var(--text-color); text-decoration: none; }
-        .toc-section a:hover { text-decoration: underline; color: var(--accent-color); }
+        .toc-section > ul > li:nth-child(1) > a { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .toc-section > ul > li:nth-child(2) > a { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .toc-section > ul > li:nth-child(3) > a { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .toc-section > ul > li:nth-child(4) > a { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        .toc-section > ul > li:nth-child(5) > a { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .toc-section > ul > li:nth-child(6) > a { background: linear-gradient(135deg, #2c3e50, #34495e); }
+
+        .toc-section > ul > li > a i {
+            margin-right: 12px;
+            font-size: 1.2em;
+            width: 25px;
+            text-align: center;
+        }
+        .toc-section ul ul {
+            padding: 10px 20px 20px 20px;
+            list-style-type: none;
+        }
+        .toc-section ul ul li {
+            margin-top: 8px;
+        }
+        .toc-section ul ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .toc-section a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+        .toc-section > ul > li > a:hover {
+            text-decoration: none;
+            opacity: 0.95;
+        }
+
 
         article {
             background-color: var(--card-bg-color);
@@ -156,13 +212,13 @@
             font-style: italic;
             border-radius: 5px;
         }
-        strong { color: #e74c3c; }
+        strong { color: var(--danger-color); }
         ul, ol { padding-left: 25px; }
 
         .strategy-diagram {
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #f9f9f9;
+            margin: 25px auto;
+            padding: 20px;
+            background-color: #f9fafb;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             display: flex;
@@ -173,7 +229,7 @@
         }
         .strategy-diagram svg {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             height: auto;
         }
 
@@ -214,6 +270,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             transition: background-color 0.3s, transform 0.3s;
             line-height: 50px;
+            text-align: center;
         }
         #scrollToTopBtn:hover {
             background-color: var(--accent-color);
@@ -229,6 +286,44 @@
         .fade-in-section.is-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Mascot Styles */
+        #mascot-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1002;
+            cursor: pointer;
+            animation: bobbing 3s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            transition: transform 0.2s ease;
+        }
+
+        #mascot-container:active {
+            transform: scale(0.9);
+        }
+        
+        @keyframes bobbing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        #mascot-container img {
+            width: 90px;
+            height: auto;
+            display: block;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1003;
         }
 
     </style>
@@ -256,83 +351,89 @@
     <div class="toc-section fade-in-section">
         <h2 id="introduction"><i class="fas fa-sitemap"></i>完整目錄 (Full Table of Contents)</h2>
         <ul>
-            <li><a href="#engage"><i class="fas fa-hand-sparkles"></i>1. 投入 Engage</a>
+            <li>
+                <a href="#engage"><i class="fas fa-hand-sparkles"></i>1. 投入 Engage</a>
                 <ul>
-                    <li><a href="#engage-four-corner-debate">(一) 四角辯論 (Four-corner Debate)</a></li>
-                    <li><a href="#engage-spectrum-statements">(二) 表態光譜 (Spectrum Statements)</a></li>
-                    <li><a href="#engage-simulation">(三) 模擬 (Simulation)</a></li>
-                    <li><a href="#engage-mess-about">(四) 胡搞瞎搞 (Mess About)</a></li>
-                    <li><a href="#engage-question-stretches">(五) 問題延伸 (Question Stretches)</a></li>
-                    <li><a href="#engage-discussion-protocols">(六) 討論協定 (Discussion Protocols)</a></li>
-                    <li><a href="#engage-affinity-diagram">(七) 關係導圖 (Affinity Diagram)</a></li>
+                    <li><a href="#engage-four-corner-debate">(一) 四角辯論</a></li>
+                    <li><a href="#engage-spectrum-statements">(二) 表態光譜</a></li>
+                    <li><a href="#engage-simulation">(三) 模擬</a></li>
+                    <li><a href="#engage-mess-about">(四) 胡搞瞎搞</a></li>
+                    <li><a href="#engage-question-stretches">(五) 問題延伸</a></li>
+                    <li><a href="#engage-discussion-protocols">(六) 討論協定</a></li>
+                    <li><a href="#engage-affinity-diagram">(七) 關係導圖</a></li>
                 </ul>
             </li>
-            <li><a href="#focus"><i class="fas fa-bullseye"></i>2. 聚焦 Focus</a>
+            <li>
+                <a href="#focus"><i class="fas fa-bullseye"></i>2. 聚焦 Focus</a>
                 <ul>
-                    <li><a href="#focus-frayer-model">(一) 弗瑞爾模型 (Frayer Model)</a></li>
-                    <li><a href="#focus-concept-quadrants">(二) 概念象限 (Concept Quadrants)</a></li>
-                    <li><a href="#focus-all-some-none">(三) 全部、部分、沒有 (All, Some, None)</a></li>
-                    <li><a href="#focus-adjectives">(四) 找出屬性 (Adjectives)</a></li>
-                    <li><a href="#focus-group-describe-name">(五) 分類、描述、命名 (Group, Describe, Name)</a></li>
-                    <li><a href="#focus-concept-riddles">(六) 概念謎語 (Concept Riddles)</a></li>
-                    <li><a href="#focus-create-combine">(七) 創造與合併 (Create & Combine)</a></li>
-                    <li><a href="#focus-spectrum-sort">(八) 光譜定位 (Spectrum Sort)</a></li>
-                    <li><a href="#focus-diamond-ranking">(九) 鑽石分層 (Diamond Ranking)</a></li>
-                    <li><a href="#focus-concept-graphs">(十) 概念座標 (Concept Graphs)</a></li>
-                    <li><a href="#focus-dimensions">(十一) 維度排序 (Dimensions)</a></li>
-                    <li><a href="#focus-analogies">(十二) 關係類比 (Analogies)</a></li>
+                    <li><a href="#focus-frayer-model">(一) 弗瑞爾模型</a></li>
+                    <li><a href="#focus-concept-quadrants">(二) 概念象限</a></li>
+                    <li><a href="#focus-all-some-none">(三) 全部、部分、沒有</a></li>
+                    <li><a href="#focus-adjectives">(四) 找出屬性</a></li>
+                    <li><a href="#focus-group-describe-name">(五) 分類、描述、命名</a></li>
+                    <li><a href="#focus-concept-riddles">(六) 概念謎語</a></li>
+                    <li><a href="#focus-create-combine">(七) 創造與合併</a></li>
+                    <li><a href="#focus-spectrum-sort">(八) 光譜定位</a></li>
+                    <li><a href="#focus-diamond-ranking">(九) 鑽石分層</a></li>
+                    <li><a href="#focus-concept-graphs">(十) 概念座標</a></li>
+                    <li><a href="#focus-dimensions">(十一) 維度排序</a></li>
+                    <li><a href="#focus-analogies">(十二) 關係類比</a></li>
                 </ul>
             </li>
-            <li><a href="#organize"><i class="fas fa-project-diagram"></i>3. 組織 Organize</a>
+            <li>
+                <a href="#organize"><i class="fas fa-project-diagram"></i>3. 組織 Organize</a>
                 <ul>
-                    <li><a href="#organize-cross-comparison-chart">(一) 交叉比對表 (Cross-comparison Chart)</a></li>
-                    <li><a href="#organize-trading-cards">(二) 交換卡片 (Trading Cards)</a></li>
-                    <li><a href="#organize-push-pull-hold">(三) 推力、拉力、阻力 (Push, Pull, Hold)</a></li>
-                    <li><a href="#organize-the-missing-piece">(四) 失落的一角 (The Missing Piece)</a></li>
-                    <li><a href="#organize-networks">(五) 網絡 (Networks)</a></li>
-                    <li><a href="#organize-flow-diagrams">(六) 流程圖 (Flow Diagrams)</a></li>
-                    <li><a href="#organize-visual-note-taking">(七) 視覺筆記 (Visual Note-Taking)</a></li>
-                    <li><a href="#organize-annotate-it">(八) 註解 (Annotate It)</a></li>
-                    <li><a href="#organize-social-dramatic-play">(九) 社會性戲劇 (Social-dramatic Play)</a></li>
-                    <li><a href="#organize-linguistic-representation">(十) 語言形式 (Linguistic Representation)</a></li>
-                    <li><a href="#organize-models">(十一) 模型 (Models)</a></li>
+                    <li><a href="#organize-cross-comparison-chart">(一) 交叉比對表</a></li>
+                    <li><a href="#organize-trading-cards">(二) 交換卡片</a></li>
+                    <li><a href="#organize-push-pull-hold">(三) 推力、拉力、阻力</a></li>
+                    <li><a href="#organize-the-missing-piece">(四) 失落的一角</a></li>
+                    <li><a href="#organize-networks">(五) 網絡</a></li>
+                    <li><a href="#organize-flow-diagrams">(六) 流程圖</a></li>
+                    <li><a href="#organize-visual-note-taking">(七) 視覺筆記</a></li>
+                    <li><a href="#organize-annotate-it">(八) 註解</a></li>
+                    <li><a href="#organize-social-dramatic-play">(九) 社會性戲劇</a></li>
+                    <li><a href="#organize-linguistic-representation">(十) 語言形式</a></li>
+                    <li><a href="#organize-models">(十一) 模型</a></li>
                 </ul>
             </li>
-            <li><a href="#generalize"><i class="fas fa-globe"></i>4. 通則 Generalize</a>
+            <li>
+                <a href="#generalize"><i class="fas fa-globe"></i>4. 通則 Generalize</a>
                  <ul>
-                    <li><a href="#generalize-conceptual-questions">(一) 概念性問題 (Conceptual Questions)</a></li>
-                    <li><a href="#generalize-speed-connections">(二) 快速連結 (Speed Connections)</a></li>
-                    <li><a href="#generalize-connect-4">(三) 連結四方 (Connect 4)</a></li>
-                    <li><a href="#generalize-concept-bank">(四) 概念銀行 (Concept Bank)</a></li>
-                    <li><a href="#generalize-sentence-frames">(五) 句子架構 (Sentence Frames)</a></li>
-                    <li><a href="#generalize-concept-roles">(六) 概念接龍 (Concept Roles)</a></li>
-                    <li><a href="#generalize-concept-mapping">(七) 概念製圖 (Concept Mapping)</a></li>
-                    <li><a href="#generalize-whats-the-connection">(八) 顏色連結 (What's the Connection?)</a></li>
-                    <li><a href="#generalize-pattern-hunters">(九) 模式獵人 (Pattern Hunters)</a></li>
-                    <li><a href="#generalize-micro-generalizing">(十) 微通則 (Micro-generalizing)</a></li>
+                    <li><a href="#generalize-conceptual-questions">(一) 概念性問題</a></li>
+                    <li><a href="#generalize-speed-connections">(二) 快速連結</a></li>
+                    <li><a href="#generalize-connect-4">(三) 連結四方</a></li>
+                    <li><a href="#generalize-concept-bank">(四) 概念銀行</a></li>
+                    <li><a href="#generalize-sentence-frames">(五) 句子架構</a></li>
+                    <li><a href="#generalize-concept-roles">(六) 概念接龍</a></li>
+                    <li><a href="#generalize-concept-mapping">(七) 概念製圖</a></li>
+                    <li><a href="#generalize-whats-the-connection">(八) 顏色連結</a></li>
+                    <li><a href="#generalize-pattern-hunters">(九) 模式獵人</a></li>
+                    <li><a href="#generalize-micro-generalizing">(十) 微通則</a></li>
                 </ul>
             </li>
-            <li><a href="#transfer"><i class="fas fa-rocket"></i>5. 遷移 Transfer</a>
+            <li>
+                <a href="#transfer"><i class="fas fa-rocket"></i>5. 遷移 Transfer</a>
                 <ul>
-                    <li><a href="#transfer-stress-testing">(一) 壓力測試 (Stress-testing Generalizations)</a></li>
-                    <li><a href="#transfer-on-the-line">(二) 線上討論 (On the Line)</a></li>
-                    <li><a href="#transfer-prove-it">(三) 證明 (Prove It!)</a></li>
-                    <li><a href="#transfer-how-does-it-connect">(四) 如何連結 (How Does It Connect?)</a></li>
-                    <li><a href="#transfer-what-if-questions">(五) 「要是…又會怎樣?」的問題 (“What if…?” Questions)</a></li>
-                    <li><a href="#transfer-performance-assessment">(六) 實作評量 (Performance Assessment)</a></li>
-                    <li><a href="#transfer-create-it">(七) 創造! (Create It!)</a></li>
-                    <li><a href="#transfer-student-led-action">(八) 學生主導行動 (Student-led Action)</a></li>
+                    <li><a href="#transfer-stress-testing">(一) 壓力測試</a></li>
+                    <li><a href="#transfer-on-the-line">(二) 線上討論</a></li>
+                    <li><a href="#transfer-prove-it">(三) 證明</a></li>
+                    <li><a href="#transfer-how-does-it-connect">(四) 如何連結</a></li>
+                    <li><a href="#transfer-what-if-questions">(五) 「要是…又會怎樣?」的問題</a></li>
+                    <li><a href="#transfer-performance-assessment">(六) 實作評量</a></li>
+                    <li><a href="#transfer-create-it">(七) 創造!</a></li>
+                    <li><a href="#transfer-student-led-action">(八) 學生主導行動</a></li>
                 </ul>
             </li>
-            <li><a href="#reflect"><i class="fas fa-lightbulb"></i>6. 反思 Reflect</a>
+            <li>
+                <a href="#reflect"><i class="fas fa-lightbulb"></i>6. 反思 Reflect</a>
                  <ul>
-                    <li><a href="#reflect-talk-prompts">(一) 談話提示 (Talk Prompts)</a></li>
-                    <li><a href="#reflect-question-bank">(二) 問題銀行 (Question Bank)</a></li>
-                    <li><a href="#reflect-learning-journals">(三) 學習日誌與反思部落格 (Learning Journals and Reflective Blogs)</a></li>
-                    <li><a href="#reflect-task-analysis">(四) 任務分析 (Task Analysis)</a></li>
-                    <li><a href="#reflect-think-aloud">(五) 放聲思考 (Think Aloud)</a></li>
-                    <li><a href="#reflect-exit-reflections">(六) 出場反思 (Exit Reflections)</a></li>
-                    <li><a href="#reflect-pre-post-reflections">(七) 單元前/後的反思 (Pre-/Post-reflections)</a></li>
+                    <li><a href="#reflect-talk-prompts">(一) 談話提示</a></li>
+                    <li><a href="#reflect-question-bank">(二) 問題銀行</a></li>
+                    <li><a href="#reflect-learning-journals">(三) 學習日誌與反思部落格</a></li>
+                    <li><a href="#reflect-task-analysis">(四) 任務分析</a></li>
+                    <li><a href="#reflect-think-aloud">(五) 放聲思考</a></li>
+                    <li><a href="#reflect-exit-reflections">(六) 出場反思</a></li>
+                    <li><a href="#reflect-pre-post-reflections">(七) 單元前/後的反思</a></li>
                 </ul>
             </li>
         </ul>
@@ -350,19 +451,60 @@
                 <li><strong>引發討論的策略：</strong> 與學生約定討論模式，才不會淪為閒聊。討論後的共同任務也要一併說明清楚，以利進行有意義的討論。</li>
             </ol>
 
-            <article id="engage-four-corner-debate" class="fade-in-section">
+                        <article id="engage-four-corner-debate" class="fade-in-section">
                 <h3>(一) 投入 - 四角辯論 Four-corner Debate</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                        <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3498db"/></marker></defs>
-                        <rect x="10" y="10" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="28" font-size="8" text-anchor="middle">非常同意</text>
-                        <rect x="150" y="10" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="28" font-size="8" text-anchor="middle">同意</text>
-                        <rect x="10" y="110" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="128" font-size="8" text-anchor="middle">非常不同意</text>
-                        <rect x="150" y="110" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="128" font-size="8" text-anchor="middle">不同意</text>
-                        <circle cx="100" cy="75" r="5" fill="#e74c3c"/><circle cx="40" cy="60" r="4" fill="#3498db"/><circle cx="160" cy="90" r="4" fill="#3498db"/>
-                        <path d="M 100 80 Q 80 100 50 115" stroke="#3498db" stroke-width="1.5" stroke-dasharray="3,2" fill="none" marker-end="url(#arrow)"/>
-                        <path d="M 40 65 Q 80 80 95 80" stroke="#3498db" stroke-width="1.5" stroke-dasharray="3,2" fill="none" marker-end="url(#arrow)"/>
-                        <text x="100" y="70" font-size="8" text-anchor="middle">改變立場</text>
+                    <svg viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="shadow-box" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+                                <feOffset dx="1" dy="2" result="offsetblur"/>
+                                <feMerge>
+                                    <feMergeNode/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                             <g id="student-icon">
+                                <circle cx="0" cy="-5" r="5" />
+                                <path d="M -7 3 a 7 10 0 0 1 14 0 v 5 h -14 z" />
+                            </g>
+                        </defs>
+
+                        <!-- Central Topic -->
+                        <g transform="translate(110 85)">
+                            <circle cx="0" cy="0" r="25" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
+                            <text x="0" y="5" font-size="20" font-weight="bold" text-anchor="middle" fill="#fff">?</text>
+                            <text x="0" y="38" font-size="10" text-anchor="middle">辯論議題</text>
+                        </g>
+
+                        <!-- Corners -->
+                        <g filter="url(#shadow-box)">
+                            <rect x="10" y="10" width="70" height="40" rx="5" fill="#1abc9c"/>
+                            <text x="45" y="32" font-size="10" text-anchor="middle" fill="white" font-weight="bold">非常同意 ++</text>
+                        </g>
+                         <g filter="url(#shadow-box)">
+                            <rect x="140" y="10" width="70" height="40" rx="5" fill="#3498db"/>
+                            <text x="175" y="32" font-size="10" text-anchor="middle" fill="white" font-weight="bold">同意 +</text>
+                        </g>
+                        <g filter="url(#shadow-box)">
+                            <rect x="10" y="120" width="70" height="40" rx="5" fill="#e74c3c"/>
+                             <text x="45" y="142" font-size="10" text-anchor="middle" fill="white" font-weight="bold">非常不同意 --</text>
+                        </g>
+                         <g filter="url(#shadow-box)">
+                            <rect x="140" y="120" width="70" height="40" rx="5" fill="#f39c12"/>
+                            <text x="175" y="142" font-size="10" text-anchor="middle" fill="white" font-weight="bold">不同意 -</text>
+                        </g>
+
+                        <!-- Students -->
+                        <use href="#student-icon" x="30" y="70" fill="#1abc9c"/>
+                        <use href="#student-icon" x="55" y="70" fill="#1abc9c"/>
+                        <use href="#student-icon" x="165" y="70" fill="#3498db"/>
+
+                        <!-- Student moving position -->
+                        <path d="M 45 105 C 70 80, 120 70, 150 70" stroke="#34495e" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                        <text x="95" y="68" font-size="9" fill="#34495e" transform="rotate(-10 95 75)">聆聽後改變立場</text>
+                        <use href="#student-icon" x="45" y="105" fill="#e74c3c" opacity="0.5"/>
+                        <use href="#student-icon" x="150" y="70" fill="#e74c3c"/>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生表達意見、觸發思考、投入學習。讓教師了解學生的先備知識以及迷思概念。</p>
@@ -380,15 +522,39 @@
             <article id="engage-spectrum-statements" class="fade-in-section">
                 <h3>(二) 投入 - 表態光譜 Spectrum Statements</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="10" y1="50" x2="190" y2="50" stroke="#34495e" stroke-width="2"/>
-                        <text x="10" y="35" font-size="9" text-anchor="start">非常不同意</text>
-                        <text x="190" y="35" font-size="9" text-anchor="end">非常同意</text>
-                        <circle cx="25" cy="50" r="5" fill="#3498db"/><circle cx="60" cy="50" r="5" fill="#1abc9c"/><circle cx="80" cy="50" r="5" fill="#3498db"/>
-                        <circle cx="150" cy="50" r="5" fill="#e74c3c"/><circle cx="175" cy="50" r="5" fill="#e74c3c"/>
-                        <g transform="translate(100, 75)">
-                            <circle cx="0" cy="0" r="8" fill="#f1c40f" stroke="#34495e" stroke-width="1"/>
-                            <text x="0" y="3" font-size="8" text-anchor="middle">立場</text>
+                    <svg viewBox="0 0 250 130" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="spectrum-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#f39c12; stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#ecf0f1; stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#1abc9c; stop-opacity:1" />
+                            </linearGradient>
+                            <filter id="drop-shadow-pin" x="-50%" y="-50%" width="200%" height="200%">
+                               <feDropShadow dx="1" dy="2" stdDeviation="1" flood-color="#000" flood-opacity="0.2"/>
+                            </filter>
+                        </defs>
+                        <text x="25" y="105" font-size="10" text-anchor="middle">非常不同意</text>
+                        <text x="225" y="105" font-size="10" text-anchor="middle">非常同意</text>
+
+                        <!-- Spectrum Bar -->
+                        <rect x="25" y="80" width="200" height="15" rx="7.5" fill="url(#spectrum-gradient)" stroke="#bdc3c7"/>
+                        
+                        <!-- Student Position Pins -->
+                        <g filter="url(#drop-shadow-pin)">
+                            <circle cx="40" cy="87.5" r="6" fill="#e74c3c" stroke="white" stroke-width="1.5"/>
+                            <circle cx="90" cy="87.5" r="6" fill="#3498db" stroke="white" stroke-width="1.5"/>
+                            <circle cx="180" cy="87.5" r="6" fill="#3498db" stroke="white" stroke-width="1.5"/>
+                            <circle cx="210" cy="87.5" r="6" fill="#2ecc71" stroke="white" stroke-width="1.5"/>
+                        </g>
+
+                        <!-- Hot Seat -->
+                        <g>
+                            <circle cx="125" cy="87.5" r="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                            <path d="M125 78 L 125 55 C 125 45, 135 45, 140 45 L 230 45 C 235 45, 235 40, 230 40 L 140 40 C 130 40, 115 45, 115 60 L 115 50" fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="3 2"/>
+                            <g transform="translate(130,10)">
+                                <path d="M0 0 H 90 V 25 H 0 Z" fill="#fff" stroke="#e74c3c" rx="4"/>
+                                <text x="45" y="17" font-size="10" text-anchor="middle" fill="#c0392b" font-weight="bold">熱椅: 我的理由是...</text>
+                            </g>
                         </g>
                     </svg>
                 </div>
@@ -404,23 +570,45 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="engage-simulation" class="fade-in-section">
+                       <article id="engage-simulation" class="fade-in-section">
                 <h3>(三) 投入 - 模擬 Simulation</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <defs><marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e74c3c"/></marker></defs>
-                        <g transform="translate(40, 50)">
-                            <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
-                            <text x="0" y="40" font-size="9" text-anchor="middle">角色A</text>
+                    <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <g id="student-figure">
+                                <circle cx="0" cy="5" r="8" />
+                                <path d="M -10 15 a 10 10 0 0 1 20 0 v 15 h -20 z" />
+                            </g>
+                            <g id="mask-icon">
+                                <path d="M -12 -5 Q 0 -15, 12 -5 Q 0 8, -12 -5" stroke-width="1.5" fill="#fff" stroke="#34495e"/>
+                                <circle cx="-6" cy="-4" r="2" fill="#34495e"/><circle cx="6" cy="-4" r="2" fill="#34495e"/>
+                            </g>
+                        </defs>
+                        <!-- Stage -->
+                        <path d="M 50 140 C 80 120, 170 120, 200 140 V 145 H 50 Z" fill="#a67c52"/>
+                        <rect x="50" y="50" width="150" height="90" fill="#d3a167" opacity="0.3"/>
+                        <text x="125" y="130" font-size="10" text-anchor="middle" fill="#7f5e3e">模擬情境</text>
+
+                        <!-- Student entering simulation -->
+                        <g transform="translate(40 100)">
+                            <use href="#student-figure" fill="#95a5a6"/>
                         </g>
-                        <g transform="translate(160, 50)">
-                            <circle cx="0" cy="-10" r="10" fill="#1abc9c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#1abc9c"/>
-                            <text x="0" y="40" font-size="9" text-anchor="middle">角色B</text>
+                        <path d="M 55 110 C 70 95, 85 95, 100 110" stroke="#34495e" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                        <text x="70" y="85" font-size="9">進入模擬</text>
+
+                        <!-- Role-playing figures on stage -->
+                        <g transform="translate(120 70)">
+                            <use href="#student-figure" fill="#3498db"/>
+                            <use href="#mask-icon"/>
+                            <text y="40" font-size="9" text-anchor="middle">角色A</text>
                         </g>
-                        <path d="M 60 40 Q 100 10 140 40" stroke="#34495e" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
-                        <text x="100" y="30" font-size="9" text-anchor="middle">互動/對話</text>
-                        <path d="M 80 80 Q 100 95 120 80" stroke="#e74c3c" stroke-width="1.5" fill="none" marker-start="url(#arrowhead)" marker-end="url(#arrowhead)"/>
-                        <text x="100" y="75" font-size="9" text-anchor="middle">換位思考</text>
+                        <g transform="translate(170 70)">
+                            <use href="#student-figure" fill="#e74c3c"/>
+                            <use href="#mask-icon" transform="scale(1, -1) translate(0, -1)"/>
+                            <text y="40" font-size="9" text-anchor="middle">角色B</text>
+                        </g>
+                         <path d="M 135 70 C 145 60, 155 60, 165 70" stroke="#34495e" fill="none" stroke-width="1.5"/>
+
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 當學生缺乏相關經驗或無法理解他人觀點時，可以使用戲劇模擬或是數位模擬策略，讓學生跳脫原有的生活經驗，在不同的情境中思考，理解複雜概念間的關係。</p>
@@ -436,22 +624,40 @@
             <article id="engage-mess-about" class="fade-in-section">
                 <h3>(四) 投入 - 胡搞瞎搞 Mess About</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Magnifying Glass -->
-                        <g transform="translate(40, 50)">
+                    <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Exploration Area -->
+                        <path d="M 20 130 C 50 150, 200 150, 230 130 C 240 100, 240 50, 200 30 C 150 0, 100 0, 50 30 C 10 50, 10 100, 20 130 Z" fill="#ecf0f1" stroke="#bdc3c7"/>
+                        
+                        <!-- Objects to mess with -->
+                        <g transform="translate(70, 80)">
+                            <rect x="-10" y="-10" width="20" height="20" fill="#3498db" transform="rotate(20)"/>
+                        </g>
+                        <g transform="translate(130, 100)">
+                            <circle cx="0" cy="0" r="12" fill="#e74c3c"/>
+                        </g>
+                        <g transform="translate(180, 70)">
+                             <path d="M 0 -15 L 13 -7.5 L 13 7.5 L 0 15 L -13 7.5 L -13 -7.5 Z" fill="#2ecc71"/>
+                        </g>
+                        
+                        <!-- Action Icons -->
+                        <!-- Hand (Hands-on) -->
+                        <g transform="translate(60, 40)">
+                             <path d="M 0 20 C 0 10, 5 0, 15 0 C 25 0, 30 10, 30 20 L 25 20 C 25 15, 22 10, 15 10 C 8 10, 5 15, 5 20 Z M 5 20 L 5 30 L 10 30 V 20 M 12 20 V 32 L 17 32 V 20 M 19 20 V 30 L 24 30 V 20" fill="#f1c40f" stroke="#34495e" stroke-width="1"/>
+                        </g>
+                        <!-- Magnifying Glass (Observe) -->
+                        <g transform="translate(150, 45) rotate(-25)">
                             <circle cx="0" cy="0" r="15" stroke="#3498db" stroke-width="3" fill="rgba(52, 152, 219, 0.2)"/>
-                            <line x1="12" y1="12" x2="25" y2="25" stroke="#34495e" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="12" y1="12" x2="25" y2="25" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>
                         </g>
-                        <!-- Gear -->
-                        <g transform="translate(100, 50)">
-                            <path d="M 0 -15 L 3 -12 L 6 -13 L 9 -10 L 12 -9 L 13 -6 L 15 0 L 13 6 L 12 9 L 9 10 L 6 13 L 3 12 L 0 15 L -3 12 L -6 13 L -9 10 L -12 9 L -13 6 L -15 0 L -13 -6 L -12 -9 L -9 -10 L -6 -13 L -3 -12 Z" fill="#1abc9c"/>
-                            <circle cx="0" cy="0" r="5" fill="#ecf0f1"/>
+
+                        <!-- Question Bubble (Questioning) -->
+                        <g transform="translate(180, 20)">
+                            <path d="M -15 0 a 15 15 0 1 1 30 0 a 15 15 0 1 1 -30 0"/>
+                            <path d="M 0 15 L 5 20 L -5 25" fill="none" stroke="#34495e" stroke-width="1.5"/>
+                            <text x="0" y="5" font-size="20" fill="#34495e" text-anchor="middle" font-weight="bold">?</text>
                         </g>
-                        <!-- Question Mark -->
-                        <g transform="translate(160, 50)">
-                            <text x="0" y="10" font-size="40" fill="#e74c3c" text-anchor="middle" font-weight="bold">?</text>
-                        </g>
-                        <text x="100" y="90" font-size="10" text-anchor="middle">觀察、動手、探索、提問</text>
+
+                        <text x="125" y="145" font-size="10" text-anchor="middle">動手、觀察、探索、提問</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生帶著先備知識與興趣進入單元，提供學生進行觀察的機會，目的在引發好奇心。</p>
@@ -464,18 +670,51 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="engage-question-stretches" class="fade-in-section">
+                        <article id="engage-question-stretches" class="fade-in-section">
                 <h3>(五) 投入 - 問題延伸 Question Stretches</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <text x="30" y="55" font-size="40" fill="#3498db" text-anchor="middle">?</text>
-                        <path d="M 50 50 C 70 30, 90 70, 110 50" stroke="#34495e" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
-                        <text x="80" y="35" font-size="10" text-anchor="middle">延伸</text>
-                        <g transform="translate(140, 50)">
-                            <text x="0" y="-15" font-size="20" fill="#1abc9c" text-anchor="middle">?</text>
-                            <text x="20" y="0" font-size="20" fill="#e74c3c" text-anchor="middle">?</text>
-                            <text x="0" y="15" font-size="20" fill="#f1c40f" text-anchor="middle">?</text>
-                            <text x="-20" y="0" font-size="20" fill="#9b59b6" text-anchor="middle">?</text>
+                    <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Left: Initial Question -->
+                        <g>
+                            <rect x="10" y="60" width="70" height="40" rx="5" fill="#ecf0f1" stroke="#95a5a6"/>
+                            <text x="45" y="85" font-size="25" text-anchor="middle" font-weight="bold" fill="#7f8c8d">?</text>
+                            <text x="45" y="115" font-size="10" text-anchor="middle">初始問題</text>
+                        </g>
+
+                        <!-- Center: Stretching Process Arrow -->
+                        <g>
+                            <path d="M 90 80 L 140 80" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrow)"/>
+                            <text x="115" y="70" font-size="10" text-anchor="middle" fill="#c0392b">延伸策略</text>
+                        </g>
+
+                        <!-- Right: Stretched Questions (The 4 Strategies) -->
+                        <g transform="translate(160, 15)">
+                            <!-- 1. Change Type (Open/Closed) -->
+                            <rect x="0" y="0" width="110" height="30" rx="4" fill="#3498db" fill-opacity="0.1" stroke="#3498db"/>
+                            <text x="10" y="19" font-size="12" fill="#2980b9" font-weight="bold">?</text>
+                            <path d="M 20 15 L 35 15 M 20 15 L 20 5 L 30 15 L 20 25 Z" stroke="#2980b9" stroke-width="1.5" fill="none"/>
+                            <text x="45" y="19" font-size="12" fill="#2980b9" font-weight="bold">¿</text>
+                            <text x="77" y="19" font-size="9" text-anchor="middle" fill="#2980b9">改變類型</text>
+                        </g>
+                        <g transform="translate(160, 50)">
+                            <!-- 2. Prioritize -->
+                            <rect x="0" y="0" width="110" height="30" rx="4" fill="#1abc9c" fill-opacity="0.1" stroke="#1abc9c"/>
+                            <text x="15" y="19" font-size="11" text-anchor="middle" font-weight="bold" fill="#16a085">1.</text>
+                            <text x="35" y="19" font-size="11" text-anchor="middle" font-weight="bold" fill="#16a085">2.</text>
+                            <text x="55" y="19" font-size="11" text-anchor="middle" font-weight="bold" fill="#16a085">3.</text>
+                            <text x="85" y="19" font-size="9" text-anchor="middle" fill="#16a085">排列優先</text>
+                        </g>
+                         <g transform="translate(160, 85)">
+                            <!-- 3. Categorize -->
+                            <rect x="0" y="0" width="110" height="30" rx="4" fill="#9b59b6" fill-opacity="0.1" stroke="#9b59b6"/>
+                            <path d="M 10 5 h 15 v -2 h 5 v 20 h -25 z" fill="#9b59b6" opacity="0.7"/>
+                            <path d="M 40 5 h 15 v -2 h 5 v 20 h -25 z" fill="#9b59b6" opacity="0.7"/>
+                            <text x="85" y="19" font-size="9" text-anchor="middle" fill="#8e44ad">分類命名</text>
+                        </g>
+                         <g transform="translate(160, 120)">
+                            <!-- 4. 5W1H -->
+                            <rect x="0" y="0" width="110" height="30" rx="4" fill="#f1c40f" fill-opacity="0.1" stroke="#f1c40f"/>
+                            <text x="40" y="19" font-size="9" text-anchor="middle" fill="#f39c12">  Why? How? What? </text>
                         </g>
                     </svg>
                 </div>
@@ -505,24 +744,24 @@
                         <g transform="translate(50, 30)">
                            <path d="M-20 -15 L 20 -15 L 20 10 L 0 10 L -5 15 L -5 10 L -20 10 Z" fill="#ecf0f1" stroke="#34495e"/>
                            <line x1="0" y1="-5" x2="10" y2="-5" stroke="#34495e"/><line x1="-15" y1="0" x2="15" y2="0" stroke="#34495e"/>
-                           <text x="0" y="-18" font-size="8">靜默對話</text>
+                           <text x="0" y="-22" font-size="8" text-anchor="middle">靜默對話</text>
                         </g>
                         <!-- Think Square -->
                          <g transform="translate(150, 30)">
                             <circle cx="-10" cy="-10" r="5" fill="#3498db"/><circle cx="10" cy="-10" r="5" fill="#3498db"/>
                             <circle cx="-10" cy="10" r="5" fill="#3498db"/><circle cx="10" cy="10" r="5" fill="#3498db"/>
-                            <text x="0" y="-18" font-size="8">四人配對</text>
+                            <text x="0" y="-22" font-size="8" text-anchor="middle">四人配對</text>
                         </g>
                         <!-- Stop and Talk -->
                         <g transform="translate(50, 90)">
                             <circle cx="0" cy="0" r="12" fill="#f1c40f" /><text x="0" y="4" font-size="10" text-anchor="middle">停</text>
-                            <text x="0" y="-15" font-size="8">停下來說</text>
+                            <text x="0" y="-18" font-size="8" text-anchor="middle">停下來說</text>
                         </g>
                         <!-- Token Talk -->
                         <g transform="translate(150, 90)">
                            <circle cx="-5" cy="0" r="8" fill="#e74c3c" stroke="#34495e"/>
                            <circle cx="5" cy="5" r="8" fill="#e74c3c" stroke="#34495e"/>
-                           <text x="0" y="-15" font-size="8">代幣交談</text>
+                           <text x="0" y="-18" font-size="8" text-anchor="middle">代幣交談</text>
                         </g>
                     </svg>
                 </div>
@@ -542,30 +781,52 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="engage-affinity-diagram" class="fade-in-section">
+                        <article id="engage-affinity-diagram" class="fade-in-section">
                 <h3>(七) 投入 - 關係導圖 Affinity Diagram</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Ungrouped -->
-                        <rect x="10" y="20" width="15" height="12" fill="#3498db" rx="2"/>
-                        <rect x="30" y="45" width="15" height="12" fill="#1abc9c" rx="2"/>
-                        <rect x="50" y="15" width="15" height="12" fill="#3498db" rx="2"/>
-                        <rect x="25" y="70" width="15" height="12" fill="#e74c3c" rx="2"/>
-                        <rect x="55" y="60" width="15" height="12" fill="#1abc9c" rx="2"/>
-                        <rect x="15" y="90" width="15" height="12" fill="#e74c3c" rx="2"/>
-                        <!-- Arrow -->
-                        <path d="M 80 60 L 110 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
-                        <text x="95" y="55" font-size="9" text-anchor="middle">組織</text>
-                        <!-- Grouped -->
-                        <rect x="120" y="10" width="60" height="30" fill="none" stroke="#3498db" stroke-dasharray="3,2"/>
-                        <rect x="125" y="15" width="15" height="12" fill="#3498db" rx="2"/>
-                        <rect x="145" y="15" width="15" height="12" fill="#3498db" rx="2"/>
-                        <rect x="120" y="45" width="60" height="30" fill="none" stroke="#1abc9c" stroke-dasharray="3,2"/>
-                        <rect x="125" y="50" width="15" height="12" fill="#1abc9c" rx="2"/>
-                        <rect x="145" y="50" width="15" height="12" fill="#1abc9c" rx="2"/>
-                        <rect x="120" y="80" width="60" height="30" fill="none" stroke="#e74c3c" stroke-dasharray="3,2"/>
-                        <rect x="125" y="85" width="15" height="12" fill="#e74c3c" rx="2"/>
-                        <rect x="145" y="85" width="15" height="12" fill="#e74c3c" rx="2"/>
+                    <svg viewBox="0 0 280 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                             <filter id="shadow-note-light" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.15"/>
+                            </filter>
+                             <g id="sticky-note">
+                                <rect x="-10" y="-10" width="20" height="20" rx="2" filter="url(#shadow-note-light)"/>
+                            </g>
+                        </defs>
+                        <!-- Left Side: Unorganized Ideas -->
+                        <g>
+                            <use href="#sticky-note" x="30" y="50" fill="#3498db" transform="rotate(-10 30 50)"/>
+                            <use href="#sticky-note" x="60" y="30" fill="#1abc9c" transform="rotate(15 60 30)"/>
+                            <use href="#sticky-note" x="80" y="60" fill="#f1c40f" transform="rotate(5 80 60)"/>
+                            <use href="#sticky-note" x="40" y="80" fill="#e74c3c" transform="rotate(8 40 80)"/>
+                            <use href="#sticky-note" x="70" y="100" fill="#3498db" transform="rotate(-5 70 100)"/>
+                            <use href="#sticky-note" x="25" y="110" fill="#1abc9c" transform="rotate(20 25 110)"/>
+                            <use href="#sticky-note" x="90" y="120" fill="#e74c3c" transform="rotate(10 90 120)"/>
+                            <text x="60" y="140" font-size="10" text-anchor="middle">原始想法</text>
+                        </g>
+
+                        <!-- Center: Arrow for organization process -->
+                        <g>
+                            <path d="M 115 75 L 155 75" stroke="#34495e" stroke-width="3" marker-end="url(#arrow)"/>
+                            <text x="135" y="65" font-size="10" text-anchor="middle">分類 & 命名</text>
+                        </g>
+
+                        <!-- Right Side: Organized Groups with Titles -->
+                        <g>
+                            <!-- Group A -->
+                            <rect x="170" y="15" width="90" height="60" rx="5" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <rect x="170" y="15" width="90" height="20" rx="5" ry="5" fill="#3498db"/>
+                            <text x="215" y="29" font-size="10" text-anchor="middle" fill="white" font-weight="bold">主題 A</text>
+                            <use href="#sticky-note" x="190" y="55" fill="#3498db"/>
+                            <use href="#sticky-note" x="220" y="55" fill="#3498db"/>
+                            
+                            <!-- Group B -->
+                            <rect x="170" y="80" width="90" height="60" rx="5" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <rect x="170" y="80" width="90" height="20" rx="5" ry="5" fill="#1abc9c"/>
+                             <text x="215" y="94" font-size="10" text-anchor="middle" fill="white" font-weight="bold">主題 B</text>
+                            <use href="#sticky-note" x="190" y="120" fill="#1abc9c"/>
+                            <use href="#sticky-note" x="220" y="120" fill="#1abc9c"/>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 幫助學生蒐集、組織先備知識，將先備知識分門別類。</p>
@@ -591,15 +852,49 @@
                 <li><strong>排序：</strong> 釐清概念特性或特徵的強度多寡，建立宏觀概念與微觀概念的思維。</li>
             </ol>
 
-            <article id="focus-frayer-model" class="fade-in-section">
+                        <article id="focus-frayer-model" class="fade-in-section">
                 <h3>(一) 聚焦 - 弗瑞爾模型 Frayer Model</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="70" y="55" width="60" height="40" fill="#3498db" stroke="#2c3e50" rx="3"/><text x="100" y="78" fill="white" font-size="12" text-anchor="middle">概念</text>
-                        <rect x="10" y="10" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="45" y="32" font-size="9" text-anchor="middle">定義</text>
-                        <rect x="120" y="10" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="155" y="32" font-size="9" text-anchor="middle">特點/屬性</text>
-                        <rect x="10" y="100" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="45" y="122" font-size="9" text-anchor="middle">例子</text>
-                        <rect x="120" y="100" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="155" y="122" font-size="9" text-anchor="middle">非例子</text>
+                    <svg viewBox="0 0 250 180" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.1"/>
+                            </filter>
+                        </defs>
+                        <!-- Central Concept -->
+                        <g>
+                            <circle cx="125" cy="90" r="35" fill="#3498db"/>
+                            <path d="M125 78 C 117 78, 115 88, 125 88 C 135 88, 133 78, 125 78 M122 90 h 6 v 8 h -6 z" fill="#f1c40f" stroke="#fff" stroke-width="1"/>
+                            <text x="125" y="112" font-size="12" text-anchor="middle" fill="white" font-weight="bold">核心概念</text>
+                        </g>
+
+                        <!-- Quadrants -->
+                        <g filter="url(#card-shadow)">
+                            <!-- Definition -->
+                            <rect x="10" y="10" width="100" height="60" rx="5" fill="#fff" stroke="#bdc3c7"/>
+                            <path d="M 20 20 h 15 v -3 h 5 v 20 h -20 v -17 Z" fill="#9b59b6"/>
+                            <text x="65" y="38" font-size="11" text-anchor="middle" font-weight="bold">定義</text>
+                        </g>
+                         <g filter="url(#card-shadow)">
+                            <!-- Characteristics -->
+                            <rect x="140" y="10" width="100" height="60" rx="5" fill="#fff" stroke="#bdc3c7"/>
+                            <path d="M 150 20 l 10 -10 l 15 15 l -10 10 Z" fill="#f39c12"/>
+                            <text x="190" y="38" font-size="11" text-anchor="middle" font-weight="bold">特點/屬性</text>
+                        </g>
+                         <g filter="url(#card-shadow)">
+                            <!-- Examples -->
+                            <rect x="10" y="110" width="100" height="60" rx="5" fill="#fff" stroke="#bdc3c7"/>
+                            <circle cx="35" cy="140" r="12" fill="#1abc9c"/>
+                            <path d="M 30 140 l 4 4 l 7 -7" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <text x="65" y="138" font-size="11" text-anchor="middle" font-weight="bold">例子</text>
+                        </g>
+                         <g filter="url(#card-shadow)">
+                            <!-- Non-Examples -->
+                            <rect x="140" y="110" width="100" height="60" rx="5" fill="#fff" stroke="#bdc3c7"/>
+                            <circle cx="165" cy="140" r="12" fill="#e74c3c"/>
+                            <path d="M 160 135 l 10 10 M 170 135 l -10 10" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <text x="190" y="138" font-size="11" text-anchor="middle" font-weight="bold">非例子</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生對概念進行拆解，分辨出概念的定義、特性、例子和非例子，最終目的在展開對概念的理解。</p>
@@ -617,13 +912,36 @@
             <article id="focus-concept-quadrants" class="fade-in-section">
                 <h3>(二) 聚焦 - 概念象限 Concept Quadrants</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 75 10 L 75 140 M 10 75 L 140 75" stroke="#bdc3c7" stroke-width="2"/>
-                        <circle cx="40" cy="40" r="15" fill="#1abc9c"/>
-                        <circle cx="110" cy="40" r="15" fill="#1abc9c"/>
-                        <circle cx="40" cy="110" r="15" fill="#1abc9c"/>
-                        <rect x="95" y="95" width="30" height="30" fill="#e74c3c" rx="5"/>
-                        <text x="110" y="135" font-size="10" fill="#e74c3c">非例子</text>
+                    <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <g id="bird-icon">
+                                <path d="M-10 0 C-15-15, 10-15, 10 0 C10 10, -10 10, -10 0 Z" fill="#3498db"/>
+                                <path d="M0-12 L 15 0" stroke="#2980b9" stroke-width="2"/>
+                            </g>
+                            <g id="fish-icon">
+                                <path d="M-15 0 C0-20, 10-10, 15 0 C10 10, 0 20, -15 0 Z" fill="#e74c3c"/>
+                                <circle cx="8" cy="-2" r="2" fill="white"/>
+                            </g>
+                        </defs>
+                        <!-- Grid lines -->
+                        <line x1="110" y1="10" x2="110" y2="150" stroke="#bdc3c7" stroke-width="2"/>
+                        <line x1="10" y1="80" x2="210" y2="80" stroke="#bdc3c7" stroke-width="2"/>
+                        
+                        <!-- Examples -->
+                        <use href="#bird-icon" x="55" y="45"/>
+                        <use href="#bird-icon" x="165" y="45"/>
+                        <use href="#bird-icon" x="55" y="115"/>
+                        
+                        <!-- Non-Example (the odd one out) -->
+                        <use href="#fish-icon" x="165" y="115"/>
+                        
+                        <!-- Magnifying Glass Highlighting the Non-Example -->
+                        <g transform="translate(165, 115) rotate(30)">
+                            <circle cx="0" cy="0" r="30" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db" stroke-width="3"/>
+                            <line x1="25" y1="25" x2="45" y2="45" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>
+                        </g>
+
+                        <text x="110" y="165" font-size="10" text-anchor="middle">找出異類，定義共性</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 挑出三同一異的例子，讓學生探索異同，加深對概念特質的理解，能夠聚焦概念的共通屬性。</p>
@@ -637,7 +955,6 @@
                 </ul>
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
-
             <article id="focus-all-some-none" class="fade-in-section">
                 <h3>(三) 聚焦 - 全部、部分、沒有 All, Some, None</h3>
                 <div class="strategy-diagram">
@@ -673,22 +990,54 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="focus-adjectives" class="fade-in-section">
+                        <article id="focus-adjectives" class="fade-in-section">
                 <h3>(四) 聚焦 - 找出屬性 Adjectives</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="100" cy="60" r="20" fill="#f1c40f"/>
-                        <text x="100" y="65" font-size="10" text-anchor="middle">概念</text>
-                        <line x1="100" y1="40" x2="100" y2="20" stroke="#34495e"/>
-                        <text x="100" y="15" font-size="9" text-anchor="middle">屬性A</text>
-                        <line x1="120" y1="60" x2="140" y2="60" stroke="#34495e"/>
-                        <text x="155" y="64" font-size="9" text-anchor="middle">屬性B</text>
-                        <line x1="80" y1="60" x2="60" y2="60" stroke="#34495e"/>
-                        <text x="45" y="64" font-size="9" text-anchor="middle">屬性C</text>
-                        <line x1="100" y1="80" x2="100" y2="100" stroke="#34495e"/>
-                        <text x="100" y="110" font-size="9" text-anchor="middle">屬性D</text>
-                        <line x1="114" y1="46" x2="130" y2="30" stroke="#34495e"/>
-                        <text x="135" y="25" font-size="9" text-anchor="start">屬性E</text>
+                    <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="tag-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.15"/>
+                            </filter>
+                        </defs>
+                        <!-- Central Concept (Gem) -->
+                        <g transform="translate(110, 80)">
+                            <path d="M 0 -30 L 25 -15 L 25 15 L 0 30 L -25 15 L -25 -15 Z" fill="#9b59b6"/>
+                            <path d="M 0 -30 L 0 30 M -25 -15 L 25 15 M 25 -15 L -25 15" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                            <text y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">概念</text>
+                        </g>
+
+                        <!-- Attribute Tags -->
+                        <g>
+                            <!-- Tag 1 -->
+                            <path d="M 20 25 C 28 35, 70 50, 85 60" stroke="#bdc3c7" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
+                            <g transform="translate(10,10) rotate(-15)" filter="url(#tag-shadow)">
+                                <path d="M 0 0 H 40 L 50 12.5 L 40 25 H 0 V 0 Z" fill="#ecf0f1" stroke="#34495e"/>
+                                <circle cx="5" cy="12.5" r="2" fill="#34495e"/>
+                                <text x="27" y="17" font-size="9" text-anchor="middle" fill="#34495e">閃亮的</text>
+                            </g>
+                            <!-- Tag 2 -->
+                            <path d="M 170 30 C 160 40, 140 55, 130 65" stroke="#bdc3c7" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
+                            <g transform="translate(160,15) rotate(10)" filter="url(#tag-shadow)">
+                                <path d="M 0 0 H 40 L 50 12.5 L 40 25 H 0 V 0 Z" fill="#ecf0f1" stroke="#e74c3c"/>
+                                <circle cx="5" cy="12.5" r="2" fill="#e74c3c"/>
+                                <text x="27" y="17" font-size="9" text-anchor="middle" fill="#e74c3c">堅固的</text>
+                            </g>
+                            <!-- Tag 3 -->
+                             <path d="M 40 130 C 50 120, 75 105, 90 95" stroke="#bdc3c7" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
+                            <g transform="translate(15,120) rotate(10)" filter="url(#tag-shadow)">
+                                <path d="M 0 0 H 40 L 50 12.5 L 40 25 H 0 V 0 Z" fill="#ecf0f1" stroke="#1abc9c"/>
+                                <circle cx="5" cy="12.5" r="2" fill="#1abc9c"/>
+                                <text x="27" y="17" font-size="9" text-anchor="middle" fill="#1abc9c">多邊的</text>
+                            </g>
+                             <!-- Tag 4 -->
+                             <path d="M 170 125 C 160 115, 140 100, 130 90" stroke="#bdc3c7" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
+                            <g transform="translate(155,115) rotate(-5)" filter="url(#tag-shadow)">
+                                <path d="M 0 0 H 40 L 50 12.5 L 40 25 H 0 V 0 Z" fill="#ecf0f1" stroke="#3498db"/>
+                                <circle cx="5" cy="12.5" r="2" fill="#3498db"/>
+                                <text x="27" y="17" font-size="9" text-anchor="middle" fill="#3498db">透明的</text>
+                            </g>
+                        </g>
+                         <text x="110" y="150" font-size="10" text-anchor="middle">為概念貼上屬性標籤</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生描述與此概念相關之形容詞，幫助學生形成概念理解。</p>
@@ -739,11 +1088,42 @@
             <article id="focus-concept-riddles" class="fade-in-section">
                 <h3>(六) 聚焦 - 概念謎語 Concept Riddles</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M80 20 L90 20 L90 30 L100 30 L100 40 L110 40 L110 50 L100 50 L100 60 L90 60 L90 50 L80 50 Z" fill="#3498db"/>
-                        <path d="M100 40 L110 40 L110 50 L120 50 L120 60 L110 60 L110 70 L100 70 Z" fill="#1abc9c"/>
-                        <path d="M90 60 L100 60 L100 70 L90 70 L90 80 L80 80 L80 70 L70 70 L70 60 Z" fill="#e74c3c"/>
-                        <text x="100" y="95" font-size="10" text-anchor="middle">我是什麼概念?</text>
+                    <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="fog-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" style="stop-color:white; stop-opacity:0"/>
+                                <stop offset="100%" style="stop-color:white; stop-opacity:0.8"/>
+                            </radialGradient>
+                             <filter id="shadow-clue" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.2"/>
+                            </filter>
+                        </defs>
+                        <!-- Central Mystery -->
+                        <g>
+                            <text x="110" y="95" font-size="90" text-anchor="middle" font-weight="bold" fill="#bdc3c7">?</text>
+                            <circle cx="110" cy="80" r="50" fill="url(#fog-gradient)"/>
+                        </g>
+
+                        <!-- Clue Cards -->
+                        <g filter="url(#shadow-clue)">
+                            <!-- Clue 1 -->
+                            <g transform="translate(10, 20)">
+                                <rect x="0" y="0" width="70" height="30" rx="4" fill="#ecf0f1" stroke="#3498db"/>
+                                <text x="35" y="20" font-size="10" text-anchor="middle" fill="#2980b9">線索 1: ...</text>
+                            </g>
+                             <!-- Clue 2 -->
+                            <g transform="translate(140, 20)">
+                                <rect x="0" y="0" width="70" height="30" rx="4" fill="#ecf0f1" stroke="#1abc9c"/>
+                                <text x="35" y="20" font-size="10" text-anchor="middle" fill="#16a085">線索 2: ...</text>
+                            </g>
+                             <!-- Clue 3 -->
+                            <g transform="translate(75, 120)">
+                                <rect x="0" y="0" width="70" height="30" rx="4" fill="#ecf0f1" stroke="#e74c3c"/>
+                                <text x="35" y="20" font-size="10" text-anchor="middle" fill="#c0392b">線索 3: ...</text>
+                            </g>
+                        </g>
+                        
+                        <text x="110" y="105" font-size="12" text-anchor="middle" font-weight="bold">我是什麼概念?</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 透過創造概念謎語，固化學生對概念的理解。</p>
@@ -760,25 +1140,58 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="focus-create-combine" class="fade-in-section">
+                        <article id="focus-create-combine" class="fade-in-section">
                 <h3>(七) 聚焦 - 創造與合併 Create & Combine</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Grid 1 -->
-                        <g transform="translate(30, 50) scale(0.5)">
-                           <path d="M-15-15 h30 v30 h-30z m10 0 v30 m10-30 v30 m-20-10 h30 m-30-10 h30" stroke="#3498db" fill="none"/>
+                    <svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+                         <defs>
+                            <g id="grid-3x3">
+                               <path d="M-15-15 h30 v30 h-30z m10 0 v30 m10-30 v30 m-20-10 h30 m-30-10 h30" stroke-width="1.5" fill="none"/>
+                            </g>
+                        </defs>
+
+                        <!-- Left: Individual Ideas with plus sign in between -->
+                        <g>
+                            <!-- Grid A -->
+                            <g transform="translate(45, 70) scale(1.2)">
+                                <use href="#grid-3x3" stroke="#3498db"/>
+                                <circle cx="-10" cy="-10" r="3" fill="#3498db"/>
+                                <circle cx="10" cy="0" r="3" fill="#3498db"/>
+                            </g>
+                            <text x="45" y="115" font-size="9" text-anchor="middle">個人想法 A</text>
+                            
+                            <!-- The Plus Sign -->
+                            <text x="75" y="70" font-size="30" text-anchor="middle" dominant-baseline="middle" fill="#e74c3c" font-weight="bold">+</text>
+
+                            <!-- Grid B -->
+                             <g transform="translate(105, 70) scale(1.2)">
+                                <use href="#grid-3x3" stroke="#1abc9c"/>
+                                <circle cx="0" cy="-10" r="3" fill="#1abc9c"/>
+                                <circle cx="-10" cy="10" r="3" fill="#1abc9c"/>
+                                <circle cx="10" cy="10" r="3" fill="#1abc9c"/>
+                            </g>
+                            <text x="105" y="115" font-size="9" text-anchor="middle">個人想法 B</text>
                         </g>
-                         <!-- Grid 2 -->
-                        <g transform="translate(70, 50) scale(0.5)">
-                           <path d="M-15-15 h30 v30 h-30z m10 0 v30 m10-30 v30 m-20-10 h30 m-30-10 h30" stroke="#1abc9c" fill="none"/>
+
+                        <!-- Center: Process Arrow -->
+                        <g>
+                           <path d="M 140 70 L 180 70" stroke="#34495e" stroke-width="2.5" marker-end="url(#arrow)"/>
+                           <text x="160" y="60" font-size="10" text-anchor="middle">合併與整合</text>
                         </g>
-                        <!-- Plus -->
-                        <text x="95" y="55" font-size="20" text-anchor="middle">+</text>
-                        <!-- Arrow -->
-                        <path d="M 110 50 L 130 50" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <!-- Combined Grid -->
-                        <g transform="translate(160, 50) scale(0.8)">
-                           <path d="M-20-20 h40 v40 h-40z m13.3 0 v40 m13.4-40 v40 m-26.7-13.3 h40 m-40-13.4 h40" stroke="#e74c3c" fill="none" stroke-width="2"/>
+
+                        <!-- Right: Combined Ideas -->
+                        <g>
+                            <g transform="translate(225, 70) scale(1.5)">
+                                <use href="#grid-3x3" stroke="#9b59b6"/>
+                                <!-- Dots from A -->
+                                <circle cx="-10" cy="-10" r="2.5" fill="#3498db"/>
+                                <circle cx="10" cy="0" r="2.5" fill="#3498db"/>
+                                <!-- Dots from B -->
+                                <circle cx="0" cy="-10" r="2.5" fill="#1abc9c"/>
+                                <circle cx="-10" cy="10" r="2.5" fill="#1abc9c"/>
+                                <circle cx="10" y="10" r="2.5" fill="#1abc9c"/>
+                            </g>
+                            <text x="225" y="125" font-size="10" text-anchor="middle">合併後的想法</text>
                         </g>
                     </svg>
                 </div>
@@ -818,26 +1231,33 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="focus-diamond-ranking" class="fade-in-section">
+             <article id="focus-diamond-ranking" class="fade-in-section">
                 <h3>(九) 聚焦 - 鑽石分層 Diamond Ranking</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
-                        <text x="100" y="15" font-size="10" text-anchor="middle">最重要</text>
+                    <svg viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <rect id="diamond-card" width="40" height="30" rx="4" stroke="#34495e" stroke-width="1.5"/>
+                            <path id="crown-icon" d="M -5 -3 L -8 5 L 0 0 L 8 5 L 5 -3 L 0 -8 Z" fill="#fff"/>
+                        </defs>
+                        <text x="100" y="18" font-size="11" text-anchor="middle" font-weight="bold">最重要</text>
                         <!-- Row 1 -->
-                        <rect x="80" y="25" width="40" height="30" fill="#1abc9c" stroke="#34495e" rx="3"/>
+                        <g transform="translate(80, 25)">
+                            <use href="#diamond-card" fill="#f1c40f"/>
+                            <use href="#crown-icon" transform="translate(20, 15)"/>
+                        </g>
                         <!-- Row 2 -->
-                        <rect x="45" y="65" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
-                        <rect x="115" y="65" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <g transform="translate(55, 60)"> <use href="#diamond-card" fill="#f39c12"/> </g>
+                        <g transform="translate(105, 60)"> <use href="#diamond-card" fill="#f39c12"/> </g>
                         <!-- Row 3 -->
-                        <rect x="10" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
-                        <rect x="80" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
-                        <rect x="150" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <g transform="translate(30, 95)"> <use href="#diamond-card" fill="#e67e22"/> </g>
+                        <g transform="translate(80, 95)"> <use href="#diamond-card" fill="#e67e22"/> </g>
+                        <g transform="translate(130, 95)"> <use href="#diamond-card" fill="#e67e22"/> </g>
                         <!-- Row 4 -->
-                        <rect x="45" y="145" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
-                        <rect x="115" y="145" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <g transform="translate(55, 130)"> <use href="#diamond-card" fill="#d35400"/> </g>
+                        <g transform="translate(105, 130)"> <use href="#diamond-card" fill="#d35400"/> </g>
                         <!-- Row 5 -->
-                        <rect x="80" y="185" width="40" height="30" fill="#e74c3c" stroke="#34495e" rx="3"/>
-                        <text x="100" y="180" font-size="10" text-anchor="middle">最不重要</text>
+                        <g transform="translate(80, 165)"> <use href="#diamond-card" fill="#95a5a6"/> </g>
+                        <text x="100" y="205" font-size="11" text-anchor="middle" font-weight="bold">最不重要</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 將概念相關的9個事例排列成鑽石形狀，以聚焦對概念的理解。</p>
@@ -852,20 +1272,29 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="focus-concept-graphs" class="fade-in-section">
+                                    <article id="focus-concept-graphs" class="fade-in-section">
                 <h3>(十) 聚焦 - 概念座標 Concept Graphs</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Axes -->
-                        <line x1="15" y1="135" x2="135" y2="135" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <text x="140" y="140" font-size="9">概念X</text>
-                        <line x1="15" y1="135" x2="15" y2="15" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <text x="5" y="15" font-size="9">概念Y</text>
-                        <!-- Points -->
-                        <circle cx="40" cy="110" r="5" fill="#3498db"/>
-                        <circle cx="80" cy="80" r="5" fill="#1abc9c"/>
-                        <circle cx="110" cy="40" r="5" fill="#e74c3c"/>
-                        <circle cx="60" cy="50" r="5" fill="#f1c40f"/>
+                    <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-ax" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        
+                        <!-- Y-axis -->
+                        <line x1="30" y1="130" x2="30" y2="20" stroke="#34495e" stroke-width="2.5" marker-end="url(#arrow-ax)"/>
+                        <text x="30" y="12" font-size="11" text-anchor="middle" font-weight="500" fill="#34495e">概念Y</text>
+                        
+                        <!-- X-axis -->
+                        <line x1="30" y1="130" x2="180" y2="130" stroke="#34495e" stroke-width="2.5" marker-end="url(#arrow-ax)"/>
+                        <text x="185" y="130" font-size="11" text-anchor="start" dominant-baseline="middle" font-weight="500" fill="#34495e">概念X</text>
+                        
+                        <!-- Data Points -->
+                        <circle cx="65" cy="100" r="10" fill="#3498db" />
+                        <circle cx="95" cy="65" r="10" fill="#f1c40f" />
+                        <circle cx="120" cy="85" r="10" fill="#1abc9c" />
+                        <circle cx="150" cy="50" r="10" fill="#e74c3c" />
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 在兩個概念形成的XY 座標，讓學生將事例排列在座標中，看見事例的差異，以聚焦對概念的理解。</p>
@@ -884,15 +1313,15 @@
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
                         <!-- Dimension 1 -->
-                        <text x="5" y="25" font-size="8">維度A</text>
+                        <text x="5" y="25" font-size="8" dominant-baseline="middle">維度A</text>
                         <line x1="50" y1="25" x2="190" y2="25" stroke="#34495e" stroke-width="1.5"/>
                         <rect x="60" y="17" width="16" height="16" fill="#e74c3c" rx="2"/><circle cx="110" cy="25" r="8" fill="#3498db"/><path d="M152 17 L 168 17 L 160 33 Z" fill="#1abc9c"/>
                         <!-- Dimension 2 -->
-                        <text x="5" y="75" font-size="8">維度B</text>
+                        <text x="5" y="75" font-size="8" dominant-baseline="middle">維度B</text>
                         <line x1="50" y1="75" x2="190" y2="75" stroke="#34495e" stroke-width="1.5"/>
                         <circle cx="70" cy="75" r="8" fill="#3498db"/><rect x="112" y="67" width="16" height="16" fill="#e74c3c" rx="2"/><path d="M162 67 L 178 67 L 170 83 Z" fill="#1abc9c"/>
                          <!-- Dimension 3 -->
-                        <text x="5" y="125" font-size="8">維度C</text>
+                        <text x="5" y="125" font-size="8" dominant-baseline="middle">維度C</text>
                         <line x1="50" y1="125" x2="190" y2="125" stroke="#34495e" stroke-width="1.5"/>
                         <path d="M52 117 L 68 117 L 60 133 Z" fill="#1abc9c"/><circle cx="110" cy="125" r="8" fill="#3498db"/><rect x="152" y="117" width="16" height="16" fill="#e74c3c" rx="2"/>
                     </svg>
@@ -911,22 +1340,44 @@
             <article id="focus-analogies" class="fade-in-section">
                 <h3>(十二) 聚焦 - 關係類比 Analogies</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- A is to B -->
-                        <g transform="translate(40,50)">
-                            <path d="M-15-10 h10 v-5 l10 10 l-10 10 v-5 h-10z" fill="#3498db" />
-                            <text x="-25" y="5" font-size="12">A</text>
-                            <text x="25" y="5" font-size="12">B</text>
+                    <svg viewBox="0 0 250 160" xmlns="http://www.w3.org/2000/svg">
+                         <defs>
+                            <marker id="relation-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#3498db"/>
+                            </marker>
+                            <path id="relation-path" d="M 0 0 C 10 15, 30 15, 40 0" stroke="#3498db" stroke-width="2.5" fill="none" stroke-dasharray="4 2" marker-end="url(#relation-arrow)"/>
+                        </defs>
+
+                        <!-- Left Pair: Cloud to Sprout -->
+                        <g>
+                            <!-- Cloud -->
+                            <path d="M 20 50 C 10 50, 10 35, 25 35 C 35 30, 45 35, 50 45 C 60 45, 60 55, 50 55 H 20 Z" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <!-- Sprout -->
+                            <g transform="translate(40, 100)">
+                                <path d="M 0 0 C -10 -15, 0 -15, 0 -25" stroke="#2ecc71" stroke-width="2" fill="none"/>
+                                <path d="M -5 -15 a 5 5 0 0 1 10 0" stroke="#2ecc71" stroke-width="2" fill="#2ecc71" opacity="0.5"/>
+                            </g>
+                            <use href="#relation-path" x="25" y="60"/>
                         </g>
-                        <!-- :: (as) -->
-                        <text x="100" y="55" font-size="20" text-anchor="middle">::</text>
-                        <!-- C is to D -->
-                         <g transform="translate(160,50)">
-                            <path d="M-15-10 h10 v-5 l10 10 l-10 10 v-5 h-10z" fill="#1abc9c" />
-                            <text x="-25" y="5" font-size="12">C</text>
-                            <text x="25" y="5" font-size="12">D</text>
+
+                        <!-- Center: The "as" symbol -->
+                        <text x="125" y="85" font-size="36" text-anchor="middle" font-weight="bold" fill="#34495e">::</text>
+                        <text x="125" y="110" font-size="10" text-anchor="middle">(關係模式相同)</text>
+
+                        <!-- Right Pair: Sun to Flower -->
+                        <g>
+                            <!-- Sun -->
+                            <circle cx="210" cy="45" r="12" fill="#f1c40f"/>
+                            <!-- Flower -->
+                            <g transform="translate(210, 100)">
+                                <circle r="5" fill="#f1c40f"/>
+                                <circle cx="0" cy="-8" r="4" fill="#e74c3c"/>
+                                <circle cx="0" cy="8" r="4" fill="#e74c3c"/>
+                                <circle cx="-8" cy="0" r="4" fill="#e74c3c"/>
+                                <circle cx="8" cy="0" r="4" fill="#e74c3c"/>
+                            </g>
+                             <use href="#relation-path" x="190" y="60"/>
                         </g>
-                        <text x="100" y="85" font-size="10" text-anchor="middle">A之於B 就像 C之於D</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生將概念類比成另一個已知的物品或現象，來理解概念之間的關係。</p>
@@ -934,7 +1385,7 @@
                 <p><strong>3. 方法：</strong> 教師可以提供不同句型，讓學生對概念進行類比，例如：</p>
                 <ul>
                     <li>小學階段：「……就像……。這意味著……」</li>
-                    <li>中學階段：「……之於……就像……之于……，因為……」</li>
+                    <li>中學階段：「……之於……就像……之於……，因為……」</li>
                 </ul>
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
@@ -952,17 +1403,43 @@
                 <li><strong>發表：</strong> 讓學生以口說、戲劇、藝術等多元方式呈現結果。</li>
             </ol>
             
-            <article id="organize-cross-comparison-chart" class="fade-in-section">
+                        <article id="organize-cross-comparison-chart" class="fade-in-section">
                 <h3>(一) 組織 - 交叉比對表 Cross-comparison Chart</h3>
                 <div class="strategy-diagram">
-                     <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 40 H150 M10 80 H150 M50 10 V110 M110 10 V110" stroke="#bdc3c7"/>
-                        <rect x="10" y="10" width="140" height="100" fill="none" stroke="#34495e" stroke-width="2"/>
-                        <text x="30" y="28" font-size="10" text-anchor="middle">事例A</text>
-                        <text x="80" y="28" font-size="10" text-anchor="middle">事例B</text>
-                        <text x="130" y="28" font-size="10" text-anchor="middle">事例C</text>
-                        <text x="30" y="60" font-size="10" text-anchor="middle">比較</text>
-                        <text x="30" y="100" font-size="10" text-anchor="middle">分析</text>
+                     <svg viewBox="0 0 250 160" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="highlight-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#f1c40f" flood-opacity="0.7"/>
+                            </filter>
+                        </defs>
+                        <!-- Axis Labels -->
+                        <text x="10" y="85" font-size="10" text-anchor="middle" transform="rotate(-90 10 85)">比較面向</text>
+                        <text x="145" y="20" font-size="10" text-anchor="middle">比較對象</text>
+                        
+                        <!-- Grid Background -->
+                        <rect x="30" y="30" width="190" height="110" fill="#f9fafb" rx="5"/>
+                        
+                        <!-- Highlighted Row and Column -->
+                        <rect x="30" y="65" width="190" height="35" fill="#f1c40f" fill-opacity="0.2"/>
+                        <rect x="90" y="30" width="60" height="110" fill="#3498db" fill-opacity="0.2"/>
+                        <rect x="90" y="65" width="60" height="35" fill="#f1c40f" fill-opacity="0.3" filter="url(#highlight-shadow)"/>
+
+                        <!-- Grid Lines -->
+                        <path d="M 30 65 H 220 M 30 100 H 220 M 90 30 V 140 M 150 30 V 140" stroke="#bdc3c7" stroke-width="1.5"/>
+                        <rect x="30" y="30" width="190" height="110" fill="none" stroke="#95a5a6" stroke-width="2" rx="5"/>
+
+                        <!-- Icons on Axes -->
+                        <text x="55" y="50" font-size="16" text-anchor="middle">A</text>
+                        <text x="115" y="50" font-size="16" text-anchor="middle">B</text>
+                        <text x="180" y="50" font-size="16" text-anchor="middle">C</text>
+                        <text x="60" y="85" font-size="16" text-anchor="middle" fill="#e74c3c" font-weight="bold">✓</text>
+                        <text x="180" y="85" font-size="16" text-anchor="middle" fill="#e74c3c" font-weight="bold">✓</text>
+                        <text x="60" y="120" font-size="16" text-anchor="middle" fill="#e74c3c" font-weight="bold">✗</text>
+                        <text x="120" y="120" font-size="16" text-anchor="middle" fill="#e74c3c" font-weight="bold">✓</text>
+                        
+                        <!-- Focus Point Text -->
+                         <text x="120" y="85" font-size="18" text-anchor="middle" fill="#c0392b" font-weight="bold">?</text>
+                         <text x="145" y="155" font-size="10" text-anchor="middle">交叉比對，尋找模式</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 交叉比對表幫助學生建立概念與事例之間的連結，提供學生一個清晰的架構，把調查階段收集到的資訊重新組織，進行比較。</p>
@@ -985,18 +1462,39 @@
              <article id="organize-trading-cards" class="fade-in-section">
                 <h3>(二) 組織 - 交換卡片 Trading Cards</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Card 1 -->
-                        <rect x="20" y="20" width="60" height="80" rx="5" fill="#ecf0f1" stroke="#34495e" transform="rotate(-10 50 60)"/>
-                        <circle cx="50" cy="50" r="15" fill="#3498db" transform="rotate(-10 50 60)"/>
-                        <text x="50" y="80" font-size="9" text-anchor="middle" transform="rotate(-10 50 60)">卡片A</text>
-                        <!-- Card 2 -->
-                        <rect x="120" y="20" width="60" height="80" rx="5" fill="#ecf0f1" stroke="#34495e" transform="rotate(10 150 60)"/>
-                        <rect x="135" y="35" width="30" height="30" fill="#1abc9c" transform="rotate(10 150 60)"/>
-                        <text x="150" y="80" font-size="9" text-anchor="middle" transform="rotate(10 150 60)">卡片B</text>
-                        <!-- Arrows -->
-                        <path d="M85 50 C 95 30, 105 30, 115 50" stroke="#e74c3c" fill="none" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-                        <path d="M115 70 C 105 90, 95 90, 85 70" stroke="#e74c3c" fill="none" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                    <svg viewBox="0 0 250 160" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="link-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" flood-color="#f1c40f"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <g id="card-template">
+                                <rect x="-35" y="-50" width="70" height="100" rx="5" fill="#f9fafb" stroke="#bdc3c7" stroke-width="1.5"/>
+                                <rect x="-30" y="-45" width="60" height="50" rx="3" fill="#ecf0f1"/>
+                                <path d="M-25 15 H 25 M-25 25 H 15" stroke="#bdc3c7" stroke-width="1.5" stroke-linecap="round"/>
+                            </g>
+                        </defs>
+                        <!-- Hands and Cards -->
+                        <!-- Card A -->
+                        <g transform="translate(60, 80) rotate(-15)">
+                            <use href="#card-template"/>
+                            <circle cx="0" cy="-20" r="15" fill="#3498db"/>
+                        </g>
+                        <!-- Card B -->
+                        <g transform="translate(190, 80) rotate(15)">
+                            <use href="#card-template"/>
+                            <path d="M 0 -35 L 15 -10 L -15 -10 Z" fill="#1abc9c"/>
+                        </g>
+                        <!-- The Connection -->
+                        <g transform="translate(125, 60)" filter="url(#link-glow)">
+                            <path d="M -10 -5 a 8 8 0 1 1 0 10 M 10 5 a 8 8 0 1 0 0 -10 M -3 0 h 6" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            <path d="M -10 -5 a 8 8 0 1 1 0 10 M 10 5 a 8 8 0 1 0 0 -10 M -3 0 h 6" stroke="#e67e22" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </g>
+                        
+                        <text x="125" y="145" font-size="10" text-anchor="middle">交換卡片，發現關聯</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 進行事例調查的紀錄，和呈現事例特徵的卡片，經由配對比較，找到不同事例間的共同特質。</p>
@@ -1011,24 +1509,39 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="organize-push-pull-hold" class="fade-in-section">
+                        <article id="organize-push-pull-hold" class="fade-in-section">
                 <h3>(三) 組織 - 推力、拉力、阻力 Push, Pull, Hold</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Push -->
-                        <path d="M10 50 L 50 50" stroke="#3498db" stroke-width="3" marker-end="url(#arrow)"/>
-                        <rect x="5" y="40" width="10" height="20" fill="#3498db"/>
-                        <text x="30" y="40" font-size="9" text-anchor="middle">推力</text>
-                        <!-- Object -->
-                        <rect x="80" y="30" width="40" height="40" fill="#f1c40f" rx="3"/>
-                        <text x="100" y="55" font-size="10" text-anchor="middle">事例</text>
-                        <!-- Pull -->
-                        <path d="M120 50 L 160 50" stroke="#1abc9c" stroke-width="3" marker-end="url(#arrow)"/>
-                        <text x="140" y="40" font-size="9" text-anchor="middle">拉力</text>
-                        <!-- Hold -->
-                        <path d="M100 70 L 100 90" stroke="#e74c3c" stroke-width="3"/>
-                        <path d="M90 90 H 110" stroke="#e74c3c" stroke-width="3"/>
-                        <text x="100" y="85" font-size="9" text-anchor="middle">阻力</text>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-force" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Ground -->
+                        <line x1="10" y1="95" x2="240" y2="95" stroke="#95a5a6" stroke-width="2" stroke-dasharray="5 3"/>
+
+                        <!-- Central Object -->
+                        <rect x="95" y="55" width="60" height="40" fill="#f1c40f" stroke="#34495e" rx="3"/>
+                        <text x="125" y="80" font-size="11" text-anchor="middle" fill="#34495e">事例</text>
+                        
+                        <!-- Push Force -->
+                        <g>
+                            <line x1="20" y1="75" x2="90" y2="75" stroke="#3498db" stroke-width="3" marker-end="url(#arrow-force)"/>
+                            <text x="55" y="65" font-size="11" text-anchor="middle" fill="#3498db" font-weight="bold">推力 (Push)</text>
+                        </g>
+
+                        <!-- Pull Force -->
+                        <g>
+                            <line x1="160" y1="75" x2="230" y2="75" stroke="#1abc9c" stroke-width="3" marker-end="url(#arrow-force)"/>
+                            <text x="195" y="65" font-size="11" text-anchor="middle" fill="#1abc9c" font-weight="bold">拉力 (Pull)</text>
+                        </g>
+
+                        <!-- Hold/Resistance Force -->
+                        <g>
+                            <line x1="125" y1="95" x2="125" y2="115" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrow-force)"/>
+                             <text x="125" y="45" font-size="11" text-anchor="middle" fill="#e74c3c" font-weight="bold">阻力 (Hold)</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 鼓勵學生理解事例背後的動機，有助於建構通則。</p>
@@ -1042,23 +1555,31 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="organize-the-missing-piece" class="fade-in-section">
+                        <article id="organize-the-missing-piece" class="fade-in-section">
                 <h3>(四) 組織 - 失落的一角 The Missing Piece</h3>
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Puzzle -->
-                        <path d="M50 30 h20 v-5 a5 5 0 0 1 10 0 v5 h20 v20 h5 a5 5 0 0 1 0 10 h-5 v20 h-20 v5 a5 5 0 0 1 -10 0 v-5 h-20 v-20 h-5 a5 5 0 0 1 0 -10 h5 Z" 
-                              fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
-                        <!-- Missing Piece -->
-                        <g transform="translate(60, 0)">
-                           <path d="M100 60 h-20 v-5 a5 5 0 0 1 -10 0 v5 h-20 v-20" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="3 2"/>
-                           <path d="M50 40 v20 h5 a5 5 0 0 1 0 10 h-5 v20" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="3 2"/>
+                        <defs>
+                            <!-- A single puzzle piece shape -->
+                            <path id="puzzle-piece" d="M -20 -20 v 15 c 0 5 -10 5 -10 0 v -15 h -5 c -5 0 -5 10 0 10 h 5 v 20 h -5 c -5 0 -5 10 0 10 h 5 v 15 c 0 -5 10 -5 10 0 v -15 h 20 v 15 c 0 -5 10 -5 10 0 v -15 h 5 c 5 0 5 -10 0 -10 h -5 v -20 h 5 c 5 0 5 -10 0 -10 h -5 v -15 c 0 5 -10 5 -10 0 Z" />
+                        </defs>
+                        <!-- Main puzzle structure (3 pieces) -->
+                        <g transform="translate(60, 60)" fill="#ecf0f1" stroke="#34495e" stroke-width="1.5">
+                            <use href="#puzzle-piece" x="0" y="0" />
+                            <use href="#puzzle-piece" x="40" y="0" />
+                            <use href="#puzzle-piece" x="0" y="40" />
                         </g>
-                        <g transform="translate(150, 80)">
-                           <path d="M0 0 h20 v-20 h-5 a5 5 0 0 0 0 -10 h5 v-20 h-20 v5 a5 5 0 0 0 -10 0 v-5 h-20 v20 h-5 a5 5 0 0 0 0 10 h5 Z"
-                                 fill="#e74c3c" transform="translate(-50,-40) scale(0.2)"/>
-                            <text x="0" y="20" font-size="9" text-anchor="middle">如果消失了?</text>
+                        <!-- Dotted outline for the missing piece -->
+                        <g transform="translate(100, 100)" fill="none" stroke="#bdc3c7" stroke-width="1.5" stroke-dasharray="3 3">
+                            <use href="#puzzle-piece" x="0" y="0" />
                         </g>
+                        <!-- The missing piece, moved aside and highlighted -->
+                        <g transform="translate(160, 40)" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5">
+                            <use href="#puzzle-piece" x="0" y="0" />
+                        </g>
+                        <!-- Question mark pointing to the missing piece -->
+                        <text x="160" y="85" font-size="20" font-weight="bold" text-anchor="middle" fill="#e74c3c">?</text>
+                        <text x="160" y="105" font-size="9" text-anchor="middle" fill="#34495e">如果消失了?</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生藉由探究個別元素的特質及對系統的重要性，理解個別元素間相互依存的關係，協助學生理解系統或歷程。</p>
@@ -1115,21 +1636,44 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="organize-flow-diagrams" class="fade-in-section">
+                        <article id="organize-flow-diagrams" class="fade-in-section">
                 <h3>(六) 組織 - 流程圖 Flow Diagrams</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Linear -->
-                        <rect x="10" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="30" y="31" font-size="10">1</text>
-                        <line x1="55" y1="27.5" x2="75" y2="27.5" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
-                        <rect x="80" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="100" y="31" font-size="10">2</text>
-                        <line x1="125" y1="27.5" x2="145" y2="27.5" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
-                        <rect x="150" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="170" y="31" font-size="10">3</text>
-                        <!-- Circular -->
-                        <g transform="translate(100, 85)">
-                            <path d="M-30 0 A 30 20 0 1 1 30 0" fill="none" stroke="#1abc9c" stroke-width="2" marker-end="url(#arrowhead)"/>
-                            <path d="M30 0 A 30 20 0 1 1 -30 0" fill="none" stroke="#1abc9c" stroke-width="2" marker-start="url(#arrowhead)"/>
-                            <circle cx="0" cy="-20" r="5" fill="#1abc9c"/><circle cx="30" cy="0" r="5" fill="#1abc9c"/><circle cx="-30" cy="0" r="5" fill="#1abc9c"/>
+                    <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
+                         <defs>
+                            <marker id="arrow-flow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Linear Flow -->
+                        <g transform="translate(0, 10)">
+                            <rect x="5" y="20" width="25" height="20" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="17.5" y="34" font-size="10">A</text>
+                            <line x1="32" y1="30" x2="48" y2="30" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/>
+                            <rect x="50" y="20" width="25" height="20" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="62.5" y="34" font-size="10">B</text>
+                            <line x1="77" y1="30" x2="93" y2="30" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/>
+                            <rect x="95" y="20" width="25" height="20" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="107.5" y="34" font-size="10">C</text>
+                            <text x="62.5" y="55" font-size="10" text-anchor="middle">線性流程</text>
+                        </g>
+
+                        <!-- Circular Flow -->
+                        <g transform="translate(140, 35)">
+                            <circle cx="25" cy="25" r="23" fill="none" stroke="#1abc9c" stroke-width="1.5" stroke-dasharray="4 2"/>
+                            <circle cx="25" cy="2" r="7" fill="#1abc9c" stroke-width="1" stroke="white"/>
+                            <circle cx="46" cy="35" r="7" fill="#1abc9c" stroke-width="1" stroke="white"/>
+                            <circle cx="4" cy="35" r="7" fill="#1abc9c" stroke-width="1" stroke="white"/>
+                            <path d="M 32 8 A 12 12 0 0 1 39 20" fill="none" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/>
+                            <path d="M 40 45 A 12 12 0 0 1 15 45" fill="none" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/>
+                            <path d="M 10 20 A 12 12 0 0 1 18 8" fill="none" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/>
+                            <text x="25" y="75" font-size="10" text-anchor="middle">循環流程</text>
+                        </g>
+
+                        <!-- Branching Flow -->
+                        <g transform="translate(220, 0)">
+                            <path d="M 40 10 L 60 30 L 40 50 L 20 30 Z" fill="#ecf0f1" stroke="#34495e"/>
+                            <text x="40" y="34" font-size="10" text-anchor="middle">決策</text>
+                            <line x1="40" y1="50" x2="20" y2="70" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/><text x="15" y="85" font-size="9" text-anchor="middle">否</text>
+                            <line x1="40" y1="50" x2="60" y2="70" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow-flow)"/><text x="65" y="85" font-size="9" text-anchor="middle">是</text>
+                             <text x="40" y="110" font-size="10" text-anchor="middle">分支流程</text>
                         </g>
                     </svg>
                 </div>
@@ -1153,7 +1697,7 @@
                         <path d="M20 35 h 40" stroke="#f1c40f" stroke-width="3"/>
                         <rect x="20" y="45" width="50" height="3" fill="#bdc3c7"/><rect x="20" y="52" width="60" height="3" fill="#bdc3c7"/>
                         <path d="M 80 40 q 10 10, 20 0" stroke="#3498db" fill="none" stroke-width="1.5"/>
-                        <circle cx="120" cy="30" r="10" fill="none" stroke="#1abc9c" stroke-width="2"/><text x="120" y="34" font-size="10">重點</text>
+                        <circle cx="120" cy="30" r="10" fill="none" stroke="#1abc9c" stroke-width="2"/><text x="120" y="34" font-size="10" text-anchor="middle">重點</text>
                         <path d="M115 40 L 90 60" stroke="#34495e" stroke-width="1" marker-end="url(#arrow)"/>
                         <text x="25" y="80" font-size="20" fill="#e74c3c">!</text>
                         <path d="M 140 60 L 140 90 L 170 90 L 170 60 Z" fill="#ecf0f1"/>
@@ -1173,17 +1717,54 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
             
-            <article id="organize-annotate-it" class="fade-in-section">
+                           <article id="organize-annotate-it" class="fade-in-section">
                 <h3>(八) 組織 - 註解 Annotate It</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="20" width="160" height="80" fill="#fff" stroke="#bdc3c7"/>
-                        <rect x="30" y="30" width="100" height="5" fill="#bdc3c7"/>
-                        <rect x="30" y="40" width="140" height="5" fill="rgba(241, 196, 15, 0.5)" stroke="#f1c40f" stroke-width="1"/>
-                        <rect x="30" y="50" width="80" height="5" fill="#bdc3c7"/>
-                        <path d="M 80 65 C 100 70, 110 80, 120 90" stroke="#3498db" fill="none" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <path d="M125 90 L 135 90 L 135 105 L 120 105 L 115 100 L 120 95 Z" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="125" y="100" font-size="8">註解</text>
+                    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Paper sheet background -->
+                        <rect x="10" y="5" width="180" height="120" fill="#fff" stroke="#bdc3c7" rx="3" filter="url(#drop-shadow)"/>
+                        <defs>
+                           <filter id="drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+                                <feOffset dx="1" dy="1" result="offsetblur"/>
+                                <feMerge>
+                                    <feMergeNode/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                           </filter>
+                        </defs>
+
+                        <!-- Mock text block -->
+                        <g stroke="#c7d0d5" stroke-width="2" stroke-linecap="round">
+                            <path d="M 25 25 L 140 25" />
+                            <path d="M 25 35 L 170 35" />
+                            <!-- Line to be highlighted -->
+                            <path d="M 25 45 L 160 45" />
+                            <path d="M 25 55 L 120 55" />
+                            <!-- Line with a circled word -->
+                            <path d="M 25 65 L 155 65" />
+                            <path d="M 25 75 L 170 75" />
+                            <path d="M 25 85 L 145 85" />
+                        </g>
+
+                        <!-- Annotations -->
+                        <!-- 1. Highlighter -->
+                        <rect x="25" y="42" width="135" height="6" fill="#f1c40f" opacity="0.6" rx="2"/>
+
+                        <!-- 2. Circled area -->
+                        <ellipse cx="125" cy="65" rx="18" ry="8" fill="none" stroke="#1abc9c" stroke-width="1.5"/>
+
+                        <!-- 3. Margin note with connector line -->
+                        <g>
+                            <!-- Connector line from circled text to the note -->
+                            <path d="M 135 68 C 150 75, 155 85, 158 95" fill="none" stroke="#3498db" stroke-width="1.5" stroke-dasharray="3 2" />
+                            
+                            <!-- Note in the margin -->
+                            <g transform="translate(150 100) rotate(5)">
+                                <path d="M 0 0 L 40 0 L 40 20 L 0 20 L -5 10 Z" fill="#ecf0f1" stroke="#34495e" stroke-width="1"/>
+                                <text x="20" y="14" font-size="9" text-anchor="middle" font-weight="bold" fill="#34495e">重點!</text>
+                            </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 註解可以幫助學生在自主閱讀時，聚焦對文本的理解，並加深歷程性概念的理解。</p>
@@ -1196,23 +1777,39 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="organize-social-dramatic-play" class="fade-in-section">
+                        <article id="organize-social-dramatic-play" class="fade-in-section">
                 <h3>(九) 組織 - 社會性戲劇 Social-dramatic Play</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 10 100 C 50 80, 150 80, 190 100" stroke="#34495e" stroke-width="2" fill="none"/>
-                        <text x="100" y="115" font-size="10" text-anchor="middle">舞台</text>
-                        <!-- Actor 1 -->
-                        <g transform="translate(60, 60)">
-                            <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
-                            <rect x="-10" y="-15" width="20" height="10" fill="#fff" stroke="#000" rx="3"/>
-                            <text x="0" y="30" font-size="9" text-anchor="middle">角色A</text>
+                    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Stage floor -->
+                        <path d="M 0 120 C 40 100, 160 100, 200 120 V 130 H 0 Z" fill="#a67c52"/>
+                        <line x1="0" y1="120" x2="200" y2="120" stroke="#7f5e3e" stroke-width="2"/>
+                        
+                        <!-- Curtains -->
+                        <path d="M 0 0 C 30 10, 20 80, 40 120 H 0 Z" fill="#c0392b"/>
+                        <path d="M 200 0 C 170 10, 180 80, 160 120 H 200 Z" fill="#c0392b"/>
+
+                        <!-- Spotlight -->
+                        <path d="M 100 0 L 70 120 H 130 Z" fill="#f1c40f" opacity="0.2"/>
+
+                        <!-- Actor A with a mask -->
+                        <g transform="translate(75, 75)">
+                            <circle cx="0" cy="0" r="12" fill="#3498db"/>
+                            <path d="M 0 12 L -8 30 L 8 30 Z" fill="#3498db"/>
+                            <!-- Mask -->
+                            <path d="M -8 -3 Q 0 -10, 8 -3 Q 0 5, -8 -3" fill="#ecf0f1" stroke="#34495e" stroke-width="1"/>
+                            <circle cx="-4" cy="-2" r="1.5" fill="#34495e"/><circle cx="4" cy="-2" r="1.5" fill="#34495e"/>
+                            <text y="30" font-size="9" text-anchor="middle">角色A</text>
                         </g>
-                         <!-- Actor 2 -->
-                        <g transform="translate(140, 60)">
-                            <circle cx="0" cy="-10" r="10" fill="#1abc9c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#1abc9c"/>
-                            <path d="M-10 -15 L 10 -15 L 0 -5 Z" fill="#fff" stroke="#000"/>
-                            <text x="0" y="30" font-size="9" text-anchor="middle">角色B</text>
+
+                        <!-- Actor B with a mask -->
+                        <g transform="translate(125, 75)">
+                            <circle cx="0" cy="0" r="12" fill="#1abc9c"/>
+                            <path d="M 0 12 L -8 30 L 8 30 Z" fill="#1abc9c"/>
+                             <!-- Mask -->
+                            <path d="M -8 -3 Q 0 5, 8 -3 Q 0 -10, -8 -3" fill="#ecf0f1" stroke="#34495e" stroke-width="1"/>
+                            <circle cx="-4" cy="-2" r="1.5" fill="#34495e"/><circle cx="4" cy="-2" r="1.5" fill="#34495e"/>
+                            <text y="30" font-size="9" text-anchor="middle">角色B</text>
                         </g>
                     </svg>
                 </div>
@@ -1297,18 +1894,32 @@
                 <li><strong>關聯模式：</strong> 用圖表或顏色突顯概念間的關聯性，如果學生還不會撰寫通則時，老師可以提供句子框架或是通則模式來讓學生模仿。</li>
             </ol>
             
-            <article id="generalize-conceptual-questions" class="fade-in-section">
+                        <article id="generalize-conceptual-questions" class="fade-in-section">
                 <h3>(一) 通則 - 概念性問題 Conceptual Questions</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <text x="40" y="30" font-size="10" text-anchor="middle">事實問題</text>
-                        <rect x="15" y="40" width="50" height="30" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="40" y="58" font-size="9">今天天氣?</text>
-                        <path d="M70 55 C 100 20, 100 90, 130 55" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
-                        <text x="100" y="65" font-size="9">提升</text>
-                        <text x="160" y="30" font-size="10" text-anchor="middle">概念問題</text>
-                        <path d="M135 40 L 185 40 L 185 70 L 135 70 Z" fill="#ecf0f1" stroke="#3498db" stroke-width="2"/>
-                        <text x="160" y="58" font-size="9" text-anchor="middle">氣候如何變遷?</text>
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Water line -->
+                        <path d="M 0 60 Q 50 55, 100 60 T 200 60" fill="#3498db" opacity="0.2"/>
+                        <path d="M 0 60 Q 50 55, 100 60 T 200 60" fill="none" stroke="#3498db" stroke-width="1.5"/>
+
+                        <!-- Iceberg Top (Fact) -->
+                        <g>
+                            <path d="M 80 60 L 100 30 L 120 60 Z" fill="#ffffff" stroke="#3498db" stroke-width="1.5"/>
+                            <text x="100" y="52" font-size="9" text-anchor="middle" fill="#2980b9">事實問題</text>
+                        </g>
+
+                        <!-- Iceberg Bottom (Concept) -->
+                        <g>
+                            <path d="M 80 60 L 20 130 L 180 130 L 120 60 Z" fill="#ffffff" stroke="#3498db" stroke-width="1.5" />
+                            <text x="100" y="90" font-size="11" text-anchor="middle" font-weight="bold" fill="#2980b9">概念性問題</text>
+                            <text x="100" y="110" font-size="9" text-anchor="middle" fill="#2980b9">(更深、更廣)</text>
+                        </g>
+
+                        <!-- Elevation Arrow -->
+                        <g>
+                           <line x1="185" y1="120" x2="185" y2="20" stroke="#e74c3c" stroke-width="2" marker-end="url(#arrowhead)"/>
+                           <text x="180" y="75" font-size="9" text-anchor="end" writing-mode="vertical-rl" fill="#c0392b">思考提升</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 從事實性問題發展到概念性問題，讓學生產生學習遷移。</p>
@@ -1346,17 +1957,44 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-connect-4" class="fade-in-section">
+                                    <article id="generalize-connect-4" class="fade-in-section">
                 <h3>(三) 通則 - 連結四方 Connect 4</h3>
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="70" y="55" width="60" height="40" fill="#e74c3c" stroke="#c0392b" rx="3"/>
-                        <text x="100" y="78" fill="white" font-size="12" text-anchor="middle">通則</text>
-                        <rect x="10" y="10" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="35" y="30" font-size="9">事例1</text>
-                        <rect x="140" y="10" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="165" y="30" font-size="9">事例2</text>
-                        <rect x="10" y="105" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="35" y="125" font-size="9">事例3</text>
-                        <rect x="140" y="105" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="165" y="125" font-size="9">事例4</text>
-                        <path d="M60 30 L 70 55 M140 30 L 130 55 M60 120 L 70 95 M140 120 L 130 95" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+                        <defs>
+                            <marker id="arrow-connect" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+                            </marker>
+                            <radialGradient id="grad-generalization" cx="30%" cy="30%" r="70%">
+                                <stop offset="0%" style="stop-color:#f85a40; stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#c0392b; stop-opacity:1" />
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Central Generalization -->
+                        <g>
+                            <circle cx="100" cy="75" r="32" fill="url(#grad-generalization)"/>
+                            <text x="100" y="78" font-size="12" text-anchor="middle" fill="white" font-weight="bold">通則</text>
+                        </g>
+
+                        <!-- Four Cases -->
+                        <rect x="15" y="15" width="50" height="30" rx="5" fill="#3498db"/>
+                        <text x="40" y="34" font-size="9" text-anchor="middle" fill="white">事例1</text>
+
+                        <rect x="135" y="15" width="50" height="30" rx="5" fill="#1abc9c"/>
+                        <text x="160" y="34" font-size="9" text-anchor="middle" fill="white">事例2</text>
+
+                        <rect x="15" y="105" width="50" height="30" rx="5" fill="#f1c40f"/>
+                        <text x="40" y="124" font-size="9" text-anchor="middle" fill="#34495e">事例3</text>
+
+                        <rect x="135" y="105" width="50" height="30" rx="5" fill="#9b59b6"/>
+                        <text x="160" y="124" font-size="9" text-anchor="middle" fill="white">事例4</text>
+                        
+                        <!-- Connection Arrows -->
+                        <path d="M 55 45 L 80 62" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrow-connect)"/>
+                        <path d="M 145 45 L 120 62" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrow-connect)"/>
+                        <path d="M 55 105 L 80 88" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrow-connect)"/>
+                        <path d="M 145 105 L 120 88" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrow-connect)"/>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 連結四方是從數個事例找出共同模式的策略。這種策略讓學生綜整訊息，以便建構通則。</p>
@@ -1371,16 +2009,38 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-concept-bank" class="fade-in-section">
+                        <article id="generalize-concept-bank" class="fade-in-section">
                 <h3>(四) 通則 - 概念銀行 Concept Bank</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 50 100 L 150 100 L 160 90 L 40 90 Z" fill="#bdc3c7"/>
-                        <path d="M 50 90 L 150 90 L 150 40 C 150 20, 50 20, 50 40 Z" fill="#f1c40f"/>
-                        <path d="M 95 50 h 10 v -10 h-10 Z" fill="#2c3e50"/>
-                        <text x="25" y="30" font-size="10">概念A</text><path d="M40 35 L 80 45" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
-                        <text x="25" y="60" font-size="10">概念B</text><path d="M40 60 L 85 55" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
-                        <text x="25" y="90" font-size="10">概念C</text><path d="M40 85 L 80 65" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
+                    <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Vault -->
+                        <g>
+                            <rect x="20" y="20" width="80" height="80" rx="5" fill="#bdc3c7"/>
+                            <rect x="25" y="25" width="70" height="70" rx="3" fill="#ecf0f1"/>
+                            <circle cx="60" cy="60" r="25" fill="#95a5a6" stroke="#7f8c8d" stroke-width="2"/>
+                            <circle cx="60" cy="60" r="22" fill="#bdc3c7"/>
+                            <path d="M 60 45 V 75 M 45 60 H 75" stroke="#7f8c8d" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="85" cy="35" r="4" fill="#7f8c8d"/>
+                        </g>
+                        <!-- Concepts (Coins) inside -->
+                        <circle cx="45" cy="45" r="8" fill="#f1c40f"/><text x="45" y="48" font-size="8" text-anchor="middle">A</text>
+                        <circle cx="75" cy="75" r="8" fill="#1abc9c"/><text x="75" y="78" font-size="8" text-anchor="middle">B</text>
+                        <circle cx="45" cy="75" r="8" fill="#3498db"/><text x="45" y="78" font-size="8" text-anchor="middle">C</text>
+
+                        <!-- Withdrawal Arrow -->
+                        <path d="M 110 60 C 130 60, 130 40, 150 40" stroke="#e74c3c" fill="none" stroke-width="2" stroke-dasharray="4 2"/>
+                        <path d="M 110 60 C 130 60, 130 80, 150 80" stroke="#e74c3c" fill="none" stroke-width="2" stroke-dasharray="4 2"/>
+
+                        <!-- Generalization Construction -->
+                        <g transform="translate(155, 30)">
+                            <rect x="0" y="0" width="50" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                            <text x="25" y="14" font-size="9" text-anchor="middle">A + B</text>
+                        </g>
+                        <g transform="translate(155, 70)">
+                            <rect x="0" y="0" width="50" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                            <text x="25" y="14" font-size="9" text-anchor="middle">B + C</text>
+                        </g>
+                        <text x="135" y="110" font-size="9" text-anchor="middle">提取概念，建構通則</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 概念銀行的目的，是提供學生建立通則時所需的概念庫。展示概念銀行，支持學生隨時回想和審視概念。</p>
@@ -1415,18 +2075,40 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-concept-roles" class="fade-in-section">
+                        <article id="generalize-concept-roles" class="fade-in-section">
                 <h3>(六) 通則 - 概念接龍 Concept Roles</h3>
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="translate(100,60)">
-                            <circle cx="0" cy="-40" r="10" fill="#3498db"/><text x="0" y="-37" fill="white" font-size="8">A</text>
-                            <circle cx="40" cy="0" r="10" fill="#1abc9c"/><text x="40" y="3" fill="white" font-size="8">B</text>
-                            <circle cx="0" cy="40" r="10" fill="#e74c3c"/><text x="0" y="43" fill="white" font-size="8">C</text>
-                            <circle cx="-40" cy="0" r="10" fill="#f1c40f"/><text x="-40" y="3" fill="white" font-size="8">D</text>
-                            <path d="M0 -30 a 20 20 0 0 1 28 0" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
-                            <path d="M30 0 a 20 20 0 0 1 0 28" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+                         <defs>
+                            <g id="role-person">
+                                <circle cx="0" cy="-10" r="8"/>
+                                <path d="M 0 0 C -10 15, 10 15, 0 30"/>
+                            </g>
+                        </defs>
+
+                        <!-- Person 1 -->
+                        <g transform="translate(40, 60)">
+                            <use href="#role-person" fill="#3498db"/>
+                            <rect x="10" y="-5" width="20" height="10" fill="#3498db" rx="2" transform="rotate(-30, 10, 0)"/>
+                            <text x="0" y="45" font-size="9" text-anchor="middle">概念A</text>
                         </g>
+
+                        <!-- Person 2 -->
+                        <g transform="translate(100, 60)">
+                            <use href="#role-person" fill="#1abc9c"/>
+                            <rect x="10" y="-5" width="20" height="10" fill="#1abc9c" rx="2" transform="rotate(-30, 10, 0)"/>
+                             <text x="0" y="45" font-size="9" text-anchor="middle">概念B</text>
+                        </g>
+
+                         <!-- Person 3 -->
+                        <g transform="translate(160, 60)">
+                            <use href="#role-person" fill="#e74c3c"/>
+                             <text x="0" y="45" font-size="9" text-anchor="middle">概念C</text>
+                        </g>
+                        
+                        <!-- Connection Arrows / Relay -->
+                        <path d="M 65 55 C 80 45, 80 45, 95 55" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="3,2"/>
+                        <path d="M 125 55 C 140 45, 140 45, 155 55" stroke="#7f8c8d" fill="none" stroke-width="2" stroke-dasharray="3,2"/>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 由學生扮演特定的概念，說出所扮演的概念跟其他概念之間的關係。</p>
@@ -1440,18 +2122,49 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-concept-mapping" class="fade-in-section">
+                        <article id="generalize-concept-mapping" class="fade-in-section">
                 <h3>(七) 通則 - 概念製圖 Concept Mapping</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="70" y="10" width="60" height="25" fill="#3498db" rx="3"/><text x="100" y="26" fill="white" font-size="9">宏觀概念</text>
-                        <path d="M100 35 V 50" stroke="#34495e" stroke-width="1.5"/>
-                        <rect x="20" y="60" width="50" height="25" fill="#1abc9c" rx="3"/><text x="45" y="76" fill="white" font-size="9">微觀A</text>
-                        <rect x="130" y="60" width="50" height="25" fill="#1abc9c" rx="3"/><text x="155" y="76" fill="white" font-size="9">微觀B</text>
-                        <path d="M45 50 h 110 v 10" fill="none" stroke="#34495e" stroke-width="1.5"/>
-                        <path d="M45 85 V 100 M155 85 V 100" stroke="#34495e" stroke-width="1.5"/>
-                        <rect x="10" y="110" width="40" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="123" font-size="8">事例</text>
-                        <rect x="150" y="110" width="40" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="123" font-size="8">事例</text>
+                    <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Macro Concept (Center) -->
+                        <g>
+                            <rect x="65" y="10" width="90" height="30" fill="#3498db" rx="5"/>
+                            <text x="110" y="29" fill="white" font-size="10" text-anchor="middle">宏觀概念</text>
+                        </g>
+                        
+                        <!-- Micro Concepts -->
+                        <circle cx="40" cy="75" r="18" fill="#1abc9c"/><text x="40" y="78" fill="white" font-size="9" text-anchor="middle">微觀A</text>
+                        <circle cx="110" cy="75" r="18" fill="#1abc9c"/><text x="110" y="78" fill="white" font-size="9" text-anchor="middle">微觀B</text>
+                        <circle cx="180" cy="75" r="18" fill="#1abc9c"/><text x="180" y="78" fill="white" font-size="9" text-anchor="middle">微觀C</text>
+                        
+                        <!-- Examples (Pins) -->
+                        <g transform="translate(40, 130)">
+                            <circle cx="0" cy="-5" r="5" fill="#f1c40f"/><path d="M 0 0 L 0 10" stroke="#f1c40f" stroke-width="2"/>
+                            <text x="0" y="22" font-size="9" text-anchor="middle">事例</text>
+                        </g>
+                        <g transform="translate(110, 130)">
+                            <circle cx="0" cy="-5" r="5" fill="#f1c40f"/><path d="M 0 0 L 0 10" stroke="#f1c40f" stroke-width="2"/>
+                            <text x="0" y="22" font-size="9" text-anchor="middle">事例</text>
+                        </g>
+                         <g transform="translate(180, 130)">
+                            <circle cx="0" cy="-5" r="5" fill="#f1c40f"/><path d="M 0 0 L 0 10" stroke="#f1c40f" stroke-width="2"/>
+                            <text x="0" y="22" font-size="9" text-anchor="middle">事例</text>
+                        </g>
+                        
+                        <!-- Connecting Lines -->
+                        <g stroke="#7f8c8d" stroke-width="1.5">
+                            <!-- Hierarchical lines -->
+                            <path d="M 100 40 L 45 60" />
+                            <path d="M 110 40 L 110 57" />
+                            <path d="M 120 40 L 175 60" />
+                            <path d="M 40 93 L 40 115" />
+                            <path d="M 110 93 L 110 115" />
+                            <path d="M 180 93 L 180 115" />
+                            <!-- Web/Network lines -->
+                            <path d="M 58 75 H 92" stroke-dasharray="3 2" />
+                            <path d="M 128 75 H 162" stroke-dasharray="3 2" />
+                        </g>
+                        <text x="75" y="70" font-size="8" fill="#555">影響</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 將概念視覺化組織化，定位概念之間的關係，以識別概念層次，並建立通則。</p>
@@ -1466,21 +2179,50 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-whats-the-connection" class="fade-in-section">
+                        <article id="generalize-whats-the-connection" class="fade-in-section">
                 <h3>(八) 通則 - 顏色連結 What's the Connection?</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="20" width="20" height="15" fill="#3498db" rx="2"/>
-                        <rect x="50" y="40" width="20" height="15" fill="#1abc9c" rx="2"/>
-                        <rect x="80" y="20" width="20" height="15" fill="#3498db" rx="2"/>
-                        <rect x="110" y="40" width="20" height="15" fill="#1abc9c" rx="2"/>
-                        <rect x="140" y="20" width="20" height="15" fill="#3498db" rx="2"/>
-                        
-                        <path d="M30 35 L 50 70 M90 35 L 70 70 M150 35 L 90 70" stroke="#3498db" fill="none" stroke-dasharray="2,2"/>
-                        <rect x="40" y="80" width="50" height="25" fill="#3498db" rx="3"/><text x="65" y="96" fill="white" font-size="9">概念A</text>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-colorlink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                            <filter id="shadow-note" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+                                <feOffset dx="1" dy="2" result="offsetblur"/>
+                                <feMerge>
+                                    <feMergeNode/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Left Side: Unsorted Notes -->
+                        <g filter="url(#shadow-note)">
+                            <rect x="20" y="20" width="30" height="30" fill="#3498db" transform="rotate(-5, 35, 35)"/>
+                            <rect x="60" y="40" width="30" height="30" fill="#1abc9c" transform="rotate(8, 75, 55)"/>
+                            <rect x="25" y="65" width="30" height="30" fill="#3498db" transform="rotate(5, 40, 80)"/>
+                            <rect x="70" y="80" width="30" height="30" fill="#e74c3c" transform="rotate(-10, 85, 95)"/>
+                            <rect x="50" y="5" width="30" height="30" fill="#1abc9c" transform="rotate(10, 65, 20)"/>
+                        </g>
 
-                        <path d="M60 55 L 120 70 M120 55 L 140 70" stroke="#1abc9c" fill="none" stroke-dasharray="2,2"/>
-                        <rect x="110" y="80" width="50" height="25" fill="#1abc9c" rx="3"/><text x="135" y="96" fill="white" font-size="9">概念B</text>
+                        <!-- Arrow -->
+                        <path d="M 120 60 L 150 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow-colorlink)"/>
+                        <text x="135" y="55" font-size="9" text-anchor="middle">顏色連結</text>
+
+                        <!-- Right Side: Grouped by Color -->
+                        <g>
+                            <!-- Blue Group -->
+                            <rect x="170" y="10" width="60" height="25" fill="#3498db" rx="5"/>
+                            <text x="200" y="26" font-size="9" text-anchor="middle" fill="white">概念A</text>
+                            
+                            <!-- Green Group -->
+                            <rect x="170" y="45" width="60" height="25" fill="#1abc9c" rx="5"/>
+                            <text x="200" y="61" font-size="9" text-anchor="middle" fill="white">概念B</text>
+
+                             <!-- Red Group -->
+                            <rect x="170" y="80" width="60" height="25" fill="#e74c3c" rx="5"/>
+                            <text x="200" y="96" font-size="9" text-anchor="middle" fill="white">概念C</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 以顏色做為事例的編碼，幫助學生組織事例並發掘模式。</p>
@@ -1493,20 +2235,49 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-pattern-hunters" class="fade-in-section">
+                                    <article id="generalize-pattern-hunters" class="fade-in-section">
                 <h3>(九) 通則 - 模式獵人 Pattern Hunters</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="80" r="3" fill="#bdc3c7"/><circle cx="65" cy="70" r="3" fill="#bdc3c7"/>
-                        <circle cx="80" cy="65" r="3" fill="#bdc3c7"/><circle cx="95" cy="68" r="3" fill="#bdc3c7"/>
-                        <circle cx="110" cy="75" r="3" fill="#bdc3c7"/><circle cx="125" cy="85" r="3" fill="#bdc3c7"/>
-                        <circle cx="140" cy="80" r="3" fill="#bdc3c7"/>
-                        <path d="M 50 80 C 70 50, 120 50, 140 80" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
-                        <g transform="translate(40, 40)">
-                            <circle cx="0" cy="0" r="20" stroke="#3498db" stroke-width="3" fill="rgba(52, 152, 219, 0.1)"/>
-                            <line x1="15" y1="15" x2="30" y2="30" stroke="#34495e" stroke-width="4" stroke-linecap="round"/>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-hunter" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Left Side: Data Jungle (Chaos) -->
+                        <g>
+                            <circle cx="30" cy="60" r="5" fill="#95a5a6"/>
+                            <circle cx="15" cy="30" r="3" fill="#bdc3c7"/>
+                            <circle cx="50" cy="20" r="6" fill="#7f8c8d"/>
+                            <circle cx="70" cy="40" r="4" fill="#bdc3c7"/>
+                            <circle cx="40" cy="90" r="5" fill="#95a5a6"/>
+                            <circle cx="80" cy="80" r="6" fill="#7f8c8d"/>
+                            <circle cx="60" cy="65" r="3" fill="#bdc3c7"/>
+                            <text x="45" y="110" font-size="10" text-anchor="middle">原始資料</text>
                         </g>
-                        <text x="130" y="50" font-size="10">發現模式!</text>
+
+                        <!-- Magnifying Glass focusing on key points -->
+                        <g transform="translate(70, 50)">
+                            <circle cx="0" cy="0" r="25" stroke="#3498db" stroke-width="3" fill="rgba(52, 152, 219, 0.15)"/>
+                            <line x1="20" y1="20" x2="35" y2="35" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>
+                            <!-- The points being "found" -->
+                            <circle cx="-10" cy="10" r="4" fill="#e74c3c"/>
+                            <circle cx="0" cy="-5" r="4" fill="#e74c3c"/>
+                            <circle cx="12" cy="-15" r="4" fill="#e74c3c"/>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M 115 60 L 145 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow-hunter)"/>
+                        <text x="130" y="52" font-size="9" text-anchor="middle">尋找與連結</text>
+
+                        <!-- Right Side: Pattern Revealed -->
+                        <g>
+                            <path d="M 160 90 C 180 60, 200 60, 220 30" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4 3" fill="none"/>
+                            <circle cx="160" cy="90" r="4" fill="#e74c3c"/>
+                            <circle cx="190" cy="55" r="4" fill="#e74c3c"/>
+                            <circle cx="220" cy="30" r="4" fill="#e74c3c"/>
+                             <text x="190" y="110" font-size="10" text-anchor="middle">發現模式</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生以組織圖，將觀察所得的內容進行連結，並從中找出關聯模式，幫助學生發展出與參考資料相關的通則。</p>
@@ -1521,17 +2292,37 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="generalize-micro-generalizing" class="fade-in-section">
+                        <article id="generalize-micro-generalizing" class="fade-in-section">
                 <h3>(十) 通則 - 微通則 Micro-generalizing</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <text x="30" y="20" font-size="9">微通則A</text><rect x="10" y="25" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="30" y="55" font-size="9">微通則B</text><rect x="10" y="60" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="30" y="90" font-size="9">微通則C</text><rect x="10" y="95" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
-                        <path d="M60 32.5 L 90 50 M60 67.5 L 90 70 M60 102.5 L 90 90" stroke="#bdc3c7" stroke-dasharray="2,2"/>
-                        <path d="M 90 50 L 120 70 L 90 90 Z" fill="#3498db" />
-                        <text x="100" y="45" font-size="9" text-anchor="middle">綜整</text>
-                        <rect x="130" y="50" width="60" height="40" fill="#e74c3c" rx="3"/><text x="160" y="73" font-size="12" fill="white">大通則</text>
+                    <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                         <defs>
+                            <marker id="arrow-micro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Micro-generalizations (Building Blocks) -->
+                        <g>
+                            <rect x="10" y="20" width="60" height="20" rx="3" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <text x="40" y="34" font-size="9" text-anchor="middle">微通則 A</text>
+                            
+                            <rect x="10" y="50" width="60" height="20" rx="3" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <text x="40" y="64" font-size="9" text-anchor="middle">微通則 B</text>
+
+                            <rect x="10" y="80" width="60" height="20" rx="3" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <text x="40" y="94" font-size="9" text-anchor="middle">微通則 C</text>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M 85 60 L 125 60" stroke="#34495e" stroke-width="2.5" marker-end="url(#arrow-micro)"/>
+                        <text x="105" y="52" font-size="9" text-anchor="middle">綜整</text>
+                        
+                        <!-- Macro-generalization (Constructed Block) -->
+                        <g transform="translate(140, 30)">
+                             <rect x="0" y="0" width="70" height="60" rx="5" fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+                             <path d="M 5 20 H 65 M 5 40 H 65" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                             <text x="35" y="35" font-size="12" text-anchor="middle" fill="white" font-weight="bold">大通則</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 建立微通則，再發展較廣泛的通則，學習起來比較容易。</p>
@@ -1556,18 +2347,37 @@
                 <li><strong>應用：</strong> 應用與行動是呈現學習遷移的時候。老師指定學生用行動或表現任務，具體展現通則的意義及精神。過程中老師居於輔導位置，讓學生主導他們的計畫與行動。</li>
             </ol>
 
-            <article id="transfer-stress-testing" class="fade-in-section">
+                        <article id="transfer-stress-testing" class="fade-in-section">
                 <h3>(一) 遷移 - 壓力測試 Stress-testing Generalizations</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 70 C 60 70, 140 70, 180 70" stroke="#34495e" stroke-width="5"/>
-                        <path d="M20 70 C 60 40, 140 40, 180 70" stroke="#34495e" stroke-width="5" fill="none"/>
-                        <text x="100" y="60" font-size="10" text-anchor="middle">通則</text>
-                        <g transform="translate(100,20)">
-                            <path d="M-10 0 L 10 0 L 0 15 Z" fill="#e74c3c" />
-                            <rect x="-5" y="-15" width="10" height="15" fill="#e74c3c"/>
+                    <svg viewBox="0 0 250 140" xmlns="http://www.w3.org/2000/svg">
+                        <!-- The "Generalization" as a barbell rod -->
+                        <rect x="50" y="65" width="150" height="10" rx="3" fill="#34495e"/>
+                        <text x="125" y="90" font-size="11" text-anchor="middle" font-weight="bold">通則</text>
+
+                        <!-- "New Cases" as weights on the barbell -->
+                        <g>
+                            <circle cx="45" cy="70" r="20" fill="#e74c3c"/>
+                            <circle cx="45" cy="70" r="15" fill="#c0392b"/>
+                            <text x="45" y="74" font-size="9" text-anchor="middle" fill="white">新事例</text>
                         </g>
-                        <text x="100" y="15" font-size="9" text-anchor="middle">新情境 (壓力)</text>
+                        <g>
+                             <circle cx="205" cy="70" r="20" fill="#e74c3c"/>
+                             <circle cx="205" cy="70" r="15" fill="#c0392b"/>
+                             <text x="205" y="74" font-size="9" text-anchor="middle" fill="white">反例</text>
+                        </g>
+
+                        <!-- Pressure Gauge -->
+                        <g transform="translate(125, 30)">
+                            <circle cx="0" cy="0" r="20" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>
+                            <path d="M -15 0 A 15 15 0 0 1 15 0" stroke="#27ae60" stroke-width="3" fill="none"/>
+                            <path d="M 15 0 A 15 15 0 0 1 0 -15" stroke="#f39c12" stroke-width="3" fill="none"/>
+                            <path d="M 0 -15 A 15 15 0 0 1 -15 0" stroke="#e74c3c" stroke-width="3" fill="none"/>
+                            <!-- Needle -->
+                            <line x1="0" y1="0" x2="-10" y2="-10" stroke="#34495e" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="0" cy="0" r="3" fill="#34495e"/>
+                        </g>
+                        <text x="125" y="120" font-size="10" text-anchor="middle">測試通則的強度與適用性</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生將他們的通則遷移到新的事例，檢視這個通則是否經得起新情境的考驗。</p>
@@ -1580,17 +2390,38 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-on-the-line" class="fade-in-section">
+                        <article id="transfer-on-the-line" class="fade-in-section">
                 <h3>(二) 遷移 - 線上討論 On the Line</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="10" y1="50" x2="190" y2="50" stroke="#34495e" stroke-width="2"/>
-                        <text x="10" y="35" font-size="9" text-anchor="start">不同意</text>
-                        <text x="190" y="35" font-size="9" text-anchor="end">同意</text>
-                        <rect x="20" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="30" y1="50" x2="30" y2="55"/>
-                        <rect x="80" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="90" y1="50" x2="90" y2="55"/>
-                        <rect x="160" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="170" y1="50" x2="170" y2="55"/>
-                        <text x="100" y="85" font-size="9" text-anchor="middle">張貼證據便利貼</text>
+                    <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Base of the scale -->
+                        <path d="M 100 110 L 120 110 L 115 100 L 105 100 Z" fill="#7f8c8d"/>
+                        <rect x="109" y="55" width="2" height="45" fill="#7f8c8d"/>
+                        
+                        <!-- The Scale Beam -->
+                        <g transform="translate(110, 55) rotate(10)">
+                           <rect x="-90" y="-5" width="180" height="10" rx="3" fill="#34495e"/>
+                           <!-- Pans -->
+                           <path d="M -80 5 C -90 25, -70 25, -80 5" stroke="#34495e" stroke-width="1.5" fill="#ecf0f1"/>
+                           <path d="M 80 5 C 70 25, 90 25, 80 5" stroke="#34495e" stroke-width="1.5" fill="#ecf0f1"/>
+                        </g>
+
+                        <!-- Pivot point -->
+                        <circle cx="110" cy="55" r="5" fill="#34495e"/>
+
+                        <!-- Evidence notes -->
+                        <!-- Agree side -->
+                        <g transform="translate(170, 40) rotate(10)">
+                           <rect x="0" y="0" width="25" height="25" fill="#1abc9c" filter="url(#shadow-note)"/>
+                           <rect x="5" y="5" width="25" height="25" fill="#1abc9c" filter="url(#shadow-note)"/>
+                        </g>
+                         <text x="180" y="25" font-size="10" text-anchor="middle">同意 (證據)</text>
+
+                        <!-- Disagree side -->
+                         <g transform="translate(20, 55) rotate(10)">
+                           <rect x="0" y="0" width="25" height="25" fill="#e74c3c" filter="url(#shadow-note)"/>
+                        </g>
+                         <text x="30" y="40" font-size="10" text-anchor="middle">不同意 (證據)</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 協助學生以事實證據支持他們的通則，目的是促進學生綜整思考，對他們的通則進行修正。</p>
@@ -1604,18 +2435,34 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-prove-it" class="fade-in-section">
+                        <article id="transfer-prove-it" class="fade-in-section">
                 <h3>(三) 遷移 - 證明 Prove It!</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 90 L 190 90 M 100 20 L 100 90" stroke="#34495e"/>
-                        <path d="M30 80 L 170 80" stroke="#34495e" stroke-width="4"/>
-                        <text x="65" y="75" font-size="10" text-anchor="middle">陳述</text>
-                        <g transform="translate(135, 60)">
-                            <rect x="-10" y="-10" width="20" height="20" fill="#1abc9c"/>
-                            <rect x="-15" y="-5" width="30" height="10" fill="#3498db"/>
+                    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Main Claim/Argument at the top -->
+                        <g>
+                             <rect x="50" y="20" width="100" height="30" rx="5" fill="#e74c3c"/>
+                             <text x="100" y="39" font-size="12" text-anchor="middle" fill="white" font-weight="bold">論點</text>
                         </g>
-                        <text x="135" y="45" font-size="10" text-anchor="middle">證據</text>
+                        
+                        <!-- Supporting Evidence blocks below -->
+                        <g>
+                            <rect x="20" y="70" width="50" height="40" rx="3" fill="#3498db"/>
+                            <text x="45" y="93" font-size="9" text-anchor="middle" fill="white">證據A</text>
+                        </g>
+                         <g>
+                            <rect x="75" y="70" width="50" height="40" rx="3" fill="#1abc9c"/>
+                             <text x="100" y="93" font-size="9" text-anchor="middle" fill="white">證據B</text>
+                        </g>
+                         <g>
+                            <rect x="130" y="70" width="50" height="40" rx="3" fill="#9b59b6"/>
+                             <text x="155" y="93" font-size="9" text-anchor="middle" fill="white">證據C</text>
+                        </g>
+
+                        <!-- Support lines -->
+                        <line x1="100" y1="50" x2="45" y2="70" stroke="#7f8c8d" stroke-width="2"/>
+                        <line x1="100" y1="50" x2="100" y2="70" stroke="#7f8c8d" stroke-width="2"/>
+                        <line x1="100" y1="50" x2="155" y2="70" stroke="#7f8c8d" stroke-width="2"/>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 提升學生綜整的思考能力，讓學生可以為他們的通則辯護。</p>
@@ -1636,15 +2483,32 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-how-does-it-connect" class="fade-in-section">
+                        <article id="transfer-how-does-it-connect" class="fade-in-section">
                 <h3>(四) 遷移 - 如何連結 How Does It Connect?</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="10" y="40" width="60" height="40" fill="#3498db" rx="3"/><text x="40" y="63" fill="white">舊事例</text>
-                        <rect x="130" y="40" width="60" height="40" fill="#1abc9c" rx="3"/><text x="160" y="63" fill="white">新事例</text>
-                        <path d="M75 60 C 90 30, 110 30, 125 60" stroke="#34495e" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
-                        <text x="100" y="50" font-size="20" text-anchor="middle">?</text>
-                        <text x="100" y="80" font-size="9" text-anchor="middle">如何連結?</text>
+                    <svg viewBox="0 0 250 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Left Island (Old Case) -->
+                        <g>
+                            <path d="M 10 70 C 20 50, 60 50, 80 70 V 110 H 10 Z" fill="#1abc9c"/>
+                            <rect x="25" y="80" width="40" height="20" rx="3" fill="white"/>
+                            <text x="45" y="94" font-size="10" text-anchor="middle">舊事例</text>
+                        </g>
+
+                        <!-- Right Island (New Case) -->
+                        <g>
+                            <path d="M 170 70 C 180 50, 220 50, 240 70 V 110 H 170 Z" fill="#3498db"/>
+                            <rect x="185" y="80" width="40" height="20" rx="3" fill="white"/>
+                            <text x="205" y="94" font-size="10" text-anchor="middle">新事例</text>
+                        </g>
+
+                        <!-- The "Bridge" of Generalization -->
+                        <g>
+                            <path d="M 80 70 C 110 40, 140 40, 170 70" stroke="#34495e" stroke-width="3" fill="none"/>
+                            <path d="M 82 75 C 110 48, 140 48, 168 75" stroke="#34495e" stroke-width="3" fill="none"/>
+                            <!-- Question mark forming the bridge support -->
+                            <text x="125" y="55" font-size="28" text-anchor="middle" font-weight="bold" fill="#e74c3c">?</text>
+                            <text x="125" y="30" font-size="10" text-anchor="middle" fill="#34495e">通則 / 概念</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 運用一段時間(學期或學年)所發展的通則，了解新的事例。</p>
@@ -1653,17 +2517,36 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-what-if-questions" class="fade-in-section">
+                        <article id="transfer-what-if-questions" class="fade-in-section">
                 <h3>(五) 遷移 -「要是…又會怎樣?」的問題 “What if...?” Questions</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="40" width="60" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/>
-                        <text x="50" y="63" font-size="10" text-anchor="middle">現況</text>
-                        <path d="M85 60 L 115 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <text x="100" y="50" font-size="10" text-anchor="middle">What if...?</text>
-                        <g transform="translate(150, 60)">
-                            <rect x="-25" y="-20" width="50" height="40" fill="#ecf0f1" stroke="#e74c3c" stroke-dasharray="3,2" rx="3"/>
-                            <text x="0" y="3" font-size="10" text-anchor="middle">新結果?</text>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Current Path -->
+                        <g>
+                           <path d="M 20 60 H 100" stroke="#34495e" stroke-width="3"/>
+                           <text x="60" y="75" font-size="10" text-anchor="middle">現況</text>
+                        </g>
+                        
+                        <!-- "What if" Junction -->
+                        <g>
+                            <circle cx="120" cy="60" r="20" fill="#e74c3c"/>
+                            <text x="120" y="64" font-size="12" text-anchor="middle" fill="white" font-weight="bold">?</text>
+                            <text x="120" y="90" font-size="9" text-anchor="middle">"What if...?"</text>
+                        </g>
+                        
+                        <!-- Possible Outcome Paths -->
+                        <g stroke-width="3" stroke-dasharray="5 3" fill="none">
+                            <path d="M 140 60 C 170 30, 190 30, 220 30" stroke="#1abc9c"/>
+                            <circle cx="225" cy="30" r="5" fill="#1abc9c"/>
+                            <text x="200" y="20" font-size="9">可能性 A</text>
+
+                            <path d="M 140 60 C 170 60, 190 60, 220 60" stroke="#3498db"/>
+                            <circle cx="225" cy="60" r="5" fill="#3498db"/>
+                            <text x="200" y="50" font-size="9">可能性 B</text>
+
+                            <path d="M 140 60 C 170 90, 190 90, 220 90" stroke="#9b59b6"/>
+                            <circle cx="225" cy="90" r="5" fill="#9b59b6"/>
+                            <text x="200" y="80" font-size="9">可能性 C</text>
                         </g>
                     </svg>
                 </div>
@@ -1680,23 +2563,41 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-performance-assessment" class="fade-in-section">
+                        <article id="transfer-performance-assessment" class="fade-in-section">
                 <h3>(六) 遷移 - 實作評量 Performance Assessment</h3>
                  <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <text x="25" y="25" font-size="10">任務</text>
-                        <g transform="translate(25, 70)">
-                           <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-assess" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Goal/Task -->
+                        <g>
+                            <circle cx="40" cy="60" r="25" fill="#3498db"/>
+                            <circle cx="40" cy="60" r="15" fill="white"/>
+                            <circle cx="40" cy="60" r="5" fill="#e74c3c"/>
+                            <text x="40" y="100" font-size="10" text-anchor="middle">任務目標</text>
                         </g>
-                        <path d="M50 70 L 80 70" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <text x="65" y="60" font-size="9">應用通則</text>
-                        <g transform="translate(135,70)">
-                            <rect x="-40" y="-30" width="80" height="60" fill="#ecf0f1" stroke="#34495e"/>
-                            <path d="M-30 -20 H30 M-30 0 H30 M-30 20 H30" stroke="#bdc3c7"/>
-                            <path d="M-35 -15 L-25 -25 L-15 -15" stroke="#1abc9c" stroke-width="2" fill="none"/>
-                            <path d="M-35 5 L-25 -5 L-15 5" stroke="#1abc9c" stroke-width="2" fill="none"/>
+
+                        <!-- Process Arrow -->
+                        <path d="M 70 60 L 160 60" stroke="#7f8c8d" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-assess)"/>
+                        <text x="115" y="50" font-size="10" text-anchor="middle">實作過程</text>
+
+                        <!-- Rubric/Assessment -->
+                        <g transform="translate(170, 30)">
+                            <rect x="0" y="0" width="70" height="80" rx="3" fill="#ecf0f1" stroke="#bdc3c7"/>
+                            <text x="35" y="15" font-size="9" text-anchor="middle">評量規準</text>
+                            <!-- Checklist items -->
+                            <line x1="10" y1="30" x2="30" y2="30" stroke="#7f8c8d"/>
+                            <path d="M 35 25 L 40 30 L 50 20" stroke="#1abc9c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            
+                            <line x1="10" y1="45" x2="30" y2="45" stroke="#7f8c8d"/>
+                             <path d="M 35 40 L 40 45 L 50 35" stroke="#1abc9c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            
+                            <line x1="10" y1="60" x2="30" y2="60" stroke="#7f8c8d"/>
+                            <circle cx="42" cy="57" r="8" fill="none" stroke="#e74c3c" stroke-width="1.5"/>
                         </g>
-                        <text x="135" y="25" font-size="10">評量規準</text>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 讓學生在真實情境中運用通則或具體呈現通則。</p>
@@ -1711,16 +2612,43 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-create-it" class="fade-in-section">
+                        <article id="transfer-create-it" class="fade-in-section">
                 <h3>(七) 遷移 - 創造! Create It!</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="40" width="60" height="40" fill="#3498db" rx="3"/>
-                        <text x="50" y="63" fill="white" font-size="10">通則</text>
-                        <path d="M85 60 L 115 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
-                        <text x="100" y="50" font-size="9">應用</text>
-                        <path d="M 120 40 L 180 40 L 180 100 L 150 100 L 150 70 L 120 70 Z" fill="#1abc9c"/>
-                        <text x="150" y="80" fill="white" font-size="10">作品</text>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                             <marker id="arrow-create" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <!-- Left: The Idea/Generalization (a lightbulb) -->
+                        <g transform="translate(50, 60)">
+                            <path d="M 0 -25 C -15 -25, -20 0, 0 0 C 20 0, 15 -25, 0 -25" fill="#f1c40f"/>
+                            <rect x="-5" y="0" width="10" height="8" fill="#95a5a6"/>
+                            <text x="0" y="25" font-size="10" text-anchor="middle">通則 / 想法</text>
+                            <!-- Rays of light -->
+                            <g stroke="#f1c40f" stroke-width="2" stroke-linecap="round">
+                               <path d="M 20 0 L 30 0" />
+                               <path d="M 25 -15 L 35 -20" />
+                               <path d="M 25 15 L 35 20" />
+                            </g>
+                        </g>
+
+                        <!-- Arrow showing the process -->
+                        <path d="M 90 60 C 120 40, 140 80, 170 60" stroke="#7f8c8d" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#arrow-create)"/>
+                        <text x="130" y="45" font-size="10" text-anchor="middle">應用與創造</text>
+
+                        <!-- Right: The Creation (a diamond being crafted) -->
+                        <g transform="translate(200, 60)">
+                            <path d="M 0 -25 L 20 0 L 0 25 L -20 0 Z" fill="#3498db"/>
+                            <path d="M 0 -25 L 0 25 M -20 0 L 20 0" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                            <text x="0" y="40" font-size="10" text-anchor="middle">作品</text>
+                            <!-- Crafting sparkles -->
+                            <g fill="#f1c40f">
+                                <path d="M -25 -10 L -20 -5 L -25 0 L -30 -5 Z"/>
+                                <path d="M 10 -30 L 15 -25 L 10 -20 L 5 -25 Z"/>
+                            </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生在情境中得到概念性的理解，引用此理解下的通則，應用在自己的作品上。</p>
@@ -1734,20 +2662,45 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="transfer-student-led-action" class="fade-in-section">
+                        <article id="transfer-student-led-action" class="fade-in-section">
                 <h3>(八) 遷移 - 學生主導行動 Student-led Action</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Student Leader -->
-                        <g transform="translate(60, 70)">
-                            <circle cx="0" cy="-10" r="10" fill="#e74c3c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#e74c3c"/>
-                            <path d="M 15 0 L 30 10 L 30 -10 Z" fill="#f1c40f"/>
+                    <svg viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <g id="student-figure-action">
+                                <circle cx="0" cy="-5" r="8"/>
+                                <path d="M 0 3 C -10 18, 10 18, 0 33"/>
+                            </g>
+                        </defs>
+                        <!-- Student Leader with megaphone -->
+                        <g transform="translate(40, 70)">
+                            <use href="#student-figure-action" fill="#e74c3c"/>
+                            <!-- Megaphone -->
+                            <g transform="translate(10, -5) rotate(20)">
+                                <path d="M 0 0 L -5 5 V -5 L 0 0 M 0 0 L 15 8 L 15 -8 L 0 0" fill="#34495e"/>
+                                <!-- Sound waves -->
+                                <path d="M 20 0 C 20 5, 25 5, 25 0" stroke="#7f8c8d" stroke-width="1.5" fill="none"/>
+                                <path d="M 28 0 C 28 7, 35 7, 35 0" stroke="#7f8c8d" stroke-width="1.5" fill="none"/>
+                            </g>
                         </g>
-                        <!-- Group -->
-                        <circle cx="110" cy="70" r="8" fill="#3498db"/><circle cx="130" cy="80" r="8" fill="#3498db"/>
-                        <circle cx="150" cy="70" r="8" fill="#3498db"/>
-                        <path d="M85 65 L 130 40" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
-                        <text x="140" y="30" font-size="10">共同目標</text>
+                        
+                        <!-- Students carrying the arrow of action -->
+                        <g>
+                           <path d="M 90 70 H 180 L 170 60 M 180 70 L 170 80" stroke="#1abc9c" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                           <g transform="translate(110, 80)">
+                               <use href="#student-figure-action" fill="#3498db"/>
+                           </g>
+                           <g transform="translate(150, 80)">
+                               <use href="#student-figure-action" fill="#3498db"/>
+                           </g>
+                        </g>
+
+                        <!-- The Goal -->
+                        <g transform="translate(220, 70)">
+                            <circle cx="0" cy="0" r="15" fill="#f1c40f" stroke="#34495e" stroke-width="2"/>
+                            <circle cx="0" cy="0" r="7" fill="#e74c3c"/>
+                            <text x="0" y="30" font-size="10" text-anchor="middle">目標</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生成為負責任的全球公民，賦權學生將學習延伸學校之外。</p>
@@ -1774,13 +2727,24 @@
                 <li><strong>評估性：</strong> 整個反思過程提供學生發現心智型態的機會以建構新的概念。</li>
             </ol>
             
-            <article id="reflect-talk-prompts" class="fade-in-section">
+                        <article id="reflect-talk-prompts" class="fade-in-section">
                 <h3>(一) 反思 - 談話提示 Talk Prompts</h3>
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 10 H 180 V 70 H 120 L 110 80 L 110 70 H 20 Z" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="30" y="35" font-size="12">我學到最重要的事情是...</text>
-                        <path d="M30 40 H 170" stroke="#3498db" stroke-width="1.5"/>
+                        <!-- Person Icon -->
+                        <g transform="translate(40, 60)">
+                            <circle cx="0" cy="-10" r="10" fill="#3498db"/>
+                            <path d="M -15 5 a 15 15 0 0 1 30 0 v 15 h -30 z" fill="#3498db" />
+                        </g>
+                        <!-- Arrow representing the 'prompt' -->
+                        <path d="M 65 45 C 80 35, 95 35, 110 45" stroke="#34495e" fill="none" stroke-width="2" stroke-dasharray="3,2" />
+                        <text x="88" y="30" font-size="9" fill="#34495e">提示</text>
+                        <!-- Speech bubble for the 'talk' -->
+                        <g transform="translate(145, 50)">
+                            <path d="M -35 -25 H 35 V 15 H -10 L -20 25 L -20 15 H -35 Z" fill="#ecf0f1" stroke="#34495e" stroke-width="2" />
+                            <text x="0" y="-8" font-size="10" text-anchor="middle" fill="#34495e">我學到...</text>
+                            <text x="0" y="8" font-size="10" text-anchor="middle" fill="#34495e">我想知道...</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 談話提示是促進討論的一種方式，鼓勵學生透過談話，進行思考和推理，協助學生建構知識，發展想法。</p>
@@ -1793,12 +2757,32 @@
                 <h3>(二) 反思 - 問題銀行 Question Bank</h3>
                 <div class="strategy-diagram">
                     <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M40 100 L 160 100 L 170 80 L 30 80 Z" fill="#a67c52"/>
-                        <path d="M40 80 L 160 80 A 80 80 0 0 0 40 80" fill="#d3a167"/>
-                        <path d="M30 80 H 170" stroke="#a67c52" stroke-width="5"/>
-                        <rect x="95" y="70" width="10" height="15" fill="#34495e"/><circle cx="100" cy="65" r="5" fill="#f1c40f"/>
-                        <text x="80" y="40" font-size="20">?</text><text x="100" y="50" font-size="20">?</text><text x="120" y="40" font-size="20">?</text>
-                        <text x="100" y="20" font-size="12" text-anchor="middle">反思問題庫</text>
+                        <!-- Treasure Chest Base -->
+                        <path d="M 40 100 L 40 70 L 160 70 L 160 100 L 150 110 L 50 110 Z" fill="#a67c52" stroke="#7f5e3e" stroke-width="2"/>
+                        <rect x="40" y="70" width="120" height="5" fill="#d3a167"/>
+                        <!-- Treasure Chest Lid (ajar) -->
+                        <path d="M 35 70 L 165 70 A 80 80 0 0 0 35 70" fill="#a67c52" stroke="#7f5e3e" stroke-width="2" transform="rotate(-10 100 70)"/>
+                        <!-- Lock -->
+                        <rect x="95" y="80" width="10" height="10" fill="#f1c40f" stroke="#34495e"/>
+                        <circle cx="100" cy="88" r="1.5" fill="#34495e"/>
+                        <!-- Emerging Question Marks -->
+                        <g>
+                            <text x="80" y="60" font-size="28" fill="#e74c3c" font-weight="bold" transform="rotate(-15 80 60)">?</text>
+                            <text x="120" y="55" font-size="22" fill="#1abc9c" font-weight="bold" transform="rotate(10 120 55)">?</text>
+                            <text x="100" y="30" font-size="18" fill="#3498db" font-weight="bold">?</text>
+                            <!-- Icon: Plan (calendar) -->
+                            <g transform="translate(60, 35) scale(0.8)">
+                                 <rect x="-7" y="-7" width="14" height="14" rx="2" fill="white" stroke="#9b59b6" stroke-width="1.5"/>
+                                 <path d="M-7 -3 h14 m-10 -4 v4 m4 -4 v4" stroke="#9b59b6" stroke-width="1"/>
+                                 <text x="0" y="20" font-size="8" text-anchor="middle">計畫</text>
+                            </g>
+                            <!-- Icon: Evaluate (checkmark in circle) -->
+                             <g transform="translate(140, 30) scale(0.8)">
+                                <circle cx="0" cy="0" r="8" fill="white" stroke="#9b59b6" stroke-width="1.5"/>
+                                <path d="M-4 0 l2 2 l4 -4" stroke="#27ae60" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <text x="0" y="20" font-size="8" text-anchor="middle">評估</text>
+                             </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 將問題展示出來，讓學生反思，同時讓學生習得反思的詞彙，養成反思的習慣並加以內化。</p>
@@ -1810,15 +2794,44 @@
             <article id="reflect-learning-journals" class="fade-in-section">
                 <h3>(三) 反思 - 學習日誌與反思部落格 Learning Journals and Reflective Blogs</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 10 L 100 10 L 100 110 L 20 110 A 10 10 0 0 1 10 100 L 10 20 A 10 10 0 0 1 20 10 Z" fill="#ecf0f1" stroke="#34495e"/>
-                        <path d="M100 10 L 180 20 A 10 10 0 0 1 190 30 L 190 100 A 10 10 0 0 1 180 110 L 100 110 Z" fill="#fff" stroke="#34495e"/>
-                        <line x1="100" y1="10" x2="100" y2="110" stroke="#34495e"/>
-                        <text x="55" y="30" font-size="9">日誌</text>
-                        <text x="145" y="35" font-size="9">部落格</text>
-                        <rect x="30" y="40" width="50" height="5" fill="#bdc3c7"/><rect x="30" y="50" width="60" height="5" fill="#bdc3c7"/>
-                        <rect x="110" y="45" width="60" height="20" fill="#3498db" rx="2"/>
-                        <path d="M110 80 L 130 80 L 130 95 L 115 95 L 110 90 Z" fill="#1abc9c"/>
+                    <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Dividing Line -->
+                        <line x1="110" y1="15" x2="110" y2="105" stroke="#bdc3c7" stroke-width="1.5" stroke-dasharray="4 2"/>
+                
+                        <!-- Left Side: Journal (Personal) -->
+                        <g>
+                            <text x="55" y="25" font-size="11" text-anchor="middle" font-weight="bold" fill="#3498db">學習日誌 (個人)</text>
+                            <!-- Book/Journal Icon -->
+                            <rect x="30" y="40" width="50" height="60" rx="4" fill="#ecf0f1" stroke="#3498db" stroke-width="2"/>
+                            <rect x="27" y="40" width="6" height="60" rx="2" fill="#3498db"/>
+                            <path d="M 40 50 h 30 m -30 10 h 30 m -30 10 h 20 m -20 10 h 30" stroke="#bdc3c7" stroke-width="1.5"/>
+                            <!-- Single Person Icon -->
+                            <g transform="translate(88 70)">
+                                <circle cx="0" cy="-5" r="5" fill="#3498db"/>
+                                <path d="M -7 3 a 7 10 0 0 1 14 0 v 5 h -14 z" fill="#3498db"/>
+                            </g>
+                        </g>
+                
+                        <!-- Right Side: Blog (Community) -->
+                        <g>
+                            <text x="165" y="25" font-size="11" text-anchor="middle" font-weight="bold" fill="#1abc9c">反思部落格 (社群)</text>
+                            <!-- Laptop/Screen Icon -->
+                            <rect x="130" y="45" width="70" height="45" rx="3" fill="#34495e"/>
+                            <rect x="132" y="47" width="66" height="41" fill="#ecf0f1"/>
+                            <path d="M 125 90 h 80 l -5 5 h -70 z" fill="#95a5a6"/>
+                            <!-- Content on screen -->
+                            <path d="M 138 55 h 40" stroke="#bdc3c7" stroke-width="1.5"/>
+                            <path d="M 138 65 h 20 v 8 h -10 l -3 3 v -3 h -7 z" fill="#1abc9c"/>
+                            <!-- Group Icon -->
+                            <g transform="translate(188 80)">
+                                 <!-- Person back -->
+                                <circle cx="0" cy="-5" r="5" fill="#bdc3c7"/>
+                                <path d="M -7 3 a 7 10 0 0 1 14 0 v 5 h -14 z" fill="#bdc3c7"/>
+                                <!-- Person front -->
+                                <circle cx="5" cy="-3" r="5" fill="#1abc9c"/>
+                                <path d="M -2 5 a 7 10 0 0 1 14 0 v 5 h -14 z" fill="#1abc9c"/>
+                            </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學習日誌與反思部落格，是蒐集學習歷程證據的寶庫。</p>
@@ -1832,17 +2845,56 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="reflect-task-analysis" class="fade-in-section">
+                        <article id="reflect-task-analysis" class="fade-in-section">
                 <h3>(四) 反思 - 任務分析 Task Analysis</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <text x="100" y="20" font-size="12" text-anchor="middle">學習任務</text>
-                        <path d="M100 25 L 100 40 M 100 40 L 50 60 M 100 40 L 150 60" stroke="#34495e"/>
-                        <rect x="20" y="70" width="60" height="30" rx="3" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="50" y="88" font-size="9">步驟1</text>
-                        <rect x="120" y="70" width="60" height="30" rx="3" fill="#ecf0f1" stroke="#34495e"/>
-                        <text x="150" y="88" font-size="9">所需技能</text>
-                        <path d="M80 85 L 120 85" stroke="#bdc3c7" stroke-dasharray="3,2"/>
+                    <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-analysis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                            <filter id="shadow-clipboard" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="2" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.15"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Left Side: The Goal/Task -->
+                        <g>
+                            <circle cx="40" cy="60" r="25" fill="#e74c3c"/>
+                            <circle cx="40" cy="60" r="17" fill="#fff"/>
+                            <circle cx="40" cy="60" r="8" fill="#e74c3c"/>
+                            <text x="40" y="98" font-size="10" text-anchor="middle" font-weight="bold">學習任務</text>
+                        </g>
+
+                        <!-- Center: The Arrow of Analysis -->
+                        <path d="M 70 60 L 100 60" stroke="#34495e" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-analysis)"/>
+                        <text x="85" y="52" font-size="9" text-anchor="middle">分析</text>
+
+                        <!-- Right Side: The Analysis Clipboard -->
+                        <g transform="translate(110, 15)" filter="url(#shadow-clipboard)">
+                            <!-- Clipboard -->
+                            <rect x="0" y="5" width="95" height="100" rx="5" fill="#a67c52"/>
+                            <!-- Clip -->
+                            <path d="M 25 5 h 45 a 5 5 0 0 0 -5 -5 h -35 a 5 5 0 0 0 -5 5 z" fill="#95a5a6"/>
+                            <circle cx="47.5" cy="8" r="4" fill="#bdc3c7"/>
+                            <!-- Paper -->
+                            <rect x="5" y="15" width="85" height="85" fill="#fff"/>
+                            <text x="47.5" y="28" font-size="9" text-anchor="middle" font-weight="bold">計畫清單</text>
+                            
+                            <!-- Analysis Items -->
+                            <g transform="translate(15, 40)" fill="#34495e">
+                                <!-- Steps -->
+                                <path d="M 0 0 h 8 v 8 h -8 z M 0 3 h 5" stroke="#3498db" stroke-width="1.5" fill="none"/>
+                                <text x="12" y="6" font-size="8">步驟</text>
+                                <!-- Skills -->
+                                <path transform="translate(0, 20)" d="M4 0 A4 4 0 0 1 4 8 A4 4 0 0 1 4 0 M4 2 L2 4 L6 4 Z" fill="#1abc9c"/>
+                                <text x="12" y="26" font-size="8">技能</text>
+                                <!-- Resources -->
+                                <path transform="translate(0, 40)" d="M0 0 h8 v8 h-2 v-6 h-4 v6 h-2z" fill="#f1c40f"/>
+                                <text x="12" y="46" font-size="8">資源</text>
+
+                            </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 學生在實踐學習任務之前，分析或評估任務要件，以反思個人的學習狀態。</p>
@@ -1859,17 +2911,37 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="reflect-think-aloud" class="fade-in-section">
+                        <article id="reflect-think-aloud" class="fade-in-section">
                 <h3>(五) 反思 - 放聲思考 Think Aloud</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Head -->
-                        <circle cx="60" cy="70" r="20" fill="#ecf0f1" stroke="#34495e"/>
-                        <circle cx="60" cy="60" r="10" fill="#3498db" opacity="0.5"/>
-                        <!-- Thought Bubble -->
-                        <path d="M85 55 C 100 40, 180 40, 180 65 C 180 90, 100 90, 95 75" stroke="#34495e" fill="#fff"/>
-                        <text x="110" y="65" font-size="9">我正在想...</text>
-                        <text x="130" y="80" font-size="9">為什麼...</text>
+                    <svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="glow-effect" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Left: Internal Thought -->
+                        <g>
+                            <path d="M 60 45 C 40 45, 30 65, 30 80 C 30 95, 45 105, 60 105 C 70 105, 75 95, 75 85 C 85 95, 90 105, 100 105 C 115 105, 120 90, 120 80 C 120 65, 110 45, 90 45 C 80 45, 75 55, 70 65 C 65 55, 65 45, 60 45 Z" fill="#3498db" opacity="0.2"/>
+                            <path d="M 50,75 A 15 15 0 0 1 80 75 A 15 15 0 0 1 50 75" fill="#3498db" opacity="0.4" />
+                            <circle cx="65" cy="65" r="5" fill="#f1c40f" filter="url(#glow-effect)"/>
+                            <text x="65" y="115" font-size="9" text-anchor="middle">內在思考</text>
+                        </g>
+
+                        <!-- Center: Arrow indicating the "aloud" process -->
+                        <path d="M 90 75 C 110 65, 120 85, 140 75" stroke="#34495e" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="4,2"/>
+                        <text x="115" y="60" font-size="9" text-anchor="middle">外化過程</text>
+
+                        <!-- Right: The Aloud Expression (Speech Bubble) -->
+                        <g>
+                            <path d="M150 50 H 230 V 90 H 170 L 160 100 V 80 H 150 Z" fill="#ecf0f1" stroke="#34495e" stroke-width="1.5" rx="5"/>
+                            <text x="190" y="66" font-size="9" text-anchor="middle" fill="#34495e">「首先我會...」</text>
+                            <text x="190" y="80" font-size="9" text-anchor="middle" fill="#34495e">「我注意到...」</text>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 放聲思考讓學生聽到自己與他人在學習時，使用技巧及策略的思考過程。這個策略有助於學生發展探索能力。</p>
@@ -1883,17 +2955,37 @@
                 <a href="#top" class="back-to-top">▲ 返回目錄</a>
             </article>
 
-            <article id="reflect-exit-reflections" class="fade-in-section">
+                        <article id="reflect-exit-reflections" class="fade-in-section">
                 <h3>(六) 反思 - 出場反思 Exit Reflections</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M40 10 V 110 H 160 V 10 H 40 Z M 100 60 V 110" fill="#a67c52" stroke="#34495e" stroke-width="2"/>
-                        <circle cx="85" cy="60" r="5" fill="#f1c40f"/>
-                        <text x="15" y="60" font-size="12">出場</text>
-                        <g transform="translate(140, 60)">
-                            <rect x="-25" y="-30" width="50" height="40" rx="3" fill="#f1c40f" stroke="#34495e"/>
-                            <text x="0" y="-18" font-size="8" text-anchor="middle">今日所學:</text>
-                            <text x="0" y="-5" font-size="8" text-anchor="middle">____________</text>
+                    <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Left Side: Student with the Reflection Key -->
+                        <g>
+                            <!-- Student Figure -->
+                            <circle cx="40" cy="50" r="10" fill="#3498db"/>
+                            <path d="M 25 60 a 15 15 0 0 1 30 0 v 20 h -30 z" fill="#3498db"/>
+                            <!-- Reflection Key -->
+                            <g transform="translate(60 70) rotate(-30)">
+                                <rect x="0" y="-5" width="30" height="10" rx="2" fill="#f1c40f" stroke="#34495e"/>
+                                <path d="M 30 -5 h 5 v -3 h 2 v 6 h -2 v -3 h -5" stroke="#34495e" fill="#f1c40f"/>
+                                <text x="15" y="-10" font-size="8" text-anchor="middle">反思票卡</text>
+                            </g>
+                        </g>
+                        
+                        <!-- Center: Arrow indicating action -->
+                         <path d="M 95 70 C 110 65, 125 75, 140 70" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="3 2" fill="none"/>
+
+                        <!-- Right Side: The Locked Door -->
+                        <g>
+                             <!-- Door Frame -->
+                             <rect x="150" y="20" width="60" height="90" fill="#a67c52"/>
+                             <!-- Door -->
+                             <rect x="155" y="25" width="50" height="80" fill="#d3a167"/>
+                             <!-- Lock and Handle -->
+                             <circle cx="190" cy="70" r="5" fill="#f1c40f" stroke="#34495e" stroke-width="1"/>
+                             <circle cx="190" cy="73" r="1.5" fill="#34495e"/>
+                             
+                             <text x="180" y="15" font-size="10" text-anchor="middle">完成反思才能離場</text>
                         </g>
                     </svg>
                 </div>
@@ -1912,14 +3004,36 @@
             <article id="reflect-pre-post-reflections" class="fade-in-section">
                 <h3>(七) 反思 - 單元前/後的反思 Pre-/Post-reflections</h3>
                 <div class="strategy-diagram">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                        <text x="50" y="25" font-size="10" text-anchor="middle">單元前</text>
-                        <rect x="20" y="30" width="60" height="60" fill="#ecf0f1" stroke="#34495e"/>
-                        <path d="M90 60 L 110 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
-                        <text x="100" y="50" font-size="9" text-anchor="middle">學習</text>
-                        <text x="150" y="25" font-size="10" text-anchor="middle">單元後</text>
-                        <rect x="120" y="30" width="60" height="60" fill="#1abc9c" stroke="#34495e"/>
-                        <text x="150" y="63" fill="white" font-size="9">成長</text>
+                    <svg viewBox="0 0 250 140" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Left Side: Pre-Reflection (Scattered Pieces) -->
+                        <g>
+                            <text x="55" y="25" font-size="11" text-anchor="middle" font-weight="bold">單元前 (初步想法)</text>
+                            <g transform="translate(55, 75)" fill="#bdc3c7" stroke="#95a5a6" stroke-width="1">
+                                <!-- Puzzle pieces -->
+                                <path d="M -25 -25 h 20 v 10 c 0 5, -10 5, -10 0 v -10 h -10 Z" transform="rotate(-30)"/>
+                                <path d="M 15 -10 h 20 v 10 c 0,5 10,5 10,0 v-10 Z" transform="rotate(20)"/>
+                                <path d="M -10 20 v -20 h 10 c 5 0, 5 -10, 0 -10 h -10 v -10 Z" transform="rotate(15)"/>
+                                <text x="5" y="-5" font-size="20" fill="#7f8c8d" font-weight="bold">?</text>
+                            </g>
+                        </g>
+
+                        <!-- Center: Arrow of Learning -->
+                        <g>
+                            <path d="M 100 75 L 150 75" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrow)"/>
+                            <text x="125" y="65" font-size="10" text-anchor="middle" fill="#c0392b">學習與反思</text>
+                        </g>
+
+                        <!-- Right Side: Post-Reflection (Assembled Puzzle) -->
+                        <g>
+                            <text x="195" y="25" font-size="11" text-anchor="middle" font-weight="bold">單元後 (系統理解)</text>
+                            <g transform="translate(195, 75)" fill="#1abc9c" stroke="#16a085" stroke-width="1.5">
+                                <!-- Assembled puzzle pieces -->
+                                <path d="M -20 -20 h 20 v 10 c 0,5 -10,5 -10,0 v-10 h -10 Z"/>
+                                <path d="M 0 -20 h 20 v 10 c 0,5 10,5 10,0 v-10 Z"/>
+                                <path d="M -20 0 v -20 h 10 c 5,0 5,-10 0,-10 h-10 v-10 Z"/>
+                                <path d="M 0 0 h 20 v -20 h -10 c -5,0 -5,10 0,10 h10 v10 Z"/>
+                            </g>
+                        </g>
                     </svg>
                 </div>
                 <p><strong>1. 功用：</strong> 協助學生覺察學習前後思考方式的差異，讓他們發現自己如何習得知識，並能清楚表達自己的變化及成長。</p>
@@ -1948,6 +3062,11 @@
     </footer>
 </div>
 
+<div id="mascot-container" title="點我！有驚喜！">
+    <img src="image/LiyuChill.svg" alt="吉祥物 LiyuChill">
+</div>
+<canvas id="particle-canvas"></canvas>
+
 <button id="scrollToTopBtn" title="回到頂部"><i class="fas fa-arrow-up"></i></button>
 
 <script>
@@ -1973,43 +3092,111 @@ if (scrollToTopBtn) {
 
 // Fade-in on Scroll Logic using Intersection Observer
 const sections = document.querySelectorAll('.fade-in-section');
+let observer;
 
-if (window.IntersectionObserver) {
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1 
-    };
+function setupObserver() {
+    if (window.IntersectionObserver) {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
 
-    sections.forEach(section => {
-        observer.observe(section);
-    });
-
-    // To make all initial visible sections appear without scrolling
-    document.addEventListener('DOMContentLoaded', () => {
         sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom >= 0) {
-                 section.classList.add('is-visible');
-                 observer.unobserve(section);
-            }
+            observer.observe(section);
         });
-    });
-} else {
-    // Fallback for older browsers
-    sections.forEach(section => {
-        section.classList.add('is-visible');
-    });
+    } else {
+        sections.forEach(section => {
+            section.classList.add('is-visible');
+        });
+    }
 }
+
+// Mascot and Particle Effect Logic
+const mascotContainer = document.getElementById('mascot-container');
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 5 + 2;
+        this.speedX = Math.random() * 6 - 3;
+        this.speedY = Math.random() * -10 - 2; // Move upwards initially
+        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        this.life = 100;
+        this.gravity = 0.2;
+    }
+    update() {
+        this.speedY += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.life > 0) {
+            this.life -= 1;
+        }
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createParticleBurst(e) {
+    const rect = mascotContainer.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    for (let i = 0; i < 50; i++) {
+        particles.push(new Particle(x, y));
+    }
+    if (particles.length === 50) { // Start animation only if it's not running
+        animateParticles();
+    }
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].life <= 0) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
+    if (particles.length > 0) {
+        requestAnimationFrame(animateParticles);
+    }
+}
+
+if (mascotContainer) {
+    mascotContainer.addEventListener('click', createParticleBurst);
+}
+
+// Initial setup on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    setupObserver();
+});
+
 </script>
 
 </body>
