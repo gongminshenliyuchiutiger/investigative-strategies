@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探究神策略應用展示系統 (Pro)</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50; /* 深藍灰 */
+            --secondary-color: #3498db; /* 亮藍 */
+            --accent-color: #1abc9c;   /* 青綠 */
+            --bg-color: #ecf0f1;       /* 淺灰背景 */
+            --card-bg-color: #ffffff;
+            --text-color: #34495e;
+            --header-text-color: #ffffff;
+            --border-color: #bdc3c7;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--header-text-color);
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        h1 i {
+            margin-right: 15px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 60px;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        h2 i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            background-color: transparent;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+        nav a:hover {
+            background-color: var(--accent-color);
+            color: var(--header-text-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .toc-section {
+            background-color: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .toc-section ul { list-style-type: none; padding-left: 0; }
+        .toc-section > ul > li { margin-top: 15px; }
+        .toc-section > ul > li > a {
+            font-weight: bold; color: var(--primary-color); text-decoration: none; font-size: 1.2em;
+        }
+        .toc-section > ul > li > a i { margin-right: 8px; color: var(--secondary-color); }
+        .toc-section ul ul { padding-left: 30px; margin-top: 8px; }
+        .toc-section ul ul li a { color: var(--text-color); text-decoration: none; }
+        .toc-section a:hover { text-decoration: underline; color: var(--accent-color); }
+
+        article {
+            background-color: var(--card-bg-color);
+            border-left: 5px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        blockquote {
+            background-color: #e9ecef;
+            border-left: 5px solid var(--secondary-color);
+            margin: 20px 0;
+            padding: 15px 20px;
+            font-style: italic;
+            border-radius: 5px;
+        }
+        strong { color: #e74c3c; }
+        ul, ol { padding-left: 25px; }
+
+        .strategy-diagram {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            min-height: 120px;
+        }
+        .strategy-diagram svg {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+
+        .back-to-top {
+            display: block; margin-top: 20px; text-align: right;
+            text-decoration: none; color: var(--secondary-color); font-weight: bold;
+        }
+        .back-to-top:hover { text-decoration: underline; }
+
+        #reference-info {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        footer {
+            text-align: center; margin-top: 40px; padding: 20px;
+            color: #6c757d; border-top: 1px solid var(--border-color);
+        }
+        
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001;
+            border: none;
+            outline: none;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, transform 0.3s;
+            line-height: 50px;
+        }
+        #scrollToTopBtn:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        
+        /* Animation on Scroll */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body id="top">
+
+<div class="container">
+    <header>
+        <h1><i class="fas fa-brain"></i>探究神策略應用展示系統</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#introduction">完整目錄</a></li>
+            <li><a href="#engage">1. 投入</a></li>
+            <li><a href="#focus">2. 聚焦</a></li>
+            <li><a href="#organize">3. 組織</a></li>
+            <li><a href="#generalize">4. 通則</a></li>
+            <li><a href="#transfer">5. 遷移</a></li>
+            <li><a href="#reflect">6. 反思</a></li>
+            <li><a href="#reference">參考資源</a></li>
+        </ul>
+    </nav>
+
+    <div class="toc-section fade-in-section">
+        <h2 id="introduction"><i class="fas fa-sitemap"></i>完整目錄 (Full Table of Contents)</h2>
+        <ul>
+            <li><a href="#engage"><i class="fas fa-hand-sparkles"></i>1. 投入 Engage</a>
+                <ul>
+                    <li><a href="#engage-four-corner-debate">(一) 四角辯論 (Four-corner Debate)</a></li>
+                    <li><a href="#engage-spectrum-statements">(二) 表態光譜 (Spectrum Statements)</a></li>
+                    <li><a href="#engage-simulation">(三) 模擬 (Simulation)</a></li>
+                    <li><a href="#engage-mess-about">(四) 胡搞瞎搞 (Mess About)</a></li>
+                    <li><a href="#engage-question-stretches">(五) 問題延伸 (Question Stretches)</a></li>
+                    <li><a href="#engage-discussion-protocols">(六) 討論協定 (Discussion Protocols)</a></li>
+                    <li><a href="#engage-affinity-diagram">(七) 關係導圖 (Affinity Diagram)</a></li>
+                </ul>
+            </li>
+            <li><a href="#focus"><i class="fas fa-bullseye"></i>2. 聚焦 Focus</a>
+                <ul>
+                    <li><a href="#focus-frayer-model">(一) 弗瑞爾模型 (Frayer Model)</a></li>
+                    <li><a href="#focus-concept-quadrants">(二) 概念象限 (Concept Quadrants)</a></li>
+                    <li><a href="#focus-all-some-none">(三) 全部、部分、沒有 (All, Some, None)</a></li>
+                    <li><a href="#focus-adjectives">(四) 找出屬性 (Adjectives)</a></li>
+                    <li><a href="#focus-group-describe-name">(五) 分類、描述、命名 (Group, Describe, Name)</a></li>
+                    <li><a href="#focus-concept-riddles">(六) 概念謎語 (Concept Riddles)</a></li>
+                    <li><a href="#focus-create-combine">(七) 創造與合併 (Create & Combine)</a></li>
+                    <li><a href="#focus-spectrum-sort">(八) 光譜定位 (Spectrum Sort)</a></li>
+                    <li><a href="#focus-diamond-ranking">(九) 鑽石分層 (Diamond Ranking)</a></li>
+                    <li><a href="#focus-concept-graphs">(十) 概念座標 (Concept Graphs)</a></li>
+                    <li><a href="#focus-dimensions">(十一) 維度排序 (Dimensions)</a></li>
+                    <li><a href="#focus-analogies">(十二) 關係類比 (Analogies)</a></li>
+                </ul>
+            </li>
+            <li><a href="#organize"><i class="fas fa-project-diagram"></i>3. 組織 Organize</a>
+                <ul>
+                    <li><a href="#organize-cross-comparison-chart">(一) 交叉比對表 (Cross-comparison Chart)</a></li>
+                    <li><a href="#organize-trading-cards">(二) 交換卡片 (Trading Cards)</a></li>
+                    <li><a href="#organize-push-pull-hold">(三) 推力、拉力、阻力 (Push, Pull, Hold)</a></li>
+                    <li><a href="#organize-the-missing-piece">(四) 失落的一角 (The Missing Piece)</a></li>
+                    <li><a href="#organize-networks">(五) 網絡 (Networks)</a></li>
+                    <li><a href="#organize-flow-diagrams">(六) 流程圖 (Flow Diagrams)</a></li>
+                    <li><a href="#organize-visual-note-taking">(七) 視覺筆記 (Visual Note-Taking)</a></li>
+                    <li><a href="#organize-annotate-it">(八) 註解 (Annotate It)</a></li>
+                    <li><a href="#organize-social-dramatic-play">(九) 社會性戲劇 (Social-dramatic Play)</a></li>
+                    <li><a href="#organize-linguistic-representation">(十) 語言形式 (Linguistic Representation)</a></li>
+                    <li><a href="#organize-models">(十一) 模型 (Models)</a></li>
+                </ul>
+            </li>
+            <li><a href="#generalize"><i class="fas fa-globe"></i>4. 通則 Generalize</a>
+                 <ul>
+                    <li><a href="#generalize-conceptual-questions">(一) 概念性問題 (Conceptual Questions)</a></li>
+                    <li><a href="#generalize-speed-connections">(二) 快速連結 (Speed Connections)</a></li>
+                    <li><a href="#generalize-connect-4">(三) 連結四方 (Connect 4)</a></li>
+                    <li><a href="#generalize-concept-bank">(四) 概念銀行 (Concept Bank)</a></li>
+                    <li><a href="#generalize-sentence-frames">(五) 句子架構 (Sentence Frames)</a></li>
+                    <li><a href="#generalize-concept-roles">(六) 概念接龍 (Concept Roles)</a></li>
+                    <li><a href="#generalize-concept-mapping">(七) 概念製圖 (Concept Mapping)</a></li>
+                    <li><a href="#generalize-whats-the-connection">(八) 顏色連結 (What's the Connection?)</a></li>
+                    <li><a href="#generalize-pattern-hunters">(九) 模式獵人 (Pattern Hunters)</a></li>
+                    <li><a href="#generalize-micro-generalizing">(十) 微通則 (Micro-generalizing)</a></li>
+                </ul>
+            </li>
+            <li><a href="#transfer"><i class="fas fa-rocket"></i>5. 遷移 Transfer</a>
+                <ul>
+                    <li><a href="#transfer-stress-testing">(一) 壓力測試 (Stress-testing Generalizations)</a></li>
+                    <li><a href="#transfer-on-the-line">(二) 線上討論 (On the Line)</a></li>
+                    <li><a href="#transfer-prove-it">(三) 證明 (Prove It!)</a></li>
+                    <li><a href="#transfer-how-does-it-connect">(四) 如何連結 (How Does It Connect?)</a></li>
+                    <li><a href="#transfer-what-if-questions">(五) 「要是…又會怎樣?」的問題 (“What if…?” Questions)</a></li>
+                    <li><a href="#transfer-performance-assessment">(六) 實作評量 (Performance Assessment)</a></li>
+                    <li><a href="#transfer-create-it">(七) 創造! (Create It!)</a></li>
+                    <li><a href="#transfer-student-led-action">(八) 學生主導行動 (Student-led Action)</a></li>
+                </ul>
+            </li>
+            <li><a href="#reflect"><i class="fas fa-lightbulb"></i>6. 反思 Reflect</a>
+                 <ul>
+                    <li><a href="#reflect-talk-prompts">(一) 談話提示 (Talk Prompts)</a></li>
+                    <li><a href="#reflect-question-bank">(二) 問題銀行 (Question Bank)</a></li>
+                    <li><a href="#reflect-learning-journals">(三) 學習日誌與反思部落格 (Learning Journals and Reflective Blogs)</a></li>
+                    <li><a href="#reflect-task-analysis">(四) 任務分析 (Task Analysis)</a></li>
+                    <li><a href="#reflect-think-aloud">(五) 放聲思考 (Think Aloud)</a></li>
+                    <li><a href="#reflect-exit-reflections">(六) 出場反思 (Exit Reflections)</a></li>
+                    <li><a href="#reflect-pre-post-reflections">(七) 單元前/後的反思 (Pre-/Post-reflections)</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <main>
+        <section id="engage">
+            <h2 class="fade-in-section"><i class="fas fa-hand-sparkles"></i>1. 投入策略 (Engage)</h2>
+            <p class="fade-in-section"><strong>目的：</strong> 活化學生的先備知識，挖掘已知，與引發學習動機。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 投入階段的作用，在吸引學生將情感與智識投入學習。教師運用探究策略，使學生在學習初始，對課程內容產生好奇或疑問，同時喚起學生的先備知識。以舊知識為基礎，向上構築新知，滿足學生想知道更多的慾望，有如按下求知之鈕。</blockquote>
+            <p class="fade-in-section"><strong>投入階段的策略可分成三類：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>意見表達的策略：</strong> 舉凡討論、分享或提問均可，以學生表達想法為主。</li>
+                <li><strong>體驗模擬的策略：</strong> 體驗方式可以是實體觸摸或虛擬情境，建立類似的經驗。</li>
+                <li><strong>引發討論的策略：</strong> 與學生約定討論模式，才不會淪為閒聊。討論後的共同任務也要一併說明清楚，以利進行有意義的討論。</li>
+            </ol>
+
+            <article id="engage-four-corner-debate" class="fade-in-section">
+                <h3>(一) 投入 - 四角辯論 Four-corner Debate</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3498db"/></marker></defs>
+                        <rect x="10" y="10" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="28" font-size="8" text-anchor="middle">非常同意</text>
+                        <rect x="150" y="10" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="28" font-size="8" text-anchor="middle">同意</text>
+                        <rect x="10" y="110" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="128" font-size="8" text-anchor="middle">非常不同意</text>
+                        <rect x="150" y="110" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="128" font-size="8" text-anchor="middle">不同意</text>
+                        <circle cx="100" cy="75" r="5" fill="#e74c3c"/><circle cx="40" cy="60" r="4" fill="#3498db"/><circle cx="160" cy="90" r="4" fill="#3498db"/>
+                        <path d="M 100 80 Q 80 100 50 115" stroke="#3498db" stroke-width="1.5" stroke-dasharray="3,2" fill="none" marker-end="url(#arrow)"/>
+                        <path d="M 40 65 Q 80 80 95 80" stroke="#3498db" stroke-width="1.5" stroke-dasharray="3,2" fill="none" marker-end="url(#arrow)"/>
+                        <text x="100" y="70" font-size="8" text-anchor="middle">改變立場</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生表達意見、觸發思考、投入學習。讓教師了解學生的先備知識以及迷思概念。</p>
+                <p><strong>2. 建議：</strong> 教師在操作前，先說明預期的效果，營造開放安全的討論環境，讓學生放心地暢所欲言。讓學生用圖像或表格記錄聽到的重點，進而深入了解單元概念。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師在教室角落標示四個立場，例如：非常同意、同意、不同意、非常不同意。</li>
+                    <li>教師提出一個具啟發性的陳述句，讓學生選擇立場。</li>
+                    <li>學生陳述選擇的理由，並在聽取各方不同意見後，可以改變立場並移動位置。</li>
+                    <li>教師請改變立場的學生說明移動的理由。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="engage-spectrum-statements" class="fade-in-section">
+                <h3>(二) 投入 - 表態光譜 Spectrum Statements</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="10" y1="50" x2="190" y2="50" stroke="#34495e" stroke-width="2"/>
+                        <text x="10" y="35" font-size="9" text-anchor="start">非常不同意</text>
+                        <text x="190" y="35" font-size="9" text-anchor="end">非常同意</text>
+                        <circle cx="25" cy="50" r="5" fill="#3498db"/><circle cx="60" cy="50" r="5" fill="#1abc9c"/><circle cx="80" cy="50" r="5" fill="#3498db"/>
+                        <circle cx="150" cy="50" r="5" fill="#e74c3c"/><circle cx="175" cy="50" r="5" fill="#e74c3c"/>
+                        <g transform="translate(100, 75)">
+                            <circle cx="0" cy="0" r="8" fill="#f1c40f" stroke="#34495e" stroke-width="1"/>
+                            <text x="0" y="3" font-size="8" text-anchor="middle">立場</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生表達意見、觸發思考、投入學習。讓教師了解學生的先備知識以及迷思概念。重點在藉由光譜的位置分布看出立場的差異。</p>
+                <p><strong>2. 建議：</strong> 本策略可以運用熱椅(hot seat)，讓學生進行表達與聆聽。或使用T型圖，記錄不同的想法，有助於提取「概念」。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>在教室拉出一條光譜線，兩端設定相對的詞語，例如：同意(非常同意到非常不同意)、頻率(絕不到總是)、重要性(重要到不重要)、熟悉度(熟悉到不熟悉)等。</li>
+                    <li>學生在光譜線上選擇可以表達他的立場的位置。</li>
+                    <li>教師提醒學生看看大家分布的狀況，是不是具有某種意義，然後邀請不同位置的學生，坐在熱椅 (hot seat) 上分享想法。</li>
+                    <li>教師預先準備可辯論的陳述句。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="engage-simulation" class="fade-in-section">
+                <h3>(三) 投入 - 模擬 Simulation</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs><marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e74c3c"/></marker></defs>
+                        <g transform="translate(40, 50)">
+                            <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
+                            <text x="0" y="40" font-size="9" text-anchor="middle">角色A</text>
+                        </g>
+                        <g transform="translate(160, 50)">
+                            <circle cx="0" cy="-10" r="10" fill="#1abc9c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#1abc9c"/>
+                            <text x="0" y="40" font-size="9" text-anchor="middle">角色B</text>
+                        </g>
+                        <path d="M 60 40 Q 100 10 140 40" stroke="#34495e" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+                        <text x="100" y="30" font-size="9" text-anchor="middle">互動/對話</text>
+                        <path d="M 80 80 Q 100 95 120 80" stroke="#e74c3c" stroke-width="1.5" fill="none" marker-start="url(#arrowhead)" marker-end="url(#arrowhead)"/>
+                        <text x="100" y="75" font-size="9" text-anchor="middle">換位思考</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 當學生缺乏相關經驗或無法理解他人觀點時，可以使用戲劇模擬或是數位模擬策略，讓學生跳脫原有的生活經驗，在不同的情境中思考，理解複雜概念間的關係。</p>
+                <p><strong>2. 建議：</strong> 設計模擬策略時須評估學生的年齡和背景，因為過程中可能會產生較強烈的情緒反應，學生承受程度應列為考量項目。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師指定角色或情境，進行戲劇或是數位模擬，可提供學生文本或影片，也可以口述相關資料。過程中教師可以提出探究性問題，讓學生進行思考。</li>
+                    <li>模擬後，教師給學生反思時間，讓學生用各種形式(例如：書寫或繪圖)，說明學到什麼，感受到什麼。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+            
+            <article id="engage-mess-about" class="fade-in-section">
+                <h3>(四) 投入 - 胡搞瞎搞 Mess About</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Magnifying Glass -->
+                        <g transform="translate(40, 50)">
+                            <circle cx="0" cy="0" r="15" stroke="#3498db" stroke-width="3" fill="rgba(52, 152, 219, 0.2)"/>
+                            <line x1="12" y1="12" x2="25" y2="25" stroke="#34495e" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+                        <!-- Gear -->
+                        <g transform="translate(100, 50)">
+                            <path d="M 0 -15 L 3 -12 L 6 -13 L 9 -10 L 12 -9 L 13 -6 L 15 0 L 13 6 L 12 9 L 9 10 L 6 13 L 3 12 L 0 15 L -3 12 L -6 13 L -9 10 L -12 9 L -13 6 L -15 0 L -13 -6 L -12 -9 L -9 -10 L -6 -13 L -3 -12 Z" fill="#1abc9c"/>
+                            <circle cx="0" cy="0" r="5" fill="#ecf0f1"/>
+                        </g>
+                        <!-- Question Mark -->
+                        <g transform="translate(160, 50)">
+                            <text x="0" y="10" font-size="40" fill="#e74c3c" text-anchor="middle" font-weight="bold">?</text>
+                        </g>
+                        <text x="100" y="90" font-size="10" text-anchor="middle">觀察、動手、探索、提問</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生帶著先備知識與興趣進入單元，提供學生進行觀察的機會，目的在引發好奇心。</p>
+                <p><strong>2. 建議：</strong> 胡搞瞎搞中的探索是開放的，除了「你注意到了什麼？」之外，沒有特別可做或不可做的規定。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師陳列學生好奇的物品，鼓勵學生觀察並提出好奇的事情，引誘學生動手探索，藉此喚起學生的先備知識。</li>
+                    <li>在探索過程中，讓學生分享觀察(或探究)的心得，進而產生新的思考，此時學生可能想要進行新的嘗試。教師可以給學生第二次機會探索，並記錄學生們的發現。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="engage-question-stretches" class="fade-in-section">
+                <h3>(五) 投入 - 問題延伸 Question Stretches</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <text x="30" y="55" font-size="40" fill="#3498db" text-anchor="middle">?</text>
+                        <path d="M 50 50 C 70 30, 90 70, 110 50" stroke="#34495e" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                        <text x="80" y="35" font-size="10" text-anchor="middle">延伸</text>
+                        <g transform="translate(140, 50)">
+                            <text x="0" y="-15" font-size="20" fill="#1abc9c" text-anchor="middle">?</text>
+                            <text x="20" y="0" font-size="20" fill="#e74c3c" text-anchor="middle">?</text>
+                            <text x="0" y="15" font-size="20" fill="#f1c40f" text-anchor="middle">?</text>
+                            <text x="-20" y="0" font-size="20" fill="#9b59b6" text-anchor="middle">?</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生開始探索時，提出的問題都是「初步想法」，或是對主題相關的概念產生好奇和疑問，學生透過問題延伸的探索，拓展思考層面。</p>
+                <p><strong>2. 建議：</strong> 教師可視情況，使用一個或多個問題延伸策略來進行探索。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>讓學生對相關名詞、影片、照片等素材，提出幾個問題，教師進行四種問題延伸的示範，再讓學生以個人或小組完成問題延伸的任務。</li>
+                    <li>問題延伸的策略有以下四種：
+                        <ol>
+                            <li>封閉問題改成開放問題，開放問題改成封閉問題。</li>
+                            <li>讓學生提出「我好奇的是……」並加入 5W1H 的疑問詞。</li>
+                            <li>排列問題的優先順序，最想知道的是……。</li>
+                            <li>將所有提問進行分類並將每一類進行命名。</li>
+                        </ol>
+                    </li>
+                    <li>教師預先準備各種相關素材，以及四種問題延伸的示範內容。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="engage-discussion-protocols" class="fade-in-section">
+                <h3>(六) 投入 - 討論協定 Discussion Protocols</h3>
+                <div class="strategy-diagram">
+                     <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Silent Dialogue -->
+                        <g transform="translate(50, 30)">
+                           <path d="M-20 -15 L 20 -15 L 20 10 L 0 10 L -5 15 L -5 10 L -20 10 Z" fill="#ecf0f1" stroke="#34495e"/>
+                           <line x1="0" y1="-5" x2="10" y2="-5" stroke="#34495e"/><line x1="-15" y1="0" x2="15" y2="0" stroke="#34495e"/>
+                           <text x="0" y="-18" font-size="8">靜默對話</text>
+                        </g>
+                        <!-- Think Square -->
+                         <g transform="translate(150, 30)">
+                            <circle cx="-10" cy="-10" r="5" fill="#3498db"/><circle cx="10" cy="-10" r="5" fill="#3498db"/>
+                            <circle cx="-10" cy="10" r="5" fill="#3498db"/><circle cx="10" cy="10" r="5" fill="#3498db"/>
+                            <text x="0" y="-18" font-size="8">四人配對</text>
+                        </g>
+                        <!-- Stop and Talk -->
+                        <g transform="translate(50, 90)">
+                            <circle cx="0" cy="0" r="12" fill="#f1c40f" /><text x="0" y="4" font-size="10" text-anchor="middle">停</text>
+                            <text x="0" y="-15" font-size="8">停下來說</text>
+                        </g>
+                        <!-- Token Talk -->
+                        <g transform="translate(150, 90)">
+                           <circle cx="-5" cy="0" r="8" fill="#e74c3c" stroke="#34495e"/>
+                           <circle cx="5" cy="5" r="8" fill="#e74c3c" stroke="#34495e"/>
+                           <text x="0" y="-15" font-size="8">代幣交談</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 提供學生對話模式，協助學生進行發表與聆聽。</p>
+                <p><strong>2. 建議：</strong> 小組討論後進行全班分享，讓學生對不同意見以開放的心態去思考。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>以下提供四種討論協定：
+                        <ol>
+                            <li><strong>靜默對話：</strong>教師提出問題，學生將個人想法寫在紙上，完成後彼此交換紙張，寫下個人回應在該紙上，過程中保持靜默。</li>
+                            <li><strong>停下來開始說：</strong>教師先說明要在那個環節停下來進行討論。留時間讓學生進行反思再討論。</li>
+                            <li><strong>四人配對 (Think Square)：</strong>四人一組配對討論，類似小組討論。</li>
+                            <li><strong>代幣交談：</strong>學生每人代幣三枚，每人每次發言使用代幣一枚，使用完畢不可以再發言，所有的學生一定要用完代幣。</li>
+                        </ol>
+                    </li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="engage-affinity-diagram" class="fade-in-section">
+                <h3>(七) 投入 - 關係導圖 Affinity Diagram</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ungrouped -->
+                        <rect x="10" y="20" width="15" height="12" fill="#3498db" rx="2"/>
+                        <rect x="30" y="45" width="15" height="12" fill="#1abc9c" rx="2"/>
+                        <rect x="50" y="15" width="15" height="12" fill="#3498db" rx="2"/>
+                        <rect x="25" y="70" width="15" height="12" fill="#e74c3c" rx="2"/>
+                        <rect x="55" y="60" width="15" height="12" fill="#1abc9c" rx="2"/>
+                        <rect x="15" y="90" width="15" height="12" fill="#e74c3c" rx="2"/>
+                        <!-- Arrow -->
+                        <path d="M 80 60 L 110 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="95" y="55" font-size="9" text-anchor="middle">組織</text>
+                        <!-- Grouped -->
+                        <rect x="120" y="10" width="60" height="30" fill="none" stroke="#3498db" stroke-dasharray="3,2"/>
+                        <rect x="125" y="15" width="15" height="12" fill="#3498db" rx="2"/>
+                        <rect x="145" y="15" width="15" height="12" fill="#3498db" rx="2"/>
+                        <rect x="120" y="45" width="60" height="30" fill="none" stroke="#1abc9c" stroke-dasharray="3,2"/>
+                        <rect x="125" y="50" width="15" height="12" fill="#1abc9c" rx="2"/>
+                        <rect x="145" y="50" width="15" height="12" fill="#1abc9c" rx="2"/>
+                        <rect x="120" y="80" width="60" height="30" fill="none" stroke="#e74c3c" stroke-dasharray="3,2"/>
+                        <rect x="125" y="85" width="15" height="12" fill="#e74c3c" rx="2"/>
+                        <rect x="145" y="85" width="15" height="12" fill="#e74c3c" rx="2"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 幫助學生蒐集、組織先備知識，將先備知識分門別類。</p>
+                <p><strong>2. 建議：</strong> 概念性標題以二到四個字為佳。關係導圖可以讓學生體會，小組或班級的思考多樣性。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師提出具體事實的提示，學生寫下個人想法，一個便利貼寫一個，可以寫數個。接著小組或全班分享便利貼上的內容。</li>
+                    <li>教師提出概念性問題，學生根據問題將便利貼上的想法，進行排序和分類，教師鼓勵學生說明分類的理由。</li>
+                    <li>接著用二到四個字的概念性標題為每個類目命名，最後進行小組分享。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+
+        <section id="focus">
+            <h2 class="fade-in-section"><i class="fas fa-bullseye"></i>2. 聚焦策略 (Focus)</h2>
+            <p class="fade-in-section"><strong>目的：</strong> 在此階段，專注在概念思考的第一步驟，形成概念。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 聚焦階段專注在概念的形成，為概念性思考的第一步。也就是以概念為基礎，設計探究策略，讓學生對概念有共同的理解。老師引導學生了解相關的事例，在事例的引導之下說明單元概念。學生對概念有了初步的想法，但可能太廣泛或是很模糊，所以更需要聚焦對概念的共同理解。在聚焦階段使用的策略運用歸納或演繹法，教師可以交叉使用歸納或演繹，使學生明確了解所要學習的概念特性或要素是什麼。</blockquote>
+            <p class="fade-in-section"><strong>聚焦概念可用的策略有分類、命名、排序三類：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>分類：</strong> 區分概念的特性或特徵。</li>
+                <li><strong>命名：</strong> 為具共同特性或特徵的事例命名，以統整概念的共同特質。</li>
+                <li><strong>排序：</strong> 釐清概念特性或特徵的強度多寡，建立宏觀概念與微觀概念的思維。</li>
+            </ol>
+
+            <article id="focus-frayer-model" class="fade-in-section">
+                <h3>(一) 聚焦 - 弗瑞爾模型 Frayer Model</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="70" y="55" width="60" height="40" fill="#3498db" stroke="#2c3e50" rx="3"/><text x="100" y="78" fill="white" font-size="12" text-anchor="middle">概念</text>
+                        <rect x="10" y="10" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="45" y="32" font-size="9" text-anchor="middle">定義</text>
+                        <rect x="120" y="10" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="155" y="32" font-size="9" text-anchor="middle">特點/屬性</text>
+                        <rect x="10" y="100" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="45" y="122" font-size="9" text-anchor="middle">例子</text>
+                        <rect x="120" y="100" width="70" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="155" y="122" font-size="9" text-anchor="middle">非例子</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生對概念進行拆解，分辨出概念的定義、特性、例子和非例子，最終目的在展開對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 弗瑞爾模型可作為單元開始的前測，或學生學習的工具。隨著理解的展開，可以用不同顏色的筆，寫下新的學習。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>請學生思考，一一列出概念的定義、特性、例子與非例子。</li>
+                    <li>教師可依學生程度，提供例子或非例子讓學生進行分類，再歸納出例子的共同特性與定義。或是提供特性與定義，要求學生寫出例子及非例子。</li>
+                    <li>教師在準備弗瑞爾模型圖時，可依學生程度，提供與概念相關的定義、特性、例子、非例子，印製成學習單。</li>
+                    <li>圖表結構：一個中心方格寫「概念」，周圍四個方格分別是「定義」、「特點/屬性」、「例子」、「非例子」。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+            
+            <article id="focus-concept-quadrants" class="fade-in-section">
+                <h3>(二) 聚焦 - 概念象限 Concept Quadrants</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 75 10 L 75 140 M 10 75 L 140 75" stroke="#bdc3c7" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="15" fill="#1abc9c"/>
+                        <circle cx="110" cy="40" r="15" fill="#1abc9c"/>
+                        <circle cx="40" cy="110" r="15" fill="#1abc9c"/>
+                        <rect x="95" y="95" width="30" height="30" fill="#e74c3c" rx="5"/>
+                        <text x="110" y="135" font-size="10" fill="#e74c3c">非例子</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 挑出三同一異的例子，讓學生探索異同，加深對概念特質的理解，能夠聚焦概念的共通屬性。</p>
+                <p><strong>2. 建議：</strong> 象限中的例子，可以使用圖像、符號、文字、影像等。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>在 2x2 的四格象限表中，放進三個例子和一個非例子，學生依據對概念的理解，找出一個與其他三個明顯不同的例子，說明為什麼不同。</li>
+                    <li>如果學生無法判斷，教師可以提供重要線索，幫助學生判斷。教師請學生說明，例子之間共同特性，以掌握概念關鍵特性的理解。</li>
+                    <li>了解概念的關鍵性質之後，請學生以此概念仿作概念象限，以確認學生真正理解此概念。</li>
+                    <li>教師預先做成三同一異的概念象限，可以多準備幾個。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-all-some-none" class="fade-in-section">
+                <h3>(三) 聚焦 - 全部、部分、沒有 All, Some, None</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <!-- All -->
+                        <g transform="translate(35, 40)">
+                            <circle cx="0" cy="0" r="20" fill="rgba(52, 152, 219, 0.3)" stroke="#3498db" stroke-width="2"/>
+                            <circle cx="0" cy="0" r="10" fill="#3498db"/>
+                            <text x="0" y="30" font-size="9" text-anchor="middle">全部</text>
+                        </g>
+                        <!-- Some -->
+                        <g transform="translate(100, 40)">
+                            <circle cx="-10" cy="0" r="20" fill="rgba(26, 188, 156, 0.3)" stroke="#1abc9c" stroke-width="2"/>
+                            <circle cx="10" cy="0" r="20" fill="rgba(26, 188, 156, 0.3)" stroke="#1abc9c" stroke-width="2"/>
+                            <text x="0" y="30" font-size="9" text-anchor="middle">部分</text>
+                        </g>
+                        <!-- None -->
+                        <g transform="translate(165, 40)">
+                             <circle cx="-15" cy="0" r="15" fill="rgba(231, 76, 60, 0.3)" stroke="#e74c3c" stroke-width="2"/>
+                             <circle cx="15" cy="0" r="15" fill="rgba(231, 76, 60, 0.3)" stroke="#e74c3c" stroke-width="2"/>
+                            <text x="0" y="30" font-size="9" text-anchor="middle">沒有</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生探索兩個或多個概念之間的關係。</p>
+                <p><strong>2. 建議：</strong> 可以使用下列敘述方式，例如：「(概念A) 包含 (概念B)，因為……」、「(概念 A) 和 (概念 B) 有交集，因為……」、「(概念 A) 和 (概念 B) 沒有交集，因為……」來描述概念之間的關係。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師提供實例(或概念)數個，將例子分類，確立同類事例的特性，再讓學生比較異同。</li>
+                    <li>教師引導學生思考「這些例子有什麼共同點？」教師紀錄學生的語言，然後呈現學生提到的概念特徵。</li>
+                    <li>教師向學生展示三種類型的集合圖示（包含、交集、無交集），讓學生思考事例之間的關係模式，是彼此包含、有共同交集或無交集。讓學生依選定的集合圖示，將實例(或概念)填寫於其中。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-adjectives" class="fade-in-section">
+                <h3>(四) 聚焦 - 找出屬性 Adjectives</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="60" r="20" fill="#f1c40f"/>
+                        <text x="100" y="65" font-size="10" text-anchor="middle">概念</text>
+                        <line x1="100" y1="40" x2="100" y2="20" stroke="#34495e"/>
+                        <text x="100" y="15" font-size="9" text-anchor="middle">屬性A</text>
+                        <line x1="120" y1="60" x2="140" y2="60" stroke="#34495e"/>
+                        <text x="155" y="64" font-size="9" text-anchor="middle">屬性B</text>
+                        <line x1="80" y1="60" x2="60" y2="60" stroke="#34495e"/>
+                        <text x="45" y="64" font-size="9" text-anchor="middle">屬性C</text>
+                        <line x1="100" y1="80" x2="100" y2="100" stroke="#34495e"/>
+                        <text x="100" y="110" font-size="9" text-anchor="middle">屬性D</text>
+                        <line x1="114" y1="46" x2="130" y2="30" stroke="#34495e"/>
+                        <text x="135" y="25" font-size="9" text-anchor="start">屬性E</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生描述與此概念相關之形容詞，幫助學生形成概念理解。</p>
+                <p><strong>2. 建議：</strong> 可將各組、全班的詞彙表和定義張貼在一起，讓學生看見個人和集體定義建構的過程。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ol>
+                    <li><strong>使用形容詞來描述：</strong> 讓學生寫下相關詞彙來描述這個教學素材。</li>
+                    <li><strong>檢視與整理各組詞彙：</strong> 各組分享所寫的形容詞，是否重複、類似或不同？經過討論，繪製成全班的共同詞彙表。</li>
+                    <li><strong>帶入舊概念堆疊新理解：</strong> 教師提供未出現在全班詞彙表，但對建構定義，帶入重要的舊概念。</li>
+                    <li><strong>創造與分享定義：</strong> 學生創造、分享所撰寫的定義，並張貼出來。要求學生反思如何互相補充，讓定義更完整。</li>
+                </ol>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-group-describe-name" class="fade-in-section">
+                <h3>(五) 聚焦 - 分類、描述、命名 Group, Describe, Name</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="5" fill="#3498db"/><rect x="35" y="15" width="10" height="10" fill="#1abc9c"/><path d="M55 15 L65 25 L 55 25 Z" fill="#e74c3c"/>
+                        <circle cx="20" cy="40" r="5" fill="#3498db"/><rect x="35" y="35" width="10" height="10" fill="#1abc9c"/><path d="M55 35 L65 45 L 55 45 Z" fill="#e74c3c"/>
+                        
+                        <path d="M 75 30 L 95 30" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/><text x="85" y="25" font-size="8">分類</text>
+                        
+                        <rect x="110" y="10" width="70" height="30" fill="none" stroke="#3498db" stroke-dasharray="2,2"/>
+                        <circle cx="120" cy="25" r="5" fill="#3498db"/><circle cx="135" cy="25" r="5" fill="#3498db"/>
+                        <text x="155" y="29" font-size="8" fill="#3498db">命名A</text>
+
+                        <rect x="110" y="45" width="70" height="30" fill="none" stroke="#1abc9c" stroke-dasharray="2,2"/>
+                        <rect x="118" y="55" width="10" height="10" fill="#1abc9c"/><rect x="133" y="55" width="10" height="10" fill="#1abc9c"/>
+                         <text x="155" y="64" font-size="8" fill="#1abc9c">命名B</text>
+
+                        <rect x="110" y="80" width="70" height="30" fill="none" stroke="#e74c3c" stroke-dasharray="2,2"/>
+                        <path d="M118 88 L128 98 L 118 98 Z" fill="#e74c3c"/><path d="M133 88 L143 98 L 133 98 Z" fill="#e74c3c"/>
+                        <text x="155" y="99" font-size="8" fill="#e74c3c">命名C</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 「分類、描述、命名」用於初步認識概念，或在單元後鞏固學生對概念的理解。此方法在訓練學生使用歸納法來整理素材。</p>
+                <p><strong>2. 建議：</strong> 命名時以充分反應共同屬性的名詞為佳。可以要求學生重新審視分類結果，是否有更好的分類方式，刺激學生多方思考。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>首先呈現相關素材，讓學生進行觀察並連結先備知識來思考。</li>
+                    <li>接著分析這些素材內容有什麼異同？詢問學生「那些看起來像是一樣的(同一類)……」，要求學生將類似的素材分類。此步驟是讓學生發現概念的特性。</li>
+                    <li>鼓勵學生解釋分類的邏輯，分為同一類的理由是什麼？最後讓學生以概念相同屬性的素材命名。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-concept-riddles" class="fade-in-section">
+                <h3>(六) 聚焦 - 概念謎語 Concept Riddles</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M80 20 L90 20 L90 30 L100 30 L100 40 L110 40 L110 50 L100 50 L100 60 L90 60 L90 50 L80 50 Z" fill="#3498db"/>
+                        <path d="M100 40 L110 40 L110 50 L120 50 L120 60 L110 60 L110 70 L100 70 Z" fill="#1abc9c"/>
+                        <path d="M90 60 L100 60 L100 70 L90 70 L90 80 L80 80 L80 70 L70 70 L70 60 Z" fill="#e74c3c"/>
+                        <text x="100" y="95" font-size="10" text-anchor="middle">我是什麼概念?</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 透過創造概念謎語，固化學生對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 謎語可由教師提供，亦可由學生自行創作，班級內互相猜謎。</p>
+                <p><strong>3. 方法：</strong> 學生對單元概念有初步了解後，可以設計能夠反映概念重要屬性的謎語。教師可以根據學生年齡和對概念的熟悉程度，提供適切的鷹架。例如：</p>
+                <ul>
+                    <li>第1行：我是一部分 / 一種(與主題或跟更宏觀的概念連接)。</li>
+                    <li>第2行：關於其中一個關鍵屬性的訊息。</li>
+                    <li>第3行：其中第二個關鍵屬性的訊息。</li>
+                    <li>第4行：其中第三個關鍵屬性的訊息。</li>
+                    <li>第5行：我是什麼概念呢？</li>
+                </ul>
+                <p>課堂上解謎活動，教師可視情況進行。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-create-combine" class="fade-in-section">
+                <h3>(七) 聚焦 - 創造與合併 Create & Combine</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Grid 1 -->
+                        <g transform="translate(30, 50) scale(0.5)">
+                           <path d="M-15-15 h30 v30 h-30z m10 0 v30 m10-30 v30 m-20-10 h30 m-30-10 h30" stroke="#3498db" fill="none"/>
+                        </g>
+                         <!-- Grid 2 -->
+                        <g transform="translate(70, 50) scale(0.5)">
+                           <path d="M-15-15 h30 v30 h-30z m10 0 v30 m10-30 v30 m-20-10 h30 m-30-10 h30" stroke="#1abc9c" fill="none"/>
+                        </g>
+                        <!-- Plus -->
+                        <text x="95" y="55" font-size="20" text-anchor="middle">+</text>
+                        <!-- Arrow -->
+                        <path d="M 110 50 L 130 50" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <!-- Combined Grid -->
+                        <g transform="translate(160, 50) scale(0.8)">
+                           <path d="M-20-20 h40 v40 h-40z m13.3 0 v40 m13.4-40 v40 m-26.7-13.3 h40 m-40-13.4 h40" stroke="#e74c3c" fill="none" stroke-width="2"/>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生個人發想，再歸納眾人思維，澄清定義模糊的概念。</p>
+                <p><strong>2. 建議：</strong> 教師可依人數及時間自行調整，是二人或是三人的討論。合併的過程至少三輪。每一次的合併時間最多五到七分鐘。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>學生寫下個人對此概念的發想，填入九宮格，與其他人整合。</li>
+                    <li>二人或三人整合一次，再四人或六人，再八人或十二人，歸納成新的九宮格，經過多次的合併，最後形成全班共同理解的定義。</li>
+                    <li>圖表如下：一個九宮格，中間格為「概念」。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-spectrum-sort" class="fade-in-section">
+                <h3>(八) 聚焦 - 光譜定位 Spectrum Sort</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="10" y1="50" x2="190" y2="50" stroke="#34495e" stroke-width="2"/>
+                        <text x="10" y="35" font-size="9" text-anchor="start">最不安全</text>
+                        <text x="190" y="35" font-size="9" text-anchor="end">最安全</text>
+                        <rect x="20" y="42" width="16" height="16" fill="#e74c3c" rx="2"/>
+                        <rect x="60" y="42" width="16" height="16" fill="#f1c40f" rx="2"/>
+                        <rect x="130" y="42" width="16" height="16" fill="#1abc9c" rx="2"/>
+                        <rect x="170" y="42" width="16" height="16" fill="#3498db" rx="2"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 運用有程度差異的事例，排出順序，以聚焦對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 光譜定位的結論，可以展示在教室裡，作為學習的提醒。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師選擇與概念相關的尺度，例如：「安全」可界定為「最安全」到「最不安全」。</li>
+                    <li>讓學生將例子(圖片、文字卡或實物)，依討論結果放置在光譜線上，排定位置後，請學生說明安排的理由。教師可進一步挑戰學生，再增加一個例子，讓學生重新排序。</li>
+                    <li>然後教師引導全班一起討論，例如：最安全的事例有什麼共通點？最不安全的事例有什麼共通點？最後邀請學生多想出一些事例，加到全班的光譜定位上。</li>
+                    <li>教師可預先準備不同程度相對應的事例、光譜線以及光譜線兩端的詞彙。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-diamond-ranking" class="fade-in-section">
+                <h3>(九) 聚焦 - 鑽石分層 Diamond Ranking</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                        <text x="100" y="15" font-size="10" text-anchor="middle">最重要</text>
+                        <!-- Row 1 -->
+                        <rect x="80" y="25" width="40" height="30" fill="#1abc9c" stroke="#34495e" rx="3"/>
+                        <!-- Row 2 -->
+                        <rect x="45" y="65" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <rect x="115" y="65" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <!-- Row 3 -->
+                        <rect x="10" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <rect x="80" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <rect x="150" y="105" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <!-- Row 4 -->
+                        <rect x="45" y="145" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <rect x="115" y="145" width="40" height="30" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <!-- Row 5 -->
+                        <rect x="80" y="185" width="40" height="30" fill="#e74c3c" stroke="#34495e" rx="3"/>
+                        <text x="100" y="180" font-size="10" text-anchor="middle">最不重要</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 將概念相關的9個事例排列成鑽石形狀，以聚焦對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 這個策略適用於容易引發辯論和對話的概念。學生須具備足夠的背景知識才能進行討論。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師以學生已了解的事例來進行，透過討論以概念屬性的程度將事例排出五層的鑽石層級。五層卡片的數量依上而下 1-2-3-2-1。</li>
+                    <li>鼓勵學生解釋9張卡片的內容。放在同一層的卡片具相同等級的屬性，學生必須能說明排列的理由。</li>
+                    <li>接下來二組對照彼此的鑽石排列，討論各組排列的邏輯性。</li>
+                    <li>教師需準備概念相關的事例，製成9張卡片。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-concept-graphs" class="fade-in-section">
+                <h3>(十) 聚焦 - 概念座標 Concept Graphs</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Axes -->
+                        <line x1="15" y1="135" x2="135" y2="135" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <text x="140" y="140" font-size="9">概念X</text>
+                        <line x1="15" y1="135" x2="15" y2="15" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <text x="5" y="15" font-size="9">概念Y</text>
+                        <!-- Points -->
+                        <circle cx="40" cy="110" r="5" fill="#3498db"/>
+                        <circle cx="80" cy="80" r="5" fill="#1abc9c"/>
+                        <circle cx="110" cy="40" r="5" fill="#e74c3c"/>
+                        <circle cx="60" cy="50" r="5" fill="#f1c40f"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 在兩個概念形成的XY 座標，讓學生將事例排列在座標中，看見事例的差異，以聚焦對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 兩個概念依教材取得。教師預先找到具兩個概念特性的事例。可以在座標軸內畫出九個空格，讓學生容易找到對應的位置來擺放，不必填滿九個空格。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師對事例進行說明。選擇兩個概念，一個為X軸橫軸，一個為Y軸縱軸。</li>
+                    <li>教師介紹圖表後，提出事實性例子，讓學生分組討論，將例子放置在 XY 座標內，並能說出排列的原因。</li>
+                    <li>小組彼此討論相似和相異之處。教師紀錄學生討論過程中是否仍有一些迷思，或產生「重要的想法」。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-dimensions" class="fade-in-section">
+                <h3>(十一) 聚焦 - 維度排序 Dimensions</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Dimension 1 -->
+                        <text x="5" y="25" font-size="8">維度A</text>
+                        <line x1="50" y1="25" x2="190" y2="25" stroke="#34495e" stroke-width="1.5"/>
+                        <rect x="60" y="17" width="16" height="16" fill="#e74c3c" rx="2"/><circle cx="110" cy="25" r="8" fill="#3498db"/><path d="M152 17 L 168 17 L 160 33 Z" fill="#1abc9c"/>
+                        <!-- Dimension 2 -->
+                        <text x="5" y="75" font-size="8">維度B</text>
+                        <line x1="50" y1="75" x2="190" y2="75" stroke="#34495e" stroke-width="1.5"/>
+                        <circle cx="70" cy="75" r="8" fill="#3498db"/><rect x="112" y="67" width="16" height="16" fill="#e74c3c" rx="2"/><path d="M162 67 L 178 67 L 170 83 Z" fill="#1abc9c"/>
+                         <!-- Dimension 3 -->
+                        <text x="5" y="125" font-size="8">維度C</text>
+                        <line x1="50" y1="125" x2="190" y2="125" stroke="#34495e" stroke-width="1.5"/>
+                        <path d="M52 117 L 68 117 L 60 133 Z" fill="#1abc9c"/><circle cx="110" cy="125" r="8" fill="#3498db"/><rect x="152" y="117" width="16" height="16" fill="#e74c3c" rx="2"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 將相同的事例，按照不同的面向進行排序，讓學生看出不同的微觀概念具有共同特性。</p>
+                <p><strong>2. 建議：</strong> 光譜線可以在紙上繪製或設置在桌面上，若是在桌上，可以貼上膠帶做成一條光譜線。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師設置好光譜線，光譜線上標明面向，兩端為不同程度的文字，例如：(高、低)、(強、弱)。</li>
+                    <li>教師提供寫有概念的卡片、概念的定義及三至四個面向，小組每次以一個面向來討論，將卡片排序在光譜線上。</li>
+                    <li>情況許可的話，每排完一次照一張相，學生可在最後看到大家討論的過程。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="focus-analogies" class="fade-in-section">
+                <h3>(十二) 聚焦 - 關係類比 Analogies</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- A is to B -->
+                        <g transform="translate(40,50)">
+                            <path d="M-15-10 h10 v-5 l10 10 l-10 10 v-5 h-10z" fill="#3498db" />
+                            <text x="-25" y="5" font-size="12">A</text>
+                            <text x="25" y="5" font-size="12">B</text>
+                        </g>
+                        <!-- :: (as) -->
+                        <text x="100" y="55" font-size="20" text-anchor="middle">::</text>
+                        <!-- C is to D -->
+                         <g transform="translate(160,50)">
+                            <path d="M-15-10 h10 v-5 l10 10 l-10 10 v-5 h-10z" fill="#1abc9c" />
+                            <text x="-25" y="5" font-size="12">C</text>
+                            <text x="25" y="5" font-size="12">D</text>
+                        </g>
+                        <text x="100" y="85" font-size="10" text-anchor="middle">A之於B 就像 C之於D</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生將概念類比成另一個已知的物品或現象，來理解概念之間的關係。</p>
+                <p><strong>2. 建議：</strong> 能講出概念與這個類比物的共同屬性，表示學生真正理解此概念，可以做為理解程度的評量。</p>
+                <p><strong>3. 方法：</strong> 教師可以提供不同句型，讓學生對概念進行類比，例如：</p>
+                <ul>
+                    <li>小學階段：「……就像……。這意味著……」</li>
+                    <li>中學階段：「……之於……就像……之于……，因為……」</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+
+        <section id="organize">
+            <h2 class="fade-in-section"><i class="fas fa-project-diagram"></i>3. 組織策略 (Organize)</h2>
+             <p class="fade-in-section"><strong>目的：</strong> 在這個階段，學生將能理解他們的研究發現，以及呈現習得的概念。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 組織的用意，在讓學生將研究的發現和概念「組織」起來，是將學習過程及結果視覺化的策略。學生運用各方的資料或媒材，利用各種圖表來展現概念和主題。有時為了精簡化意見和想法，也可以使用符號或代碼，畫出淺顯易懂的圖表，如此一來有助於意義的建構及記憶，減輕學生的認知負荷。</blockquote>
+            <p class="fade-in-section"><strong>組織中的策略有四大類：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>對比型：</strong> 讓學生整理或是比較事例的差異。</li>
+                <li><strong>歷程型：</strong> 學生的知識及生活經驗不豐富，思慮無法周全，老師提出問題刺激學生再思考，例如當某個物品不見了或情境不一樣時，結果會如何？或是請學生繪製完整的脈絡結構，在連結各個概念時，學生會更深入的思考。</li>
+                <li><strong>總結型：</strong> 整理資料之外，組織學生的思考和想法，可以運用圖表呈現，也可以視覺化。</li>
+                <li><strong>發表：</strong> 讓學生以口說、戲劇、藝術等多元方式呈現結果。</li>
+            </ol>
+            
+            <article id="organize-cross-comparison-chart" class="fade-in-section">
+                <h3>(一) 組織 - 交叉比對表 Cross-comparison Chart</h3>
+                <div class="strategy-diagram">
+                     <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 40 H150 M10 80 H150 M50 10 V110 M110 10 V110" stroke="#bdc3c7"/>
+                        <rect x="10" y="10" width="140" height="100" fill="none" stroke="#34495e" stroke-width="2"/>
+                        <text x="30" y="28" font-size="10" text-anchor="middle">事例A</text>
+                        <text x="80" y="28" font-size="10" text-anchor="middle">事例B</text>
+                        <text x="130" y="28" font-size="10" text-anchor="middle">事例C</text>
+                        <text x="30" y="60" font-size="10" text-anchor="middle">比較</text>
+                        <text x="30" y="100" font-size="10" text-anchor="middle">分析</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 交叉比對表幫助學生建立概念與事例之間的連結，提供學生一個清晰的架構，把調查階段收集到的資訊重新組織，進行比較。</p>
+                <p><strong>2. 建議：</strong> 圖表可以在調查過程中逐步填寫，或用於總結調查結果。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>使用表格或矩陣圖進行比較，橫軸和縱軸可以是事例、概念或問題。問題可以是事實性問題或概念性問題。</li>
+                    <li>學生可以進行以下幾種比較分析：
+                        <ol>
+                            <li>概念間的比較。</li>
+                            <li>概念和事例的相互比較。</li>
+                            <li>問題與事例的比對。</li>
+                        </ol>
+                    </li>
+                    <li>表格完成後，進行討論與分析比較。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+             <article id="organize-trading-cards" class="fade-in-section">
+                <h3>(二) 組織 - 交換卡片 Trading Cards</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Card 1 -->
+                        <rect x="20" y="20" width="60" height="80" rx="5" fill="#ecf0f1" stroke="#34495e" transform="rotate(-10 50 60)"/>
+                        <circle cx="50" cy="50" r="15" fill="#3498db" transform="rotate(-10 50 60)"/>
+                        <text x="50" y="80" font-size="9" text-anchor="middle" transform="rotate(-10 50 60)">卡片A</text>
+                        <!-- Card 2 -->
+                        <rect x="120" y="20" width="60" height="80" rx="5" fill="#ecf0f1" stroke="#34495e" transform="rotate(10 150 60)"/>
+                        <rect x="135" y="35" width="30" height="30" fill="#1abc9c" transform="rotate(10 150 60)"/>
+                        <text x="150" y="80" font-size="9" text-anchor="middle" transform="rotate(10 150 60)">卡片B</text>
+                        <!-- Arrows -->
+                        <path d="M85 50 C 95 30, 105 30, 115 50" stroke="#e74c3c" fill="none" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                        <path d="M115 70 C 105 90, 95 90, 85 70" stroke="#e74c3c" fill="none" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 進行事例調查的紀錄，和呈現事例特徵的卡片，經由配對比較，找到不同事例間的共同特質。</p>
+                <p><strong>2. 建議：</strong> 可讓學生進行事例共同點比較，以及三個事例共同點比較。可提供句型促進討論：「在我的例子……」、「在你的例子……」、「我們是有關聯的，因為……」。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>學生依教師指示的事例來製作卡片，卡片正面可以用繪圖等方式，將事例視覺化。</li>
+                    <li>學生對卡片背面的標題，或提示的訊息，寫下相關內容。</li>
+                    <li>學生完成卡片後，二至三人進行卡片比對，發現卡片間的關連，找出不同事例間的共同特質，整理出一份資料。</li>
+                    <li>教師可以提供卡片正面的事例，以及背面需記錄的要點或標題。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-push-pull-hold" class="fade-in-section">
+                <h3>(三) 組織 - 推力、拉力、阻力 Push, Pull, Hold</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Push -->
+                        <path d="M10 50 L 50 50" stroke="#3498db" stroke-width="3" marker-end="url(#arrow)"/>
+                        <rect x="5" y="40" width="10" height="20" fill="#3498db"/>
+                        <text x="30" y="40" font-size="9" text-anchor="middle">推力</text>
+                        <!-- Object -->
+                        <rect x="80" y="30" width="40" height="40" fill="#f1c40f" rx="3"/>
+                        <text x="100" y="55" font-size="10" text-anchor="middle">事例</text>
+                        <!-- Pull -->
+                        <path d="M120 50 L 160 50" stroke="#1abc9c" stroke-width="3" marker-end="url(#arrow)"/>
+                        <text x="140" y="40" font-size="9" text-anchor="middle">拉力</text>
+                        <!-- Hold -->
+                        <path d="M100 70 L 100 90" stroke="#e74c3c" stroke-width="3"/>
+                        <path d="M90 90 H 110" stroke="#e74c3c" stroke-width="3"/>
+                        <text x="100" y="85" font-size="9" text-anchor="middle">阻力</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 鼓勵學生理解事例背後的動機，有助於建構通則。</p>
+                <p><strong>2. 建議：</strong> 學生可以使用「我們理解……」做為開頭的句子，表達他們的想法。這就是通則的形式。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>首先讓學生對事例進行檢視，了解圖案，探究數個相關事例後，教師介紹「推力」、「拉力」和「阻力」的定義。</li>
+                    <li>學生可以使用概念性問題，把事例動機分為推拉組三類，例如：「是什麼促使人們去……？」、「是什麼鼓勵人們去……？」、「是什麼阻止人們去……？」</li>
+                    <li>最後學生根據他們的討論內容來建構通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-the-missing-piece" class="fade-in-section">
+                <h3>(四) 組織 - 失落的一角 The Missing Piece</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Puzzle -->
+                        <path d="M50 30 h20 v-5 a5 5 0 0 1 10 0 v5 h20 v20 h5 a5 5 0 0 1 0 10 h-5 v20 h-20 v5 a5 5 0 0 1 -10 0 v-5 h-20 v-20 h-5 a5 5 0 0 1 0 -10 h5 Z" 
+                              fill="#ecf0f1" stroke="#34495e" stroke-width="2"/>
+                        <!-- Missing Piece -->
+                        <g transform="translate(60, 0)">
+                           <path d="M100 60 h-20 v-5 a5 5 0 0 1 -10 0 v5 h-20 v-20" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="3 2"/>
+                           <path d="M50 40 v20 h5 a5 5 0 0 1 0 10 h-5 v20" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="3 2"/>
+                        </g>
+                        <g transform="translate(150, 80)">
+                           <path d="M0 0 h20 v-20 h-5 a5 5 0 0 0 0 -10 h5 v-20 h-20 v5 a5 5 0 0 0 -10 0 v-5 h-20 v20 h-5 a5 5 0 0 0 0 10 h5 Z"
+                                 fill="#e74c3c" transform="translate(-50,-40) scale(0.2)"/>
+                            <text x="0" y="20" font-size="9" text-anchor="middle">如果消失了?</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生藉由探究個別元素的特質及對系統的重要性，理解個別元素間相互依存的關係，協助學生理解系統或歷程。</p>
+                <p><strong>2. 建議：</strong> 讓學生充分理解事例，足夠的先備知識才能支持有意義的討論。消失的元素，應該具備較大的影響性。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>全班先為要討論的系統命名，列出系統中的元素。</li>
+                    <li>利用圖表來標記系統中的各個組成元素。</li>
+                    <li>完成圖表後，讓他們反思兩個問題：「假如其中一個組成元素消失了，會發生什麼事呢？」、「這個部分對於整體的重要性是什麼呢？」</li>
+                    <li>討論組成元素間的關聯之後，鼓勵學生使用「我們理解……」的句子，來建立通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+             <article id="organize-networks" class="fade-in-section">
+                <h3>(五) 組織 - 網絡 Networks</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Centralized -->
+                        <g transform="translate(40, 50)">
+                            <circle cx="0" cy="0" r="5" fill="#3498db"/>
+                            <circle cx="-20" cy="-20" r="4" fill="#bdc3c7"/><line x1="0" y1="0" x2="-20" y2="-20" stroke="#bdc3c7"/>
+                            <circle cx="0" cy="-25" r="4" fill="#bdc3c7"/><line x1="0" y1="0" x2="0" y2="-25" stroke="#bdc3c7"/>
+                            <circle cx="20" cy="-20" r="4" fill="#bdc3c7"/><line x1="0" y1="0" x2="20" y2="-20" stroke="#bdc3c7"/>
+                            <circle cx="25" cy="0" r="4" fill="#bdc3c7"/><line x1="0" y1="0" x2="25" y2="0" stroke="#bdc3c7"/>
+                            <text x="0" y="35" font-size="8" text-anchor="middle">集中式</text>
+                        </g>
+                         <!-- Decentralized -->
+                        <g transform="translate(100, 50)">
+                            <circle cx="0" cy="0" r="4" fill="#1abc9c"/>
+                            <circle cx="-20" cy="-20" r="4" fill="#1abc9c"/> <line x1="0" y1="0" x2="-20" y2="-20" stroke="#bdc3c7"/>
+                            <circle cx="20" cy="-20" r="4" fill="#1abc9c"/> <line x1="0" y1="0" x2="20" y2="-20" stroke="#bdc3c7"/>
+                            <circle cx="0" cy="20" r="4" fill="#1abc9c"/> <line x1="-20" y1="-20" x2="0" y2="20" stroke="#bdc3c7"/>
+                            <line x1="20" y1="-20" x2="0" y2="20" stroke="#bdc3c7"/>
+                            <text x="0" y="35" font-size="8" text-anchor="middle">分散式</text>
+                        </g>
+                         <!-- Linear -->
+                        <g transform="translate(160, 50)">
+                            <circle cx="-20" cy="0" r="4" fill="#e74c3c"/>
+                            <circle cx="0" cy="0" r="4" fill="#e74c3c"/><line x1="-20" y1="0" x2="0" y2="0" stroke="#bdc3c7"/>
+                            <circle cx="20" cy="0" r="4" fill="#e74c3c"/><line x1="0" y1="0" x2="20" y2="0" stroke="#bdc3c7"/>
+                            <text x="0" y="35" font-size="8" text-anchor="middle">線性式</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 可以用來描述系統中元素之間的關係。</p>
+                <p><strong>2. 建議：</strong> 教師可視學生學習情況，選擇進行基礎的探索關係，或進階思考其他的可能性。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ol>
+                    <li><strong>基礎—探索關係：</strong> 學生先檢視並選擇最適合他們事例的網絡模型，創建自己的模型，為每個節點命名。建構模型後，與其他組的模型進行比較。</li>
+                    <li><strong>進階—可能性思考：</strong> 讓學生更換網絡模型，套用在同一個系統中，刺激學生思考結構和功能會如何改變。可讓學生比較各種網絡模型，邀請學生說明哪種模型最能呈現真實狀況。</li>
+                    <li><strong>提供各種網絡圖形。</strong></li>
+                </ol>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-flow-diagrams" class="fade-in-section">
+                <h3>(六) 組織 - 流程圖 Flow Diagrams</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Linear -->
+                        <rect x="10" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="30" y="31" font-size="10">1</text>
+                        <line x1="55" y1="27.5" x2="75" y2="27.5" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
+                        <rect x="80" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="100" y="31" font-size="10">2</text>
+                        <line x1="125" y1="27.5" x2="145" y2="27.5" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
+                        <rect x="150" y="15" width="40" height="25" rx="3" fill="#ecf0f1" stroke="#34495e"/><text x="170" y="31" font-size="10">3</text>
+                        <!-- Circular -->
+                        <g transform="translate(100, 85)">
+                            <path d="M-30 0 A 30 20 0 1 1 30 0" fill="none" stroke="#1abc9c" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <path d="M30 0 A 30 20 0 1 1 -30 0" fill="none" stroke="#1abc9c" stroke-width="2" marker-start="url(#arrowhead)"/>
+                            <circle cx="0" cy="-20" r="5" fill="#1abc9c"/><circle cx="30" cy="0" r="5" fill="#1abc9c"/><circle cx="-30" cy="0" r="5" fill="#1abc9c"/>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生利用流程圖顯示變化、成長、發展以及因果關係。</p>
+                <p><strong>2. 建議：</strong> 使用「如果……，將會發生什麼？」的問題進行後續的討論。使用因果圖時，兩個名詞之間標示出「正負號」，表示增加或減少，亦可加入反饋，讓學生說明他們的因果推論。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師介紹線性過程圖、循環圖、因果圖等流程圖。</li>
+                    <li>確認學生對內容已經非常清楚，以流程圖呈現歷程或關係。</li>
+                    <li>提供各種流程圖範例。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-visual-note-taking" class="fade-in-section">
+                <h3>(七) 組織 - 視覺筆記 Visual Note-taking</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="100" fill="#fff" stroke="#bdc3c7" rx="5"/>
+                        <text x="20" y="30" font-size="12" font-weight="bold" fill="#2c3e50">主題</text>
+                        <path d="M20 35 h 40" stroke="#f1c40f" stroke-width="3"/>
+                        <rect x="20" y="45" width="50" height="3" fill="#bdc3c7"/><rect x="20" y="52" width="60" height="3" fill="#bdc3c7"/>
+                        <path d="M 80 40 q 10 10, 20 0" stroke="#3498db" fill="none" stroke-width="1.5"/>
+                        <circle cx="120" cy="30" r="10" fill="none" stroke="#1abc9c" stroke-width="2"/><text x="120" y="34" font-size="10">重點</text>
+                        <path d="M115 40 L 90 60" stroke="#34495e" stroke-width="1" marker-end="url(#arrow)"/>
+                        <text x="25" y="80" font-size="20" fill="#e74c3c">!</text>
+                        <path d="M 140 60 L 140 90 L 170 90 L 170 60 Z" fill="#ecf0f1"/>
+                        <text x="155" y="78" font-size="9" text-anchor="middle">圖示</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 利用圖像提供另一種傳達訊息的方式，有助於學生記錄、思考或習得概念。</p>
+                <p><strong>2. 建議：</strong> 教師可以提供做筆記的要訣，例如關鍵字、順序、重要性等幫助學生聚焦並記錄訊息。可鼓勵學生建構符號來代替長段落，也可以利用組織圖來記錄。</p>
+                <p><strong>3. 方法：</strong> 視覺筆記的幾個方式：</p>
+                <ol>
+                    <li>說明要呈現的圖像。</li>
+                    <li>從影片、文章或其他媒體進行彙整。</li>
+                    <li>在個人筆記本中記錄重要的想法。</li>
+                    <li>在演講、訪談或其他活動中做有意義的「塗鴉」。</li>
+                    <li>在一系列的探究後，以圖文綜整想法。</li>
+                </ol>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+            
+            <article id="organize-annotate-it" class="fade-in-section">
+                <h3>(八) 組織 - 註解 Annotate It</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="160" height="80" fill="#fff" stroke="#bdc3c7"/>
+                        <rect x="30" y="30" width="100" height="5" fill="#bdc3c7"/>
+                        <rect x="30" y="40" width="140" height="5" fill="rgba(241, 196, 15, 0.5)" stroke="#f1c40f" stroke-width="1"/>
+                        <rect x="30" y="50" width="80" height="5" fill="#bdc3c7"/>
+                        <path d="M 80 65 C 100 70, 110 80, 120 90" stroke="#3498db" fill="none" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <path d="M125 90 L 135 90 L 135 105 L 120 105 L 115 100 L 120 95 Z" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="125" y="100" font-size="8">註解</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 註解可以幫助學生在自主閱讀時，聚焦對文本的理解，並加深歷程性概念的理解。</p>
+                <p><strong>2. 建議：</strong> 註解策略特別有助於學生對歷程性概念的理解。教師可以提供學生進行彙整之圖像、影片、文章、演講、或探究之素材。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師選擇適當的文本，請學生閱讀並標記和概念相關的文句，寫下初步的理解，全班一起彙整並分享。</li>
+                    <li>接著學生探索結構和模式，以分析的方式來理解文本，強化對文本及概念的理解，例如對於主旨、證據、對話或文意轉折等的理解。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-social-dramatic-play" class="fade-in-section">
+                <h3>(九) 組織 - 社會性戲劇 Social-dramatic Play</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 10 100 C 50 80, 150 80, 190 100" stroke="#34495e" stroke-width="2" fill="none"/>
+                        <text x="100" y="115" font-size="10" text-anchor="middle">舞台</text>
+                        <!-- Actor 1 -->
+                        <g transform="translate(60, 60)">
+                            <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
+                            <rect x="-10" y="-15" width="20" height="10" fill="#fff" stroke="#000" rx="3"/>
+                            <text x="0" y="30" font-size="9" text-anchor="middle">角色A</text>
+                        </g>
+                         <!-- Actor 2 -->
+                        <g transform="translate(140, 60)">
+                            <circle cx="0" cy="-10" r="10" fill="#1abc9c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#1abc9c"/>
+                            <path d="M-10 -15 L 10 -15 L 0 -5 Z" fill="#fff" stroke="#000"/>
+                            <text x="0" y="30" font-size="9" text-anchor="middle">角色B</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生運用想像力，來組織並呈現他們學習的結果。</p>
+                <p><strong>2. 建議：</strong> 想像力有助於學生拓展經驗，面對不會經歷過的事物，藉由他人的描述而概念化某些事物。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師藉由單元中的事實、概念和啟發性的問題，幫助學生從戲劇情境中提取重要的想法，鞏固知識和技能。</li>
+                    <li>教師可提出啟發性問題，例如：在一個「荒島」角色扮演中，教師詢問：「如果社會上沒有法律規範會發生什麼事情呢？」以刺激學生討論。</li>
+                    <li>教師在學生角色扮演中，可以教導學生運用組織策略抓取重要的想法。</li>
+                    <li>教師可以指定學生需演出之項目與角色。並準備事實性、概念性、啟發性問題待用。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-linguistic-representation" class="fade-in-section">
+                <h3>(十) 組織 - 語言形式 Linguistic Representation</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <text x="100" y="20" font-size="12" text-anchor="middle">概念理解</text>
+                        <path d="M100 25 L 50 50 M100 25 L 150 50 M100 25 L 100 50" stroke="#bdc3c7"/>
+                        <!-- Speech -->
+                        <g transform="translate(50, 70)">
+                            <path d="M-20 -15 L 20 -15 L 20 10 L 0 10 L -5 15 L -5 10 L -20 10 Z" fill="#3498db"/>
+                            <text y="25" font-size="9" text-anchor="middle">口說</text>
+                        </g>
+                        <!-- Writing -->
+                        <g transform="translate(100, 70)">
+                           <path d="M-5 -15 L -15 15 L 15 15 L 5 -15 Z" fill="#1abc9c"/>
+                           <rect x="-15" y="10" width="30" height="5" fill="#ecf0f1"/>
+                           <text y="25" font-size="9" text-anchor="middle">書寫</text>
+                        </g>
+                         <!-- Art/Comic -->
+                        <g transform="translate(150, 70)">
+                            <rect x="-15" y="-15" width="30" height="30" fill="#e74c3c"/>
+                            <circle cx="0" cy="0" r="5" fill="#fff"/>
+                            <text y="25" font-size="9" text-anchor="middle">圖像</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 以不同的語文表達方式，呈現學生對概念的理解。</p>
+                <p><strong>2. 建議：</strong> 書面形式亦可以是刊物編輯、漫畫及書信等三種形式。</p>
+                <p><strong>3. 方法：</strong> 使用口頭形式或書面形式，表達對概念的理解。口頭形式可以是辯論、歌曲或口頭報告。書面形式則有論文、詩歌、報紙文章及漫畫。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="organize-models" class="fade-in-section">
+                <h3>(十一) 組織 - 模型 Models</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <text x="30" y="20" font-size="10" text-anchor="middle">具體</text>
+                        <circle cx="30" cy="60" r="15" fill="#e74c3c"/>
+                        <path d="M50 60 L 70 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+                        <text x="100" y="20" font-size="10" text-anchor="middle">圖像</text>
+                        <circle cx="100" cy="60" r="15" fill="none" stroke="#1abc9c" stroke-width="3"/>
+                        <path d="M120 60 L 140 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        
+                        <text x="170" y="20" font-size="10" text-anchor="middle">抽象</text>
+                        <rect x="155" y="45" width="30" height="30" fill="#3498db"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 模型的作用在使學生的想法視覺化。過程中學生會發現概念的結構與特質，模型是建立通則的基礎。</p>
+                <p><strong>2. 建議：</strong> 模型策略可培養學生根據問題或任務，選擇恰當的模型，表達抽象概念的能力。觀摩與分享則視需要進行。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>指定內容或教材，學生可以從具體物件、圖像和抽象，三種模型類型選擇其中一個，來呈現概念的結構或想法。</li>
+                    <li>教師提供時間學生觀摩模型，彼此分享。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+
+        <section id="generalize">
+            <h2 class="fade-in-section"><i class="fas fa-globe"></i>4. 通則策略 (Generalize)</h2>
+             <p class="fade-in-section"><strong>目的：</strong> 綜效思考根基已經打穩，學生能看見全貌及形成可遷移的通則。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 什麼是通則呢？通則是表達兩個或多個概念之間關係的句子，在超越時間、跨越文化與情境的思維下產生，未來進行學習遷移時，能得到事實的支持。好的通則有以下四個特質：1.需要包含兩個或多個概念；2.第三人稱現在式的句子；3.不具評論或個人價值的性質；4.是主動語態而且有明確的動詞。</blockquote>
+             <p class="fade-in-section"><strong>搭建思考鷹架，建立通則的策略有三類：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>提問思考：</strong> 老師不斷提問，刺激學生思考，確認通則是正確且可行的。</li>
+                <li><strong>概念思考：</strong> 為了協助學生寫出較好的通則，老師可以要求學生形成概念銀行，為學生搭起思考鷹架，以利學生取用適當的概念。</li>
+                <li><strong>關聯模式：</strong> 用圖表或顏色突顯概念間的關聯性，如果學生還不會撰寫通則時，老師可以提供句子框架或是通則模式來讓學生模仿。</li>
+            </ol>
+            
+            <article id="generalize-conceptual-questions" class="fade-in-section">
+                <h3>(一) 通則 - 概念性問題 Conceptual Questions</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <text x="40" y="30" font-size="10" text-anchor="middle">事實問題</text>
+                        <rect x="15" y="40" width="50" height="30" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="40" y="58" font-size="9">今天天氣?</text>
+                        <path d="M70 55 C 100 20, 100 90, 130 55" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+                        <text x="100" y="65" font-size="9">提升</text>
+                        <text x="160" y="30" font-size="10" text-anchor="middle">概念問題</text>
+                        <path d="M135 40 L 185 40 L 185 70 L 135 70 Z" fill="#ecf0f1" stroke="#3498db" stroke-width="2"/>
+                        <text x="160" y="58" font-size="9" text-anchor="middle">氣候如何變遷?</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 從事實性問題發展到概念性問題，讓學生產生學習遷移。</p>
+                <p><strong>2. 建議：</strong> 事實性問題常被鎖定在特定的時間，地點或情境中，但概念性的問題卻有助於學習遷移。因為從事實到概念，是探究概念為本的基本特徵。建議利用概念性問題來設計形成性評量及總結性評量。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師根據課程設計概念性問題，課程開始與結束時，均需回顧概念性問題。</li>
+                    <li>告訴學生：「在本單元結束時，你將能夠回答這些概念性問題……」。</li>
+                    <li>在一連串的探究過程中，收集學生答案，利用圖表組織學生的思考。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-speed-connections" class="fade-in-section">
+                <h3>(二) 通則 - 快速連結 Speed Connections</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="10" fill="#3498db"/><circle cx="100" cy="20" r="10" fill="#1abc9c"/>
+                        <circle cx="170" cy="40" r="10" fill="#e74c3c"/><circle cx="50" cy="90" r="10" fill="#f1c40f"/>
+                        <circle cx="150" cy="100" r="10" fill="#9b59b6"/>
+                        <path d="M38 38 L92 27 M108 28 L162 42 M162 50 L152 92 M142 100 L60 95 M55 80 L35 40" stroke="#bdc3c7" stroke-width="1.5" stroke-dasharray="3,2" fill="none"/>
+                        <text x="100" y="70" font-size="12" fill="#2c3e50">尋找連結!</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 快速連結可以幫助學生找到不同事例之間的關聯，並從中萃取相關的微觀概念，形成概念銀行，有助於通則建立。</p>
+                <p><strong>2. 建議：</strong> 教師要預備事例及由事例發展出的概念性問題，以及探究主題有關的各種角色，讓學生扮演。有時亦須準備角色道具。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>由學生扮演事例中的角色，學生回應教師提出的概念性問題，找出與夥伴之間可能的連結。一起列出角色間連結的關鍵詞，如果有連結便成為一組。</li>
+                    <li>重複前一步驟，繼續尋找新夥伴，找出彼此連結的關鍵詞。依據關鍵詞的相關程度，決定和舊夥伴拆夥或繼續在一起。</li>
+                    <li>上述操作進行三到五次，經過幾次討論及尋找連結，形成一個全班性的概念連結。</li>
+                    <li>每次形成的關鍵詞/微觀概念，全部列表寫下來。</li>
+                    <li>使用微觀概念，透過回答教師的概念性問題，產生通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-connect-4" class="fade-in-section">
+                <h3>(三) 通則 - 連結四方 Connect 4</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="70" y="55" width="60" height="40" fill="#e74c3c" stroke="#c0392b" rx="3"/>
+                        <text x="100" y="78" fill="white" font-size="12" text-anchor="middle">通則</text>
+                        <rect x="10" y="10" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="35" y="30" font-size="9">事例1</text>
+                        <rect x="140" y="10" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="165" y="30" font-size="9">事例2</text>
+                        <rect x="10" y="105" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="35" y="125" font-size="9">事例3</text>
+                        <rect x="140" y="105" width="50" height="35" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="165" y="125" font-size="9">事例4</text>
+                        <path d="M60 30 L 70 55 M140 30 L 130 55 M60 120 L 70 95 M140 120 L 130 95" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 連結四方是從數個事例找出共同模式的策略。這種策略讓學生綜整訊息，以便建構通則。</p>
+                <p><strong>2. 建議：</strong> 教師準備四個事例時，需與中間填空式句子相關。所提概念性問題亦須扣合事例。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>提出概念性問題。</li>
+                    <li>將組織圖劃分為五個部分，位於組織圖中央的第五部分，是概念性問題或填空式句子。教師示範說明組織圖使用方式。</li>
+                    <li>學生四人一組，各自完成自己一方的事例，記錄與事例相關的訊息。</li>
+                    <li>討論四個事例的異同，最後歸納統整出四個事例的通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-concept-bank" class="fade-in-section">
+                <h3>(四) 通則 - 概念銀行 Concept Bank</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 50 100 L 150 100 L 160 90 L 40 90 Z" fill="#bdc3c7"/>
+                        <path d="M 50 90 L 150 90 L 150 40 C 150 20, 50 20, 50 40 Z" fill="#f1c40f"/>
+                        <path d="M 95 50 h 10 v -10 h-10 Z" fill="#2c3e50"/>
+                        <text x="25" y="30" font-size="10">概念A</text><path d="M40 35 L 80 45" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
+                        <text x="25" y="60" font-size="10">概念B</text><path d="M40 60 L 85 55" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
+                        <text x="25" y="90" font-size="10">概念C</text><path d="M40 85 L 80 65" stroke-dasharray="2,2" stroke="#34495e" marker-end="url(#arrow)"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 概念銀行的目的，是提供學生建立通則時所需的概念庫。展示概念銀行，支持學生隨時回想和審視概念。</p>
+                <p><strong>2. 建議：</strong> 概念可以是教師獨創，也可以是學生在探索時一起共創。概念銀行包含微觀及宏觀概念在其中。對於幼小的學習者，可以將概念字詞著色或將它們分組，這對於他們進行通則會有所幫助。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>在教學歷程中建立概念銀行。</li>
+                    <li>回顧概念銀行。</li>
+                    <li>讓學生建立兩個以上的概念關係並建立通則。</li>
+                    <li>交叉檢驗事例和概念間的關係。</li>
+                    <li>學生使用事例來驗證通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-sentence-frames" class="fade-in-section">
+                <h3>(五) 通則 - 句子架構 Sentence Frames</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <text x="20" y="50" font-size="12">當</text>
+                        <rect x="40" y="40" width="50" height="20" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="95" y="50" font-size="12">時, </text>
+                        <rect x="115" y="40" width="65" height="20" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="185" y="50" font-size="12">。</text>
+                        <text x="65" y="35" font-size="9" text-anchor="middle">概念A</text>
+                        <text x="147.5" y="35" font-size="9" text-anchor="middle">概念B</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 句子架構是為學生搭設思考鷹架，也是建構通則最簡易快速的方法。</p>
+                <p><strong>2. 建議：</strong> 教師可以與概念銀行一起使用。重要的是，學生需要根據學習過程中，事實與技能的探究來完成句子架構。</p>
+                <p><strong>3. 方法：</strong> 教師先擬訂填空式句子，學生根據前幾個階段搜集和組織的訊息，來填寫空白處，藉此引導學生思考。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-concept-roles" class="fade-in-section">
+                <h3>(六) 通則 - 概念接龍 Concept Roles</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="translate(100,60)">
+                            <circle cx="0" cy="-40" r="10" fill="#3498db"/><text x="0" y="-37" fill="white" font-size="8">A</text>
+                            <circle cx="40" cy="0" r="10" fill="#1abc9c"/><text x="40" y="3" fill="white" font-size="8">B</text>
+                            <circle cx="0" cy="40" r="10" fill="#e74c3c"/><text x="0" y="43" fill="white" font-size="8">C</text>
+                            <circle cx="-40" cy="0" r="10" fill="#f1c40f"/><text x="-40" y="3" fill="white" font-size="8">D</text>
+                            <path d="M0 -30 a 20 20 0 0 1 28 0" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+                            <path d="M30 0 a 20 20 0 0 1 0 28" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 由學生扮演特定的概念，說出所扮演的概念跟其他概念之間的關係。</p>
+                <p><strong>2. 建議：</strong> 說明概念關係時，要提供證據加以證明。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師由預設的通則中抽出 3-5 個概念，將學生分組圍坐，每組 3-5 人，每人得到概念卡片一張，讓學生有足夠的時間思考這個概念的意涵。</li>
+                    <li>然後請學生依順時針進行連接，第一個人開始使用填空式句子來連結：「我的概念是……。因為……所以我可以跟……連接。」直到所有學生都完成連接。</li>
+                    <li>學生都發言之後，允許在小組內任意連接。只要提供證據，他們可以連接任何概念。最後教師引導學生思考，能否使用部分或全部概念來建構通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-concept-mapping" class="fade-in-section">
+                <h3>(七) 通則 - 概念製圖 Concept Mapping</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="70" y="10" width="60" height="25" fill="#3498db" rx="3"/><text x="100" y="26" fill="white" font-size="9">宏觀概念</text>
+                        <path d="M100 35 V 50" stroke="#34495e" stroke-width="1.5"/>
+                        <rect x="20" y="60" width="50" height="25" fill="#1abc9c" rx="3"/><text x="45" y="76" fill="white" font-size="9">微觀A</text>
+                        <rect x="130" y="60" width="50" height="25" fill="#1abc9c" rx="3"/><text x="155" y="76" fill="white" font-size="9">微觀B</text>
+                        <path d="M45 50 h 110 v 10" fill="none" stroke="#34495e" stroke-width="1.5"/>
+                        <path d="M45 85 V 100 M155 85 V 100" stroke="#34495e" stroke-width="1.5"/>
+                        <rect x="10" y="110" width="40" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="30" y="123" font-size="8">事例</text>
+                        <rect x="150" y="110" width="40" height="20" fill="#ecf0f1" stroke="#34495e" rx="3"/><text x="170" y="123" font-size="8">事例</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 將概念視覺化組織化，定位概念之間的關係，以識別概念層次，並建立通則。</p>
+                <p><strong>2. 建議：</strong> 這個策略特別適用於尚未具備綜整概念能力的學生。形成通則時，若學生連結的動詞過於單薄，可以提出「如何、為何、有什麼重要性」的問題，協助學生思考。概念連接詞舉例：產生、包含、組成、創造、導致、決定、形成、引發、建立、架構。可依情況自行撰寫。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li><strong>挑選概念：</strong> 選擇大約 15-20 個概念，包含概念透鏡、驅動概念、微觀及宏觀概念，讓學生製圖。也可邀請學生添加相關概念。</li>
+                    <li><strong>概念排序：</strong> 將概念由宏觀到微觀依序排列。涵蓋面較廣較抽象的概念置頂，往下則是逐漸趨向具體化的概念。</li>
+                    <li><strong>放進次概念：</strong> 每個概念下繼續發展子群組，直到所有概念從廣泛到具體都放在圖中。</li>
+                    <li><strong>繪製概念製圖：</strong> 提供大海報，開始畫線連結所有概念。請學生在連結的線條上，用概念連接詞標記連接的關係。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-whats-the-connection" class="fade-in-section">
+                <h3>(八) 通則 - 顏色連結 What's the Connection?</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="20" height="15" fill="#3498db" rx="2"/>
+                        <rect x="50" y="40" width="20" height="15" fill="#1abc9c" rx="2"/>
+                        <rect x="80" y="20" width="20" height="15" fill="#3498db" rx="2"/>
+                        <rect x="110" y="40" width="20" height="15" fill="#1abc9c" rx="2"/>
+                        <rect x="140" y="20" width="20" height="15" fill="#3498db" rx="2"/>
+                        
+                        <path d="M30 35 L 50 70 M90 35 L 70 70 M150 35 L 90 70" stroke="#3498db" fill="none" stroke-dasharray="2,2"/>
+                        <rect x="40" y="80" width="50" height="25" fill="#3498db" rx="3"/><text x="65" y="96" fill="white" font-size="9">概念A</text>
+
+                        <path d="M60 55 L 120 70 M120 55 L 140 70" stroke="#1abc9c" fill="none" stroke-dasharray="2,2"/>
+                        <rect x="110" y="80" width="50" height="25" fill="#1abc9c" rx="3"/><text x="135" y="96" fill="white" font-size="9">概念B</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 以顏色做為事例的編碼，幫助學生組織事例並發掘模式。</p>
+                <p><strong>2. 建議：</strong> 此策略較適合低年級學生使用，使用顏色編碼，有助學生找到跨案例的連結。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>學生進行事例的調查，並進行分享。教師依單元概念分類學生的學習心得及想法，將具相同概念的分享，用相同顏色的紙書寫下來，以進行編碼。</li>
+                    <li>教師針對同色紙上的想法，詢問：「這些想法間的關聯是什麼呢？」藉此刺激學生思考，找出一個或數個概念。學生再由所產生的概念，建立通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-pattern-hunters" class="fade-in-section">
+                <h3>(九) 通則 - 模式獵人 Pattern Hunters</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="80" r="3" fill="#bdc3c7"/><circle cx="65" cy="70" r="3" fill="#bdc3c7"/>
+                        <circle cx="80" cy="65" r="3" fill="#bdc3c7"/><circle cx="95" cy="68" r="3" fill="#bdc3c7"/>
+                        <circle cx="110" cy="75" r="3" fill="#bdc3c7"/><circle cx="125" cy="85" r="3" fill="#bdc3c7"/>
+                        <circle cx="140" cy="80" r="3" fill="#bdc3c7"/>
+                        <path d="M 50 80 C 70 50, 120 50, 140 80" stroke="#e74c3c" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
+                        <g transform="translate(40, 40)">
+                            <circle cx="0" cy="0" r="20" stroke="#3498db" stroke-width="3" fill="rgba(52, 152, 219, 0.1)"/>
+                            <line x1="15" y1="15" x2="30" y2="30" stroke="#34495e" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+                        <text x="130" y="50" font-size="10">發現模式!</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生以組織圖，將觀察所得的內容進行連結，並從中找出關聯模式，幫助學生發展出與參考資料相關的通則。</p>
+                <p><strong>2. 建議：</strong> 各類組織圖可以協助學生找到關聯模式，教師不妨提供各種組織圖給學生參考。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>重新檢示課程中完成的組織圖。</li>
+                    <li>教師藉由提問「我看到…和…」或「我發現的模式是……」來讓學生找出關聯模式。</li>
+                    <li>根據他們的組織圖找出證據，說明他們發現的模式。記錄他們的想法，以產生類似通則的句子。</li>
+                    <li>詢問「如何……？」、「為什麼……？」，讓通則更為清晰。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="generalize-micro-generalizing" class="fade-in-section">
+                <h3>(十) 通則 - 微通則 Micro-generalizing</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <text x="30" y="20" font-size="9">微通則A</text><rect x="10" y="25" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="30" y="55" font-size="9">微通則B</text><rect x="10" y="60" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="30" y="90" font-size="9">微通則C</text><rect x="10" y="95" width="40" height="15" fill="#ecf0f1" stroke="#34495e"/>
+                        <path d="M60 32.5 L 90 50 M60 67.5 L 90 70 M60 102.5 L 90 90" stroke="#bdc3c7" stroke-dasharray="2,2"/>
+                        <path d="M 90 50 L 120 70 L 90 90 Z" fill="#3498db" />
+                        <text x="100" y="45" font-size="9" text-anchor="middle">綜整</text>
+                        <rect x="130" y="50" width="60" height="40" fill="#e74c3c" rx="3"/><text x="160" y="73" font-size="12" fill="white">大通則</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 建立微通則，再發展較廣泛的通則，學習起來比較容易。</p>
+                <p><strong>2. 建議：</strong> 如果學生無法理解或沒有任何詞彙來描述更廣泛的概念，那麼他們就無法將自己的「微通則」轉換成更宏觀的通則。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師先準備圖卡或單詞卡，請學生用特定的微觀概念進行分類。</li>
+                    <li>讓學生思考微觀概念的意義以及重要性，並記錄他們發現的微通則，將微通則一一列出後，引導學生找出更廣泛的概念，再進一步產生通則。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+
+        <section id="transfer">
+            <h2 class="fade-in-section"><i class="fas fa-rocket"></i>5. 遷移策略 (Transfer)</h2>
+             <p class="fade-in-section"><strong>目的：</strong> 邀請學生遷移理解至新情境並採取行動，以延伸思考。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 在遷移的階段，希望學生能將通則應用於新情境，並能測試和證明通則的正確性。讓學生使用經驗來形成預測和假設，把他們理解的通則應用到新情境上，並以任務或行動，做為學習遷移的驗證。老師可以詢問學生，通則如何運用到其他事物上？如何連結？也可以抽換事例條件，刺激學生思考他們的通則是否有不周全的地方，是否需要修改，目的在讓學生再三核對調整他們的通則。</blockquote>
+             <p class="fade-in-section"><strong>遷移階段的策略分為三類：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>測試：</strong> 此部分有測試跟驗證、預測跟假設，目的在測試、核對、修改及調整通則。</li>
+                <li><strong>連結：</strong> 連結新事件及情境。</li>
+                <li><strong>應用：</strong> 應用與行動是呈現學習遷移的時候。老師指定學生用行動或表現任務，具體展現通則的意義及精神。過程中老師居於輔導位置，讓學生主導他們的計畫與行動。</li>
+            </ol>
+
+            <article id="transfer-stress-testing" class="fade-in-section">
+                <h3>(一) 遷移 - 壓力測試 Stress-testing Generalizations</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 70 C 60 70, 140 70, 180 70" stroke="#34495e" stroke-width="5"/>
+                        <path d="M20 70 C 60 40, 140 40, 180 70" stroke="#34495e" stroke-width="5" fill="none"/>
+                        <text x="100" y="60" font-size="10" text-anchor="middle">通則</text>
+                        <g transform="translate(100,20)">
+                            <path d="M-10 0 L 10 0 L 0 15 Z" fill="#e74c3c" />
+                            <rect x="-5" y="-15" width="10" height="15" fill="#e74c3c"/>
+                        </g>
+                        <text x="100" y="15" font-size="9" text-anchor="middle">新情境 (壓力)</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生將他們的通則遷移到新的事例，檢視這個通則是否經得起新情境的考驗。</p>
+                <p><strong>2. 建議：</strong> 學生所產生的通則未必完善，教師可提出一系列問題：「這種通則總是如此嗎？我們如何改變通則內容，來涵括我們研究的所有案例？」讓學生修改通則時，若學生能力有限，有時只要加「常常」、「通常」等的程度副詞即可。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>全班一起討論他們所設定的通則，鼓勵學生以舊事例加以證明，或提出新事例來反駁。</li>
+                    <li>教師引入一個新的事例，讓學生討論他們的通則是否能夠遷移。然後要求學生調整通則以容納所有探究過的事例。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-on-the-line" class="fade-in-section">
+                <h3>(二) 遷移 - 線上討論 On the Line</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="10" y1="50" x2="190" y2="50" stroke="#34495e" stroke-width="2"/>
+                        <text x="10" y="35" font-size="9" text-anchor="start">不同意</text>
+                        <text x="190" y="35" font-size="9" text-anchor="end">同意</text>
+                        <rect x="20" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="30" y1="50" x2="30" y2="55"/>
+                        <rect x="80" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="90" y1="50" x2="90" y2="55"/>
+                        <rect x="160" y="55" width="20" height="15" fill="#f1c40f" rx="2"/><line x1="170" y1="50" x2="170" y2="55"/>
+                        <text x="100" y="85" font-size="9" text-anchor="middle">張貼證據便利貼</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 協助學生以事實證據支持他們的通則，目的是促進學生綜整思考，對他們的通則進行修正。</p>
+                <p><strong>2. 建議：</strong> 教師提供較不嚴謹的通則時，要營造安全友善的環境，讓學生明白很多想法的起始點都有修正的需要。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師提供4到6個通則，先聚焦說明頻率副詞的使用方式與個別差異，讓學生了解改變通則的陳述方式。</li>
+                    <li>將每一個通則成立一條光譜，提供填空式句子，讓學生寫下來自事例的證據在便利貼或卡片上，例如：「因為……，我同意……」、「因為……，我不同意……」，將便利貼懸掛起來，公開展示。</li>
+                    <li>教師引導班級討論他們的意見、立場。最後讓學生修正通則的內容。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-prove-it" class="fade-in-section">
+                <h3>(三) 遷移 - 證明 Prove It!</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 90 L 190 90 M 100 20 L 100 90" stroke="#34495e"/>
+                        <path d="M30 80 L 170 80" stroke="#34495e" stroke-width="4"/>
+                        <text x="65" y="75" font-size="10" text-anchor="middle">陳述</text>
+                        <g transform="translate(135, 60)">
+                            <rect x="-10" y="-10" width="20" height="20" fill="#1abc9c"/>
+                            <rect x="-15" y="-5" width="30" height="10" fill="#3498db"/>
+                        </g>
+                        <text x="135" y="45" font-size="10" text-anchor="middle">證據</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 提升學生綜整的思考能力，讓學生可以為他們的通則辯護。</p>
+                <p><strong>2. 建議：</strong> 學生的想法可以利用數位媒體或海報紙呈現，舉凡圖片、符號、圖表、模型等，只要能充分證明都可以使用。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師提供一個陳述句讓學生去證明。</li>
+                    <li>和學生充分討論論證方式後，讓學生進行證明，「證明」的目的是透過辯證，提升學生的綜整思考。</li>
+                    <li>學生在論證時，要注意以下要點：
+                        <ol>
+                            <li>使用正例、反例，來證明他們的闡述。</li>
+                            <li>說明概念的定義及特質。</li>
+                            <li>釐清概念之間的關係。</li>
+                            <li>呼應先前建立的通則。</li>
+                        </ol>
+                    </li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-how-does-it-connect" class="fade-in-section">
+                <h3>(四) 遷移 - 如何連結 How Does It Connect?</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="40" width="60" height="40" fill="#3498db" rx="3"/><text x="40" y="63" fill="white">舊事例</text>
+                        <rect x="130" y="40" width="60" height="40" fill="#1abc9c" rx="3"/><text x="160" y="63" fill="white">新事例</text>
+                        <path d="M75 60 C 90 30, 110 30, 125 60" stroke="#34495e" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/>
+                        <text x="100" y="50" font-size="20" text-anchor="middle">?</text>
+                        <text x="100" y="80" font-size="9" text-anchor="middle">如何連結?</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 運用一段時間(學期或學年)所發展的通則，了解新的事例。</p>
+                <p><strong>2. 建議：</strong> 學生可以用圖片、圖表、戲劇或書面陳述等方式，分享他們在事實和概念層面之間，如何藉由證據進行思考及證明。</p>
+                <p><strong>3. 方法：</strong> 教師運用新聞、影片、個人軼事或時事，提出新的事例。並提出「如何連結這兩個事例？」的問題，要求學生用概念或概念理解來比較新舊事例。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-what-if-questions" class="fade-in-section">
+                <h3>(五) 遷移 -「要是…又會怎樣?」的問題 “What if...?” Questions</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="40" width="60" height="40" fill="#ecf0f1" stroke="#34495e" rx="3"/>
+                        <text x="50" y="63" font-size="10" text-anchor="middle">現況</text>
+                        <path d="M85 60 L 115 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <text x="100" y="50" font-size="10" text-anchor="middle">What if...?</text>
+                        <g transform="translate(150, 60)">
+                            <rect x="-25" y="-20" width="50" height="40" fill="#ecf0f1" stroke="#e74c3c" stroke-dasharray="3,2" rx="3"/>
+                            <text x="0" y="3" font-size="10" text-anchor="middle">新結果?</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 使學生將所理解的通則，運用於真實或假設情境中，形成學習遷移。</p>
+                <p><strong>2. 建議：</strong> 須確保學生對新的例子有足夠的認識理解，以便與之前所建立的通則連結起來。可以提供學生一篇文章或其他相關資料補足背景知識。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師提供一個新例子，內含充分的事實知識。</li>
+                    <li>教師提出「要是…又會怎樣？」的問題，讓學生重新思考這個新例子如何連接到通則上。</li>
+                    <li>將學生產出的通則展示出來。</li>
+                    <li>可以提供某個句型框架：「我認為(假設)…，這是因為(理由)……。」、「當……，可能會發生……。」讓學生進行辯論。</li>
+                    <li>把完成的句子展示出來，再進行一次分享與辯證。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-performance-assessment" class="fade-in-section">
+                <h3>(六) 遷移 - 實作評量 Performance Assessment</h3>
+                 <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <text x="25" y="25" font-size="10">任務</text>
+                        <g transform="translate(25, 70)">
+                           <circle cx="0" cy="-10" r="10" fill="#3498db"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#3498db"/>
+                        </g>
+                        <path d="M50 70 L 80 70" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <text x="65" y="60" font-size="9">應用通則</text>
+                        <g transform="translate(135,70)">
+                            <rect x="-40" y="-30" width="80" height="60" fill="#ecf0f1" stroke="#34495e"/>
+                            <path d="M-30 -20 H30 M-30 0 H30 M-30 20 H30" stroke="#bdc3c7"/>
+                            <path d="M-35 -15 L-25 -25 L-15 -15" stroke="#1abc9c" stroke-width="2" fill="none"/>
+                            <path d="M-35 5 L-25 -5 L-15 5" stroke="#1abc9c" stroke-width="2" fill="none"/>
+                        </g>
+                        <text x="135" y="25" font-size="10">評量規準</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 讓學生在真實情境中運用通則或具體呈現通則。</p>
+                <p><strong>2. 建議：</strong> 教師在教學上要考量到任務、情境和評量規準。評量規準中要說明對學生行為的預期目標，盡可能客觀地評估學生的表現。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>將通則列表。</li>
+                    <li>設計表現任務：通則與任務需連結在一起。</li>
+                    <li>制定評量規準。</li>
+                    <li>教師不妨事先準備實作任務、評量規準，作為能力不足以自訂實作評量的班級參考之用。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-create-it" class="fade-in-section">
+                <h3>(七) 遷移 - 創造! Create It!</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="40" width="60" height="40" fill="#3498db" rx="3"/>
+                        <text x="50" y="63" fill="white" font-size="10">通則</text>
+                        <path d="M85 60 L 115 60" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrow)"/>
+                        <text x="100" y="50" font-size="9">應用</text>
+                        <path d="M 120 40 L 180 40 L 180 100 L 150 100 L 150 70 L 120 70 Z" fill="#1abc9c"/>
+                        <text x="150" y="80" fill="white" font-size="10">作品</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生在情境中得到概念性的理解，引用此理解下的通則，應用在自己的作品上。</p>
+                <p><strong>2. 建議：</strong> 本策略適用於操作式課程。可搭配反思策略一起運用。教師清楚說明通則與作品連結方式，以及對學生作品的期望。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>重新檢視通則：詢問學生之前建立的通則如何有助於創作(如寫作、繪畫)。</li>
+                    <li>設立評量指標：問學生：「如果你將這個通則應用到你的創作，我們會看到什麼樣的作品？」讓學生清楚要以通則作為共同評量指標，進行作品評鑑分析或檢核。</li>
+                    <li>以通則來反思：請學生反思作品是否明確連結到通則，對作品進行自我評估。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="transfer-student-led-action" class="fade-in-section">
+                <h3>(八) 遷移 - 學生主導行動 Student-led Action</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Student Leader -->
+                        <g transform="translate(60, 70)">
+                            <circle cx="0" cy="-10" r="10" fill="#e74c3c"/><path d="M -15 5 L 0 20 L 15 5 Z" fill="#e74c3c"/>
+                            <path d="M 15 0 L 30 10 L 30 -10 Z" fill="#f1c40f"/>
+                        </g>
+                        <!-- Group -->
+                        <circle cx="110" cy="70" r="8" fill="#3498db"/><circle cx="130" cy="80" r="8" fill="#3498db"/>
+                        <circle cx="150" cy="70" r="8" fill="#3498db"/>
+                        <path d="M85 65 L 130 40" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="140" y="30" font-size="10">共同目標</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生成為負責任的全球公民，賦權學生將學習延伸學校之外。</p>
+                <p><strong>2. 建議：</strong> 教師和其他大人只需提供適當的協助，並預祝成功就可以了。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>學生對感興趣的主題進行公開探究。</li>
+                    <li>詢問學生想法，幫助學生澄清和鞏固他們的想法，並尋求相關資源、訂定計畫。</li>
+                    <li>在學生經過思考與修正之後，給予行動計畫的支持並協助學生進行反思。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+
+        <section id="reflect">
+            <h2 class="fade-in-section"><i class="fas fa-lightbulb"></i>6. 反思策略 (Reflect)</h2>
+            <p class="fade-in-section"><strong>目的：</strong> 反思在探究的所有階段反覆出現。此為後設認知技能的培養。</p>
+            <blockquote class="fade-in-section"><strong>NOTE:</strong> 反思在探究的所有階段都會反覆出現，主要是讓學生評估自己所學，呈現個人習得的感受，學生能夠計畫並監控自己的學習歷程，是計畫、監控、評估一再反覆的檢討行為。當學生知道學習歷程，明白如何學，又如何學會了，這就是後設認知。反思階段，老師應該充分賦權讓學生成為學習的主人。</blockquote>
+            <p class="fade-in-section"><strong>反思行為有四種類型：</strong></p>
+            <ol class="fade-in-section">
+                <li><strong>總括性：</strong> 通盤性的反思討論及記錄學習過程，是學生做為監控評估的重要資料。</li>
+                <li><strong>計畫性：</strong> 在學習任務分配後，學生進行任務省思，分析任務的困難點及成功標準。</li>
+                <li><strong>監控性：</strong> 在反思時明確說出個人想法，讓大家都能掌握團隊的動向及心態，以控制個人及團隊的進度。</li>
+                <li><strong>評估性：</strong> 整個反思過程提供學生發現心智型態的機會以建構新的概念。</li>
+            </ol>
+            
+            <article id="reflect-talk-prompts" class="fade-in-section">
+                <h3>(一) 反思 - 談話提示 Talk Prompts</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 10 H 180 V 70 H 120 L 110 80 L 110 70 H 20 Z" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="30" y="35" font-size="12">我學到最重要的事情是...</text>
+                        <path d="M30 40 H 170" stroke="#3498db" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 談話提示是促進討論的一種方式，鼓勵學生透過談話，進行思考和推理，協助學生建構知識，發展想法。</p>
+                <p><strong>2. 建議：</strong> 教師可以視情況自設句子架構，目的在促進反思。</p>
+                <p><strong>3. 方法：</strong> 使用一些句子架構，讓學生進行反思，例如：「這讓我想起了……」、「我學到最重要的事情是……」。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-question-bank" class="fade-in-section">
+                <h3>(二) 反思 - 問題銀行 Question Bank</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 100 L 160 100 L 170 80 L 30 80 Z" fill="#a67c52"/>
+                        <path d="M40 80 L 160 80 A 80 80 0 0 0 40 80" fill="#d3a167"/>
+                        <path d="M30 80 H 170" stroke="#a67c52" stroke-width="5"/>
+                        <rect x="95" y="70" width="10" height="15" fill="#34495e"/><circle cx="100" cy="65" r="5" fill="#f1c40f"/>
+                        <text x="80" y="40" font-size="20">?</text><text x="100" y="50" font-size="20">?</text><text x="120" y="40" font-size="20">?</text>
+                        <text x="100" y="20" font-size="12" text-anchor="middle">反思問題庫</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 將問題展示出來，讓學生反思，同時讓學生習得反思的詞彙，養成反思的習慣並加以內化。</p>
+                <p><strong>2. 建議：</strong> 教師可以視情況要求學生「聚焦」一個特定問題。例如：目前不清楚的概念是什麼？使用了什麼策略？如何訂定計畫？有那些進步？反思的問題庫可以由教師或學生產生。</p>
+                <p><strong>3. 方法：</strong> 問題銀行是以視覺方式，將常用的反思問題類型(計畫、監控、評估)具體展示出來。教師必須以這些問題庫的問句為鷹架，支持學生的反思性對話。</p>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-learning-journals" class="fade-in-section">
+                <h3>(三) 反思 - 學習日誌與反思部落格 Learning Journals and Reflective Blogs</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 10 L 100 10 L 100 110 L 20 110 A 10 10 0 0 1 10 100 L 10 20 A 10 10 0 0 1 20 10 Z" fill="#ecf0f1" stroke="#34495e"/>
+                        <path d="M100 10 L 180 20 A 10 10 0 0 1 190 30 L 190 100 A 10 10 0 0 1 180 110 L 100 110 Z" fill="#fff" stroke="#34495e"/>
+                        <line x1="100" y1="10" x2="100" y2="110" stroke="#34495e"/>
+                        <text x="55" y="30" font-size="9">日誌</text>
+                        <text x="145" y="35" font-size="9">部落格</text>
+                        <rect x="30" y="40" width="50" height="5" fill="#bdc3c7"/><rect x="30" y="50" width="60" height="5" fill="#bdc3c7"/>
+                        <rect x="110" y="45" width="60" height="20" fill="#3498db" rx="2"/>
+                        <path d="M110 80 L 130 80 L 130 95 L 115 95 L 110 90 Z" fill="#1abc9c"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學習日誌與反思部落格，是蒐集學習歷程證據的寶庫。</p>
+                <p><strong>2. 建議：</strong> 學習日誌是個人性質，反思部落格是集體反思的呈現。教師務必與學生討論如何回應別人的貼文，回應的原則是什麼？讓學生在安全且公開的平台上，放心地分享觀點與想法。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>學生建立他們的學習日誌，可以採用多種型式，例如：紙本、電子檔案或 Google 表單等形式。</li>
+                    <li>學習日誌內容可包含前測資料、最初的思維、歷程中的反思、總結性評量的相關資料，以及學生的自我評量與目標設定。</li>
+                    <li>反思部落格可以使用網路上的部落格或任何學習資料平台，蒐集所有學生學習歷程，是集體性的作品。全班共同反思他們的學習歷程，攜手學習成長。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-task-analysis" class="fade-in-section">
+                <h3>(四) 反思 - 任務分析 Task Analysis</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <text x="100" y="20" font-size="12" text-anchor="middle">學習任務</text>
+                        <path d="M100 25 L 100 40 M 100 40 L 50 60 M 100 40 L 150 60" stroke="#34495e"/>
+                        <rect x="20" y="70" width="60" height="30" rx="3" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="50" y="88" font-size="9">步驟1</text>
+                        <rect x="120" y="70" width="60" height="30" rx="3" fill="#ecf0f1" stroke="#34495e"/>
+                        <text x="150" y="88" font-size="9">所需技能</text>
+                        <path d="M80 85 L 120 85" stroke="#bdc3c7" stroke-dasharray="3,2"/>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 學生在實踐學習任務之前，分析或評估任務要件，以反思個人的學習狀態。</p>
+                <p><strong>2. 建議：</strong> 學習任務可以由教師或學生提出。可使用組織思考圖進行任務分析。</p>
+                <p><strong>3. 方法：</strong> 任務分析的要件有：</p>
+                <ul>
+                    <li>任務的個別元素。</li>
+                    <li>任務中較簡單和較具挑戰性的部份。</li>
+                    <li>任務所需要的技能或知識。</li>
+                    <li>考慮各種資源，例如書籍和數位資源。</li>
+                    <li>達成任務的標準。</li>
+                    <li>衡量個人動機或焦慮程度。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-think-aloud" class="fade-in-section">
+                <h3>(五) 反思 - 放聲思考 Think Aloud</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <circle cx="60" cy="70" r="20" fill="#ecf0f1" stroke="#34495e"/>
+                        <circle cx="60" cy="60" r="10" fill="#3498db" opacity="0.5"/>
+                        <!-- Thought Bubble -->
+                        <path d="M85 55 C 100 40, 180 40, 180 65 C 180 90, 100 90, 95 75" stroke="#34495e" fill="#fff"/>
+                        <text x="110" y="65" font-size="9">我正在想...</text>
+                        <text x="130" y="80" font-size="9">為什麼...</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 放聲思考讓學生聽到自己與他人在學習時，使用技巧及策略的思考過程。這個策略有助於學生發展探索能力。</p>
+                <p><strong>2. 建議：</strong> 建議進行放聲思考時，一次最多5到7分鐘。</p>
+                <p><strong>3. 方法：</strong> 計畫放聲思考的流程：</p>
+                <ol>
+                    <li>規劃放聲思考的進行方式：選擇一兩個技巧或策略來示範。設計數個暫停點，進行放聲思考。若為文本則暫停點的順序和文本順序一致。</li>
+                    <li>教師示範放聲思考：教師以第一人稱在便利貼上寫下會說些什麼話。每個暫停點使用一張便利貼，寫下關鍵詞張貼出來。建議示範 5-7 分鐘，學生只要聆聽即可。</li>
+                    <li>學生開始進行放聲思考。</li>
+                </ol>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-exit-reflections" class="fade-in-section">
+                <h3>(六) 反思 - 出場反思 Exit Reflections</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 10 V 110 H 160 V 10 H 40 Z M 100 60 V 110" fill="#a67c52" stroke="#34495e" stroke-width="2"/>
+                        <circle cx="85" cy="60" r="5" fill="#f1c40f"/>
+                        <text x="15" y="60" font-size="12">出場</text>
+                        <g transform="translate(140, 60)">
+                            <rect x="-25" y="-30" width="50" height="40" rx="3" fill="#f1c40f" stroke="#34495e"/>
+                            <text x="0" y="-18" font-size="8" text-anchor="middle">今日所學:</text>
+                            <text x="0" y="-5" font-size="8" text-anchor="middle">____________</text>
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 出場反思可以協助學生反思所學，讓學生發展後設思考的能力。</p>
+                <p><strong>2. 建議：</strong> 出場反思可以在單元或課堂結束時進行；也可設計一個海報網格，學生以便利貼回饋，做為一天學習結束時的反思；亦可做為調整後續課程的依據，或下次課程的起點。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li>教師準備反思問題庫。</li>
+                    <li>引介談話提示與問題銀行等策略。</li>
+                    <li>設定出場反思時間。</li>
+                    <li>提供回饋機會。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+
+            <article id="reflect-pre-post-reflections" class="fade-in-section">
+                <h3>(七) 反思 - 單元前/後的反思 Pre-/Post-reflections</h3>
+                <div class="strategy-diagram">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                        <text x="50" y="25" font-size="10" text-anchor="middle">單元前</text>
+                        <rect x="20" y="30" width="60" height="60" fill="#ecf0f1" stroke="#34495e"/>
+                        <path d="M90 60 L 110 60" stroke="#34495e" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="100" y="50" font-size="9" text-anchor="middle">學習</text>
+                        <text x="150" y="25" font-size="10" text-anchor="middle">單元後</text>
+                        <rect x="120" y="30" width="60" height="60" fill="#1abc9c" stroke="#34495e"/>
+                        <text x="150" y="63" fill="white" font-size="9">成長</text>
+                    </svg>
+                </div>
+                <p><strong>1. 功用：</strong> 協助學生覺察學習前後思考方式的差異，讓他們發現自己如何習得知識，並能清楚表達自己的變化及成長。</p>
+                <p><strong>2. 建議：</strong> 單元前後均可以使用組織圖，來呈現他們當下的理解。讓學生可以比較單元開始和結束時的變化。</p>
+                <p><strong>3. 方法：</strong></p>
+                <ul>
+                    <li><strong>a. 單元前反思：</strong> 例如：「我想我明白了……」或者「我目前不確定的一件事是……」。</li>
+                    <li><strong>b. 單元後反思：</strong> 請學生進行與單元開始前一樣的活動。</li>
+                    <li><strong>c. 比較前後反思：</strong> 鼓勵學生找到兩者間的相似性和差異，并確定他們對該單元理解產生最大的改變到底是什麼。</li>
+                    <li><strong>d. 反思學習過程：</strong> 教師可以用提問、句子架構或類比等策略，協助學生理解自己的學習歷程為何。</li>
+                </ul>
+                <a href="#top" class="back-to-top">▲ 返回目錄</a>
+            </article>
+        </section>
+        
+        <section id="reference" class="fade-in-section">
+            <h2><i class="fas fa-book-open"></i>參考資源</h2>
+            <div id="reference-info">
+                <p>陳佩英（總編輯）、何文馨、李筑萱、古昀澤、陳建長、李宗遠、吳曉律、徐惠春、陳俊能、林思慧、許淑娟、陳芬蘭、高志雄、許詩訪、張淨宜、曾雅薇、陳薇雅、陳銘哲、李建德、臺東核心教師、花蓮核心教師（2023）。探究策略 55【中小學篇】。國立臺灣師範大學出版中心。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Copyright © Liyuchiutiger Gongminshen | Enhanced Design Version</p>
+    </footer>
+</div>
+
+<button id="scrollToTopBtn" title="回到頂部"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+// Scroll to Top Button Logic
+const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+if (scrollToTopBtn) {
+    window.onscroll = function() {
+        scrollFunction();
+    };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            scrollToTopBtn.style.display = "block";
+        } else {
+            scrollToTopBtn.style.display = "none";
+        }
+    }
+
+    scrollToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Fade-in on Scroll Logic using Intersection Observer
+const sections = document.querySelectorAll('.fade-in-section');
+
+if (window.IntersectionObserver) {
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1 
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    // To make all initial visible sections appear without scrolling
+    document.addEventListener('DOMContentLoaded', () => {
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                 section.classList.add('is-visible');
+                 observer.unobserve(section);
+            }
+        });
+    });
+} else {
+    // Fallback for older browsers
+    sections.forEach(section => {
+        section.classList.add('is-visible');
+    });
+}
+</script>
+
+</body>
+</html>
